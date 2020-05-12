@@ -21,8 +21,8 @@ MCUs* recuperer_blocs(image_ppm* image) {
 	uint32_t courant = 0;
 	for (uint32_t i = 0; i < verticale; i++) {
 		for (uint32_t j = 0; j < horizontale; j++) {
-			matrice->blocs[courant][0] = i * 8;
-			matrice->blocs[courant][1] = j * 8;
+			matrice->blocs[courant][0] = i * TAILLE_BLOC;
+			matrice->blocs[courant][1] = j * TAILLE_BLOC;
 			courant++;
 		}
 	}
