@@ -1,1 +1,2 @@
-ppm2jpeg.c:3:5:main	32	static
+ppm2jpeg.c:17:16:parse_option	64	static
+ppm2jpeg.c:51:5:main	64	static
