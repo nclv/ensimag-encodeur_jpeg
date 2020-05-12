@@ -21,4 +21,11 @@ struct MCUs {
  */
 MCUs* recuperer_blocs(image_ppm* image);
 
+/*
+ * type: MCU*s
+ * rtype: void
+ * Affiche la matrice des indices des blocs
+ */
+void afficher_MCUs(MCUs* matrice);
+
 #endif
