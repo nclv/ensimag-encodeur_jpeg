@@ -1,5 +1,5 @@
-#ifndef CONV_H
-#define CONV_H
+#ifndef _CONV_H
+#define _CONV_H
 
 #include "../include/ppm.h"
 
@@ -7,7 +7,7 @@
 typedef struct triplet_ycbcr triplet_ycbcr;
 
 struct triplet_ycbcr {
-	uint8_t triplet[3];
+	float triplet[3];
 };
 
 /*
