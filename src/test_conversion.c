@@ -1,17 +1,17 @@
-#include "../include/conversion.h"
+#include "conversion.h"
 
 int main(void) {
-	pixel_rgb* rgb = (pixel_rgb*)malloc(sizeof(pixel_rgb));
+	pixel* rgb = (pixel*)malloc(sizeof(pixel));
 
-    rgb->r = 255;
-    rgb->g = 255;
-    rgb->b = 255;
+    rgb->triplet[0] = 255;
+    rgb->triplet[1] = 255;
+    rgb->triplet[2] = 255;
 
-    pixel_ycbcr* ycbcr = conversion(rgb);
+    pixel* ycbcr = conversion(rgb);
 
     printf("Affichage des pixels en RGB :\n");
-    printf("%d %d %d\n", rgb->r, rgb->g, rgb->b);
+    printf("%i %i %i\n", rgb->triplet[0], rgb->triplet[1], rgb->triplet[2]);
 
     printf("Affichage des pixels en YCbCr :\n");
-    printf("%f %f %f\n", ycbcr->y, ycbcr->cb, ycbcr->cr);
+    printf("%i %i %i\n", ycbcr->triplet[0], ycbcr->triplet[1], ycbcr->triplet[2]);
 }

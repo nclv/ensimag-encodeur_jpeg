@@ -1,17 +1,15 @@
-#ifndef _CONVERSION_H
-#define _CONVERSION_H
+#ifndef _CONVERSION_H_
+#define _CONVERSION_H_
 
 #include <stdint.h>
 
-#include "../include/ppm.h"
-
-
+#include "ppm.h"
 
 /*
  * type: pixel*
  * rtype: void
  * Convertit un pixel RGB en YCbCr
  */
-void conversion(pixel* pixel);
+extern pixel* conversion(pixel* pixel);
 
 #endif

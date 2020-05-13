@@ -1,13 +1,15 @@
-#include "../include/conversion.h"
+#include "conversion.h"
 
-#include "../include/ppm.h"
+#include <stdint.h>
 
-void conversion(pixel* pixel) {
+#include "ppm.h"
 
-    float y = 0.299 * pixel->triplet[0] + 0.587 * pixel->triplet[1] + 0.114 * pixel->triplet[2];
-    float cb = -0.1687 * pixel->triplet[0] - 0.3313 * pixel->triplet[1] + 0.5000 * pixel->triplet[2] + 128;
-    float cr = 0.5000 * pixel->triplet[0] - 0.4187 * pixel->triplet[1] - 0.0813 * pixel->triplet[2] + 128;
-    pixel->triplet[0] = y;
-    pixel->triplet[1] = cb;
-    pixel->triplet[2] =cr;
+pixel* conversion(pixel* rgb) {
+    pixel* ycbcr = (pixel*)malloc(sizeof(pixel));
+
+    ycbcr->triplet[0] = (uint8_t)(0.299 * rgb->triplet[0] + 0.587 * rgb->triplet[1] + 0.114 * rgb->triplet[2]);
+    ycbcr->triplet[1] = (uint8_t)(-0.1687 * rgb->triplet[0] - 0.3313 * rgb->triplet[1] + 0.5000 * rgb->triplet[2] + 128);
+    ycbcr->triplet[2] = (uint8_t)(0.5000 * rgb->triplet[0] - 0.4187 * rgb->triplet[1] - 0.0813 * rgb->triplet[2] + 128);
+
+    return ycbcr;
 }

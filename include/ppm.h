@@ -9,7 +9,7 @@
 
 /*Définition et déclaration d'un pixel de couleurs RGB*/
 typedef struct pixel {
-    float triplet[3];
+    uint8_t triplet[3];
 } pixel;
 
 /*Définition et déclaration d'une image ppm*/
