@@ -19,6 +19,7 @@ int main(int argc, char** argv) {
 
     image_ppm* image = lire_ppm(argv[1]);
     afficher_image(image);
+    liberer_image(&image);
 
     return EXIT_SUCCESS;
 }
