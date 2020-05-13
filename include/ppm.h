@@ -6,18 +6,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define R 0
-#define G 1
-#define B 2
 
-/*Définition et déclaration d'un triplet de couleurs RGB*/
-typedef struct triplet_rgb {
-    uint8_t triplet[3];
-} triplet_rgb;
+/*Définition et déclaration d'un pixel de couleurs RGB*/
+typedef struct pixel_rgb {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+} pixel_rgb;
 
 /*Définition et déclaration d'une image ppm*/
 typedef struct image_ppm {
-    triplet_rgb** matrice;
+    pixel_rgb** matrice;
     uint32_t hauteur;
     uint32_t largeur;
     uint32_t nb_couleurs;
