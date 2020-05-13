@@ -8,7 +8,8 @@
 
 CC = gcc
 LD = gcc
-INCLUDES = -I../include
+INCLUDE = ../include
+INCLUDES = -I$(INCLUDE)
 
 # -O0 désactive les optimisations à la compilation
 # C'est utile pour débugger, par contre en "production"
@@ -43,7 +44,7 @@ $(OBJS): %.o: %.c
 .PHONY: clean clean_executable
 
 clean:
-	rm -rf *.su *.o *~
+	rm -rf *.su *.o *~ $(INCLUDE)/*.h.gch
 
 clean_executable:
 	rm -rf $(TARGET)
