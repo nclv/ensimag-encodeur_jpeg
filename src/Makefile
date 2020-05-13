@@ -19,7 +19,7 @@ LDFLAGS = -Wl,--gc-sections -Wl,--print-gc-sections
 # typing 'make' will invoke the first target entry in the file 
 
 TARGET = test_conversion test_mcus test_ppm
-OBJS = conversion.o test_conversion.o mcus.o test_mcus.o
+OBJS = conversion.o test_conversion.o mcus.o test_mcus.o ppm.o test_ppm.o
 
 all: $(TARGET)
 
@@ -29,7 +29,7 @@ test_conversion: conversion.o test_conversion.o
 test_mcus: mcus.o test_mcus.o
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
-test_ppm: ppm.o test_ppm.o
+test_ppm: ppm.o test_ppm.o conversion.o
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
 # this is a suffix replacement rule for building .o's from .c's

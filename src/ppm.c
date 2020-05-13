@@ -2,7 +2,6 @@
 #include "conversion.h"
 
 
-
 image_ppm* lire_ppm(char* nom_fichier) {
 	/*Ouverture du fichier*/
 	FILE* fichier_ppm = fopen(nom_fichier, "r");
