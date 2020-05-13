@@ -10,6 +10,6 @@
  * rtype: void
  * Convertit un pixel RGB en YCbCr
  */
-extern pixel* conversion(pixel* pixel);
+void conversion(pixel* pixel);
 
 #endif
