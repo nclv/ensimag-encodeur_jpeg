@@ -15,6 +15,7 @@ static image_ppm* lire_p5(FILE* fichier_ppm, image_ppm* image, uint8_t octet) {
             conversion(&image->matrice[i][j]);
         }
     }
+	fclose(fichier_ppm);
     return image;
 }
 
@@ -30,6 +31,7 @@ static image_ppm* lire_p6(FILE* fichier_ppm, image_ppm* image) {
             conversion(&image->matrice[i][j]);
         }
     }
+	fclose(fichier_ppm);
     return image;
 }
 
@@ -92,10 +94,6 @@ image_ppm* lire_ppm(char* nom_fichier) {
     } else {
         return lire_p6(fichier_ppm, image);
     }
-
-    fclose(fichier_ppm);
-
-    return image;
 }
 
 void liberer_image(image_ppm** image) {
