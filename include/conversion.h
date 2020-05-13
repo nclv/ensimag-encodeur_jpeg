@@ -7,7 +7,7 @@
 typedef struct triplet_ycbcr triplet_ycbcr;
 
 struct triplet_ycbcr {
-	float triplet[3];
+    float triplet[3];
 };
 
 /*

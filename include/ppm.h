@@ -1,9 +1,9 @@
 #ifndef _PPM_H
 #define _PPM_H
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <string.h>
 
 #define R 0
@@ -13,17 +13,17 @@
 /*Définition d'un triplet de couleurs RGB*/
 typedef struct triplet_rgb triplet_rgb;
 struct triplet_rgb {
-	uint8_t triplet[3];
+    uint8_t triplet[3];
 };
 
 /*Définition d'une image ppm*/
 typedef struct image_ppm image_ppm;
 struct image_ppm {
-	triplet_rgb** matrice;
-	uint32_t  hauteur;
-	uint32_t largeur;
-	uint32_t nb_couleurs;
-	char mode[2];
+    triplet_rgb** matrice;
+    uint32_t hauteur;
+    uint32_t largeur;
+    uint32_t nb_couleurs;
+    char mode[2];
 };
 
 /*

@@ -8,8 +8,8 @@
 /*Définition des MCUs*/
 typedef struct MCUs MCUs;
 struct MCUs {
-	uint32_t** blocs; 		
-	uint32_t nombre_blocs;
+    uint32_t** blocs;
+    uint32_t nombre_blocs;
 };
 
 /*
