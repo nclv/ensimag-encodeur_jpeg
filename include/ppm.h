@@ -10,21 +10,19 @@
 #define G 1
 #define B 2
 
-/*Définition d'un triplet de couleurs RGB*/
-typedef struct triplet_rgb triplet_rgb;
-struct triplet_rgb {
+/*Définition et déclaration d'un triplet de couleurs RGB*/
+typedef struct triplet_rgb {
     uint8_t triplet[3];
-};
+} triplet_rgb;
 
-/*Définition d'une image ppm*/
-typedef struct image_ppm image_ppm;
-struct image_ppm {
+/*Définition et déclaration d'une image ppm*/
+typedef struct image_ppm {
     triplet_rgb** matrice;
     uint32_t hauteur;
     uint32_t largeur;
     uint32_t nb_couleurs;
     char mode[2];
-};
+} image_ppm;
 
 /*
  * type: char*

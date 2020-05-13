@@ -5,12 +5,11 @@
 
 #include "ppm.h"
 
-/*Définition des MCUs*/
-typedef struct MCUs MCUs;
-struct MCUs {
+/*Définition et déclaration des MCUs*/
+typedef struct MCUs {
     uint32_t** blocs;
     uint32_t nombre_blocs;
-};
+} MCUs;
 
 /*
  * type: image_ppm*

@@ -3,12 +3,10 @@
 
 #include "../include/ppm.h"
 
-/* Définition d'un triplet de couleurs YCbCr */
-typedef struct triplet_ycbcr triplet_ycbcr;
-
-struct triplet_ycbcr {
+/* Définition et déclaration d'un triplet de couleurs YCbCr */
+typedef struct triplet_ycbcr {
     float triplet[3];
-};
+} triplet_ycbcr;
 
 /*
  * type: triplet_rgb*
