@@ -1,5 +1,5 @@
-#include "../include/ppm.h"
-#include "../include/conversion.h"
+#include "ppm.h"
+#include "conversion.h"
 
 
 

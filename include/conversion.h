@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include "../include/ppm.h"
+#include "ppm.h"
 
 /*
  * type: pixel*
