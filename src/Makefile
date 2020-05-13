@@ -25,12 +25,18 @@ OBJS = conversion.o test_conversion.o mcus.o test_mcus.o ppm.o test_ppm.o
 all: $(TARGET)
 
 test_conversion: conversion.o test_conversion.o
+	$(info )
+	$(info Compilation de test_conversion)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
 test_mcus: mcus.o test_mcus.o
+	$(info )
+	$(info Compilation de test_mcus)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
 test_ppm: ppm.o test_ppm.o conversion.o
+	$(info )
+	$(info Compilation de test_ppm)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
 # this is a suffix replacement rule for building .o's from .c's
@@ -39,12 +45,16 @@ test_ppm: ppm.o test_ppm.o conversion.o
 # .c.o:
 # 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 $(OBJS): %.o: %.c
+	$(info )
+	$(info Compilation des fichiers .o)
 	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@ 
 
 .PHONY: clean clean_executable
 
 clean:
+	$(info Suppression des .su, .o, .h.gch)
 	rm -rf *.su *.o *~ $(INCLUDE)/*.h.gch
 
 clean_executable:
+	$(info Suppression des exécutables)
 	rm -rf $(TARGET)
