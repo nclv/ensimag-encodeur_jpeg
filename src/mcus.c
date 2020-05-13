@@ -1,4 +1,4 @@
-#include "../include/mcus.h"
+#include "mcus.h"
 
 MCUs* recuperer_blocs(image_ppm* image) {
     MCUs* matrice = (MCUs*)malloc(sizeof(MCUs));

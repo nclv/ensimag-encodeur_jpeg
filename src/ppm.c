@@ -1,5 +1,5 @@
-#include "../include/ppm.h"
-#include "../include/conversion.h"
+#include "ppm.h"
+#include "conversion.h"
 
 image_ppm* lire_ppm(char* nom_fichier) {
 	/*Ouverture du fichier*/
