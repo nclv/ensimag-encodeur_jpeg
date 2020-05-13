@@ -34,20 +34,20 @@ image_ppm* lire_ppm(char* nom_fichier) {
 		for (uint32_t i = 0; i < image->hauteur; i++) {
 			for (uint32_t j = 0; j < image->largeur; j++) {
 				fread(&octet, sizeof(uint8_t), 1, fichier_ppm);
-				image->matrice[i][j].triplet[0] = octet;
-				image->matrice[i][j].triplet[1] = octet;
-				image->matrice[i][j].triplet[2] = octet;
-				//conversion(&image->matrice[i][j]);
+				image->matrice[i][j].triplet_rgb[0] = octet;
+				image->matrice[i][j].triplet_rgb[1] = octet;
+				image->matrice[i][j].triplet_rgb[2] = octet;
+				conversion(&image->matrice[i][j]);
 			}
 		}
 	}
 	else {
 		for (uint32_t i = 0; i < image->hauteur; i++) {
 			for (uint32_t j = 0; j < image->largeur; j++) {
-				fread(&image->matrice[i][j].triplet[0], sizeof(uint8_t), 1, fichier_ppm);
-				fread(&image->matrice[i][j].triplet[1], sizeof(uint8_t), 1, fichier_ppm);
-				fread(&image->matrice[i][j].triplet[2], sizeof(uint8_t), 1, fichier_ppm);
-				//conversion(&image->matrice[i][j]);
+				fread(&image->matrice[i][j].triplet_rgb[0], sizeof(uint8_t), 1, fichier_ppm);
+				fread(&image->matrice[i][j].triplet_rgb[1], sizeof(uint8_t), 1, fichier_ppm);
+				fread(&image->matrice[i][j].triplet_rgb[2], sizeof(uint8_t), 1, fichier_ppm);
+				conversion(&image->matrice[i][j]);
 			}
 		}
 	}
@@ -56,12 +56,20 @@ image_ppm* lire_ppm(char* nom_fichier) {
 }
 
 void afficher_image(image_ppm* image) {
-	printf("Affichage des pixels\n");
+	printf("Affichage des pixels en rgb\n");
 	for (uint32_t i = 0; i < image->hauteur; i++) {
 		for (uint32_t j = 0; j < image->largeur; j++) {
-			printf("%f %f %f\n", image->matrice[i][j].triplet[0],
-								 image->matrice[i][j].triplet[1],
-								 image->matrice[i][j].triplet[2]);
+			printf("%i %i %i\n", image->matrice[i][j].triplet_rgb[0],
+								 image->matrice[i][j].triplet_rgb[1],
+								 image->matrice[i][j].triplet_rgb[2]);
+			}
+		}
+		printf("Affichage des pixels en ycbcr\n");
+		for (uint32_t i = 0; i < image->hauteur; i++) {
+			for (uint32_t j = 0; j < image->largeur; j++) {
+		 		printf("%i %i %i\n", image->matrice[i][j].triplet_ycbcr[0],
+					image->matrice[i][j].triplet_ycbcr[1],
+					image->matrice[i][j].triplet_ycbcr[2]);
 		}
 	}
 }
