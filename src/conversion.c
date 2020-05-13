@@ -2,12 +2,12 @@
 
 #include "../include/ppm.h"
 
-pixel_ycbcr* conversion(pixel_rgb* rgb) {
-    pixel_ycbcr* ycbcr = (pixel_ycbcr*)malloc(sizeof(pixel_ycbcr));
+void conversion(pixel* pixel) {
 
-    ycbcr->y = 0.299 * rgb->r + 0.587 * rgb->g + 0.114 * rgb->b;
-    ycbcr->cb = -0.1687 * rgb->r - 0.3313 * rgb->g + 0.5000 * rgb->b + 128;
-    ycbcr->cr = 0.5000 * rgb->r - 0.4187 * rgb->g - 0.0813 * rgb->b + 128;
-
-    return ycbcr;
+    float y = 0.299 * pixel->triplet[0] + 0.587 * pixel->triplet[1] + 0.114 * pixel->triplet[2];
+    float cb = -0.1687 * pixel->triplet[0] - 0.3313 * pixel->triplet[1] + 0.5000 * pixel->triplet[2] + 128;
+    float cr = 0.5000 * pixel->triplet[0] - 0.4187 * pixel->triplet[1] - 0.0813 * pixel->triplet[2] + 128;
+    pixel->triplet[0] = y;
+    pixel->triplet[1] = cb;
+    pixel->triplet[2] =cr;
 }
