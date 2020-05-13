@@ -3,13 +3,13 @@
 
 #include <stdint.h>
 
-#include "ppm.h"
+#include "../include/ppm.h"
 
 /*
  * type: pixel*
  * rtype: void
  * Convertit un pixel RGB en YCbCr
  */
-void conversion(pixel* pixel);
+void conversion(pixel* p);
 
 #endif
