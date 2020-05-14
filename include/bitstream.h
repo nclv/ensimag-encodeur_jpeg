@@ -3,14 +3,31 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 /*
     Type opaque représentant le flux d'octets à écrire dans le fichier JPEG de
     sortie (appelé bitstream dans le sujet).
-*/
-struct bitstream;
 
-/* Retourne un nouveau bitstream prêt à écrire dans le fichier filename. */
+    La création et la fermeture du bitstream est faite dans les fonctions
+    jpeg_write_header et jpeg_desc_destroy du module jpeg_writer.
+*/
+typedef struct bitstream {
+    unsigned char *buffer; /* Donnée à écrire */
+    size_t buffer_length;
+    size_t last_written_bit_offset; /* Position du dernier bit écrit dans le bitstream */
+
+    size_t current_buffer_offset; /* position du bit écrit/lu dans le buffer, buffer[current_buffer_offset] */
+    size_t current_bit_offset;  /* position du bit écrit/lu */
+} bitstream;
+
+/* 
+    Retourne un nouveau bitstream prêt à écrire dans le fichier filename initialement vide. 
+    Cette fonction alloue dynamiquement une variable de type struct bitstream, la remplit de 
+    manière adéquate, puis retourne son adresse mémoire. En cas d'erreur, la fonction retourne 
+    NULL.
+    La mémoire allouée doit ensuite être libérée par bitstream_destroy?
+*/
 extern struct bitstream *bitstream_create(const char *filename);
 
 /*
