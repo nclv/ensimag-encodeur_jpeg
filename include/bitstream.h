@@ -13,8 +13,9 @@
     jpeg_write_header et jpeg_desc_destroy du module jpeg_writer.
 */
 typedef struct bitstream {
-    unsigned char *buffer; /* Donnée à écrire */
-    size_t buffer_length;
+    const char* filename;
+    unsigned char *buffer; /* Données à écrire */
+    size_t buffer_size;
     size_t last_written_bit_offset; /* Position du dernier bit écrit dans le bitstream */
 
     size_t current_buffer_offset; /* position du bit écrit/lu dans le buffer, buffer[current_buffer_offset] */
@@ -26,7 +27,7 @@ typedef struct bitstream {
     Cette fonction alloue dynamiquement une variable de type struct bitstream, la remplit de 
     manière adéquate, puis retourne son adresse mémoire. En cas d'erreur, la fonction retourne 
     NULL.
-    La mémoire allouée doit ensuite être libérée par bitstream_destroy?
+    La mémoire allouée doit ensuite être libérée par bitstream_destroy.
 */
 extern struct bitstream *bitstream_create(const char *filename);
 
