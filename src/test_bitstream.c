@@ -3,8 +3,11 @@
 int main(void) {
     bitstream* stream = bitstream_create("test.jpg");
 
-    /* écrit la valeur 42 stockée sur 5 bits dans le flux */
-    bitstream_write_nbits(stream, 5, 42, false);
+    /*
+        Ecrit dans le flux les 6 bits représentant la valeur 42
+        (42 c'est 0x2A, ou 101010 en binaire)
+    */
+    bitstream_write_bits(stream, 42, 6, false);
 
     bitstream_destroy(stream);
 }
