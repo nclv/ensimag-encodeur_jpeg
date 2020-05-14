@@ -53,8 +53,10 @@ void bitstream_write_bits(bitstream *stream, uint32_t value, uint8_t nb_bits, bo
 
     printf("Marqueur: %i\n", is_marker);
 
-    if (DEFAULT_BUFFER_SIZE * 8 - stream->last_written_bit_offset < nb_bits) {
-        printf("Dépassement de la capacité du buffer\n");
+    /* Dépassement de la capacité du buffer, pas d'erreur visible sauf sur valgrind */
+    /* Un marqueur de section JPEG est toujours aligné dans le flux sur un multiple d'un octet*/
+    if (DEFAULT_BUFFER_SIZE * 8 - stream->last_written_bit_offset < nb_bits || is_marker) {
+        printf("Dépassement de la capacité du buffer ou écriture d'un marqueur\n");
         bitstream_display(stream);
         bitstream_flush(stream);
     }
@@ -63,7 +65,6 @@ void bitstream_write_bits(bitstream *stream, uint32_t value, uint8_t nb_bits, bo
 
     size_t current_bit_offset = stream->last_written_bit_offset;
     for (uint32_t i = 0; i < nb_bits; i++) {
-        /* Dépassement de la capacité du buffer, pas d'erreur visible sauf sur valgrind */
         stream->buffer[current_bit_offset + i] = (value & mask) ? 1 : 0;
         value <<= 1;
         stream->last_written_bit_offset += 1;
