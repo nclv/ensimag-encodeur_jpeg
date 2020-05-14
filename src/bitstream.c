@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define DEFAULT_BUFFER_SIZE 1  // valeur à modifier
+#define DEFAULT_BUFFER_SIZE 1  // valeur à modifier, 1 pour les tests
 
 bitstream *bitstream_create(const char *filename) {
     bitstream *stream = malloc(sizeof *stream);
