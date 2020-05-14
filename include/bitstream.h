@@ -1,8 +1,8 @@
 #ifndef _BITSTREAM_H_
 #define _BITSTREAM_H_
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 
 /*
@@ -13,7 +13,7 @@
     jpeg_write_header et jpeg_desc_destroy du module jpeg_writer.
 */
 typedef struct bitstream {
-    const char* filename; /* Ecriture effective lorsque le buffer est rempli */
+    const char *filename;  /* Ecriture effective lorsque le buffer est rempli */
     unsigned char *buffer; /* Données à écrire */
     size_t buffer_size;
     size_t last_written_bit_offset; /* Position du dernier bit écrit dans le bitstream */
