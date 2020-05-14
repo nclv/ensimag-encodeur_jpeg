@@ -40,6 +40,9 @@ enum direction
 /*
     Type opaque contenant l'intégralité des informations 
     nécessaires à l'écriture de l'en-tête JPEG.
+
+    Nécessaires :
+    filename, 
 */
 struct jpeg;
 

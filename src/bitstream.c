@@ -5,20 +5,27 @@
 
 bitstream *bitstream_create(const char *filename) {
     
-    bitstream *bs = malloc(sizeof *bs);
-    if (bs == NULL) return NULL;
+    bitstream *stream = malloc(sizeof *stream);
+    if (stream == NULL) return NULL;
 
-    bs->buffer_size = DEFAULT_BUFFER_SIZE;
-    bs->buffer = malloc(DEFAULT_BUFFER_SIZE);
-    if (bs->buffer = NULL) {
-        free(bs);
+    stream->buffer_size = DEFAULT_BUFFER_SIZE;
+    stream->buffer = malloc(DEFAULT_BUFFER_SIZE);
+    if (stream->buffer = NULL) {
+        free(stream);
         return NULL;
     }
 
-    bs->filename = filename;
-    bs->last_written_bit_offset = 0;
-    bs->current_bit_offset = 0;
-    bs->current_buffer_offset = 0;
+    stream->filename = filename;
+    stream->last_written_bit_offset = 0;
+    stream->current_bit_offset = 0;
+    stream->current_buffer_offset = 0;
 
-    return bs;
+    return stream;
+}
+
+
+
+void bitstream_destroy(struct bitstream *stream) {
+    free(stream->buffer);
+    free(stream);
 }
