@@ -8,6 +8,9 @@ int main(void) {
         (42 c'est 0x2A, ou 101010 en binaire)
     */
     bitstream_write_bits(stream, 42, 6, false);
+    bitstream_display(stream);
+    bitstream_write_bits(stream, 42, 9, false);
+    bitstream_display(stream);
 
     bitstream_destroy(stream);
 }

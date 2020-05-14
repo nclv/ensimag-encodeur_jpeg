@@ -1,0 +1,107 @@
+==135180== Memcheck, a memory error detector
+==135180== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==135180== Using Valgrind-3.15.0-608cb11914-20190413 and LibVEX; rerun with -h for copyright info
+==135180== Command: ./test_bitstream
+==135180== Parent PID: 4056
+==135180== 
+--135180-- 
+--135180-- Valgrind options:
+--135180--    --leak-check=full
+--135180--    --show-leak-kinds=all
+--135180--    --track-origins=yes
+--135180--    --verbose
+--135180--    --log-file=valgrind-out.txt
+--135180-- Contents of /proc/version:
+--135180--   Linux version 5.5.0-1parrot1-amd64 (team@parrotsec.org) (gcc version 9.3.0 (Debian 9.3.0-10)) #1 SMP Parrot 5.5.17-1parrot1 (2020-04-25)
+--135180-- 
+--135180-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-rdtscp-sse3-ssse3-avx
+--135180-- Page sizes: currently 4096, max supported 4096
+--135180-- Valgrind library directory: /usr/lib/x86_64-linux-gnu/valgrind
+--135180-- Reading syms from /home/n0way/Documents/Projets/encodeur-jpeg/src/test_bitstream
+--135180-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-2.30.so
+--135180--   Considering /usr/lib/debug/.build-id/8a/980b57d17a1e050e7646f9604e8a96824d3691.debug ..
+--135180--   .. build-id is valid
+--135180-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/memcheck-amd64-linux
+--135180--   Considering /usr/lib/debug/.build-id/80/5d052772dc3c48dbe4654094fcd7ddddfdb87a.debug ..
+--135180--   .. build-id is valid
+--135180--    object doesn't have a dynamic symbol table
+--135180-- Scheduler: using generic scheduler lock implementation.
+--135180-- Reading suppressions file: /usr/lib/x86_64-linux-gnu/valgrind/default.supp
+==135180== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-135180-by-n0way-on-???
+==135180== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-135180-by-n0way-on-???
+==135180== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-135180-by-n0way-on-???
+==135180== 
+==135180== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==135180== don't want to do, unless you know exactly what you're doing,
+==135180== or are doing some strange experiment):
+==135180==   /usr/lib/x86_64-linux-gnu/valgrind/../../bin/vgdb --pid=135180 ...command...
+==135180== 
+==135180== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==135180==   /path/to/gdb ./test_bitstream
+==135180== and then give GDB the following command
+==135180==   target remote | /usr/lib/x86_64-linux-gnu/valgrind/../../bin/vgdb --pid=135180
+==135180== --pid is optional if only one valgrind process is running
+==135180== 
+--135180-- REDIR: 0x401e5b0 (ld-linux-x86-64.so.2:strlen) redirected to 0x580c9a82 (vgPlain_amd64_linux_REDIR_FOR_strlen)
+--135180-- REDIR: 0x401e390 (ld-linux-x86-64.so.2:index) redirected to 0x580c9a9c (vgPlain_amd64_linux_REDIR_FOR_index)
+--135180-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_core-amd64-linux.so
+--135180--   Considering /usr/lib/debug/.build-id/1f/dbd27e1b18006ce47917636dcc0d35bd6729c5.debug ..
+--135180--   .. build-id is valid
+--135180-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so
+--135180--   Considering /usr/lib/debug/.build-id/0c/9a6e9d3907392310d89e285e3d6edaa3802ec5.debug ..
+--135180--   .. build-id is valid
+==135180== WARNING: new redirection conflicts with existing -- ignoring it
+--135180--     old: 0x0401e5b0 (strlen              ) R-> (0000.0) 0x580c9a82 vgPlain_amd64_linux_REDIR_FOR_strlen
+--135180--     new: 0x0401e5b0 (strlen              ) R-> (2007.0) 0x04839d80 strlen
+--135180-- REDIR: 0x401add0 (ld-linux-x86-64.so.2:strcmp) redirected to 0x483ae40 (strcmp)
+--135180-- REDIR: 0x401eaf0 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x483e860 (mempcpy)
+--135180-- Reading syms from /usr/lib/x86_64-linux-gnu/libc-2.30.so
+--135180--   Considering /usr/lib/debug/.build-id/40/f80fd23b36ba3a7e20f63d615dc1aca83f4262.debug ..
+--135180--   .. build-id is valid
+--135180-- REDIR: 0x48f9710 (libc.so.6:memmove) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f8ad0 (libc.so.6:strncpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f9a30 (libc.so.6:strcasecmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f8420 (libc.so.6:strcat) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f8b30 (libc.so.6:rindex) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48fadb0 (libc.so.6:rawmemchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x4912fe0 (libc.so.6:wmemchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x4912ba0 (libc.so.6:wcscmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f9870 (libc.so.6:mempcpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f96a0 (libc.so.6:bcmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f8a70 (libc.so.6:strncmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f84d0 (libc.so.6:strcmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f97d0 (libc.so.6:memset) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x4912b60 (libc.so.6:wcschr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f89d0 (libc.so.6:strnlen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f85a0 (libc.so.6:strcspn) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f9a80 (libc.so.6:strncasecmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f8540 (libc.so.6:strcpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f9bd0 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x49141c0 (libc.so.6:wcsnlen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x4912be0 (libc.so.6:wcscpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f8b70 (libc.so.6:strpbrk) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f8480 (libc.so.6:index) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f8990 (libc.so.6:strlen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48ff160 (libc.so.6:memrchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f9ad0 (libc.so.6:strcasecmp_l) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f9660 (libc.so.6:memchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x4912c80 (libc.so.6:wcslen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f8e10 (libc.so.6:strspn) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f99d0 (libc.so.6:stpncpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f9970 (libc.so.6:stpcpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48fadf0 (libc.so.6:strchrnul) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x48f9b20 (libc.so.6:strncasecmp_l) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--135180-- REDIR: 0x4907de0 (libc.so.6:__strrchr_sse2) redirected to 0x48397d0 (__strrchr_sse2)
+--135180-- REDIR: 0x48f4a10 (libc.so.6:malloc) redirected to 0x4836710 (malloc)
+--135180-- REDIR: 0x4907bd0 (libc.so.6:__strchrnul_sse2) redirected to 0x483e390 (strchrnul)
+--135180-- REDIR: 0x4911ef0 (libc.so.6:__mempcpy_sse2_unaligned) redirected to 0x483e4a0 (mempcpy)
+--135180-- REDIR: 0x49080d0 (libc.so.6:__strlen_sse2) redirected to 0x4839cc0 (__strlen_sse2)
+--135180-- REDIR: 0x48f5050 (libc.so.6:free) redirected to 0x4837940 (free)
+==135180== 
+==135180== HEAP SUMMARY:
+==135180==     in use at exit: 0 bytes in 0 blocks
+==135180==   total heap usage: 3 allocs, 3 frees, 5,664 bytes allocated
+==135180== 
+==135180== All heap blocks were freed -- no leaks are possible
+==135180== 
+==135180== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

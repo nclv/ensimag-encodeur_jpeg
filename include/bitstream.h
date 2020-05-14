@@ -39,6 +39,8 @@ extern void bitstream_write_bits(struct bitstream *stream,
                                  uint8_t nb_bits,
                                  bool is_marker);
 
+extern void bitstream_display(bitstream *stream);
+
 /*
     Force l'exécution des écritures en attente sur le bitstream, s'il en
     existe.
