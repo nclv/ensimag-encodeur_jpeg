@@ -30,7 +30,7 @@ matrice_cosinus_dct** creer_matrices_dtc(uint8_t n) {
   for (uint8_t i=0; i<n;i++) {
     for (uint8_t j = 0; j<n;j++) {
       // on remplit la matrice des matrices de cosinus utiles pour la dtc
-      matrices_dtc[i][j] = *create_i_j_matrix(i, j, n);
+      matrices_dtc[i][j] = *creer_matrice_i_j(i, j, n);
     }
   }
   return matrices_dtc;
@@ -38,7 +38,7 @@ matrice_cosinus_dct** creer_matrices_dtc(uint8_t n) {
 
 /*
 int main (void) {
-  matrice_cosinus_dct** matrices_dtc = create_matrix_of_matrix(8);
+  matrice_cosinus_dct** matrices_dtc = creer_matrices_dtc(8);
   for (uint8_t i=0; i<8;i++) {
     for (uint8_t j = 0; j<8;j++) {
       printf("matrice %i %i : \n", i, j);
