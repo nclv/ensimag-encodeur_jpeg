@@ -15,5 +15,5 @@ int main(void){
   }
 
   // zigzag de la matrice
-  tableau tab = zigzag2(matrice);
+  tableau tab = zigzag(matrice);
 }
