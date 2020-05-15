@@ -1,5 +1,5 @@
-#ifndef _ZIG_H
-#define _ZIG_H
+#ifndef _ZIGZAG_H
+#define _ZIGZAG_H
 
 #include <stdio.h>
 #include <stdlib.h>
