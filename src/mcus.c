@@ -1,16 +1,30 @@
 #include "mcus.h"
 
+uint32_t completer_bloc_verticale(image_ppm* image) {
+	uint32_t verticale = image->hauteur / TAILLE_BLOC;
+	
+	if (image->hauteur % TAILLE_BLOC != 0) {
+		verticale = (uint32_t)verticale + 1;
+	}
+	
+	return verticale;
+}
+
+uint32_t completer_bloc_horizontale(image_ppm* image) {
+	uint32_t horizontale = image->largeur / TAILLE_BLOC;
+	
+	if (image->largeur % TAILLE_BLOC != 0) {
+		horizontale = (uint32_t)horizontale + 1;
+	}
+
+	return horizontale;
+}
+
 MCUs* recuperer_blocs(image_ppm* image) {
     MCUs* matrice = (MCUs*)malloc(sizeof(MCUs));
-    uint32_t verticale = image->hauteur / TAILLE_BLOC;
-    uint32_t horizontale = image->largeur / TAILLE_BLOC;
 
-    if (image->hauteur % TAILLE_BLOC != 0) {
-        verticale = (uint32_t)verticale + 1;
-    }
-    if (image->largeur % TAILLE_BLOC != 0) {
-        horizontale = (uint32_t)horizontale + 1;
-    }
+    uint32_t verticale = completer_bloc_verticale(image);
+    uint32_t horizontale = completer_bloc_horizontale(image);
 
     matrice->nombre_blocs = (uint32_t)verticale * horizontale;
     matrice->blocs = (uint32_t**)malloc(matrice->nombre_blocs * sizeof(uint32_t*));

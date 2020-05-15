@@ -1,5 +1,5 @@
-#include "../include/mcus.h"
-#include "../include/ppm.h"
+#include "mcus.h"
+#include "ppm.h"
 
 int main(int argc, char** argv) {
     (void) argc;

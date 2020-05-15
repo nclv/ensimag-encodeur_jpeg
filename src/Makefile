@@ -33,7 +33,7 @@ test_conversion: conversion.o test_conversion.o
 	$(info Compilation de test_conversion)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
-test_mcus: mcus.o test_mcus.o
+test_mcus: mcus.o test_mcus.o ppm.o conversion.o
 	$(info )
 	$(info Compilation de test_mcus)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
@@ -48,10 +48,11 @@ test_bitstream: bitstream.o test_bitstream.o
 	$(info Compilation de test_bitstream)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
-test_dtc: dtc.o test_dtc.o
+test_dct: dtc.o test_dtc.o
 	$(info )
 	$(info Compilation de test_dtc)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS) -lm
+
 
 # this is a suffix replacement rule for building .o's from .c's
 # it uses automatic variables $<: the name of the prerequisite of
@@ -68,7 +69,5 @@ $(OBJS): %.o: %.c
 clean:
 	$(info Suppression des .su, .o, .h.gch)
 	rm -rf *.su *.o *~ $(INCLUDE)/*.h.gch
-
-clean_executable:
-	$(info Suppression des exécutables)
+	$(info Supression des exécutables)
 	rm -rf $(TARGET)
