@@ -10,7 +10,7 @@
    plus facile pour créer une matrice contenant toutes les matrice_cosinus_dtc
 */
 typedef struct matrice_cosinus_dct {
-  float** matrice;
+  double** matrice;
 } matrice_cosinus_dct;
 
 /*
@@ -30,12 +30,12 @@ extern matrice_cosinus_dct** creer_matrices_dtc(uint8_t n);
 
 
 /*
- * type: float** matrice_domaine_spatial, matrice_cosinus_dct** matrices_dtc, uint8_t n
- * rtype: float** matrice_domaine_frequentiel
+ * type: double** matrice_domaine_spatial, matrice_cosinus_dct** matrices_dtc, uint8_t n
+ * rtype: double** matrice_domaine_frequentiel
  * Applique la DTC à une matrice spatiale avec les coefficients précalculés par la fonction
    creer_matrices_dtc (et stockés dans matrices_dtc) et renvoie la matrice dans le domaine
    frequentiel qui lui correspond
 */
-extern float** DTC(float matrice_domaine_spatial[8][8], matrice_cosinus_dct** matrices_dtc, uint8_t n);
+extern double** DTC(double matrice_domaine_spatial[8][8], matrice_cosinus_dct** matrices_dtc, uint8_t n);
 
 #endif

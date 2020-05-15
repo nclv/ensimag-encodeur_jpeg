@@ -19,8 +19,12 @@ LDFLAGS = -Wl,--gc-sections -Wl,--print-gc-sections
 
 # typing 'make' will invoke the first target entry in the file 
 
-TARGET = test_conversion test_mcus test_ppm test_bitstream
-OBJS = conversion.o test_conversion.o mcus.o test_mcus.o ppm.o test_ppm.o bitstream.o test_bitstream.o
+TARGET = test_conversion test_mcus test_ppm test_bitstream test_dct
+OBJS = conversion.o test_conversion.o \
+ 	mcus.o test_mcus.o \
+	ppm.o test_ppm.o \
+	bitstream.o test_bitstream.o\
+	dtc.o test_dtc.o
 
 all: $(TARGET)
 
@@ -43,6 +47,11 @@ test_bitstream: bitstream.o test_bitstream.o
 	$(info )
 	$(info Compilation de test_bitstream)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
+
+test_dtc: dtc.o test_dtc.o
+	$(info )
+	$(info Compilation de test_dtc)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS) -lm
 
 # this is a suffix replacement rule for building .o's from .c's
 # it uses automatic variables $<: the name of the prerequisite of
