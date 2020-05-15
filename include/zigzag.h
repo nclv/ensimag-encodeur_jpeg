@@ -21,6 +21,4 @@ typedef struct bloc {
  */
 extern tableau zigzag1(bloc matrice);
 
-extern tableau zigzag2(bloc matrice);
-
 #endif
