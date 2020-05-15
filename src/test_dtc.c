@@ -11,7 +11,7 @@ int main (void) {
                 for (uint8_t y = 0; y<8; y++) {
                     printf("%f\t", (matrices_dtc[i][j]).matrice[x][y]);
                 }
-            printf("\n");
+                printf("\n");
             }
         }
     }
@@ -39,6 +39,6 @@ int main (void) {
         for (uint8_t y = 0; y<8; y++) {
             printf("%f\t", matrice_freq[x][y]);
         }
-    printf("\n");
+        printf("\n");
     }
 }
