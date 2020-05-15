@@ -19,7 +19,7 @@ LDFLAGS = -Wl,--gc-sections -Wl,--print-gc-sections
 
 # typing 'make' will invoke the first target entry in the file 
 
-TARGET = test_conversion test_mcus test_ppm test_bitstream test_dct
+TARGET = test_conversion test_mcus test_ppm test_bitstream test_dtc
 OBJS = conversion.o test_conversion.o \
  	mcus.o test_mcus.o \
 	ppm.o test_ppm.o \

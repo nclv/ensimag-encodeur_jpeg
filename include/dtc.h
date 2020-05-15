@@ -13,6 +13,8 @@ typedef struct matrice_cosinus_dct {
   double** matrice;
 } matrice_cosinus_dct;
 
+extern void dct(double input[8][8], int output[8][8]);
+
 /*
  * type: trois uint8_t
  * rtype: matrice_cosinus_dct*
