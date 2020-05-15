@@ -51,7 +51,7 @@ test_bitstream: bitstream.o test_bitstream.o
 test_dtc: dtc.o test_dtc.o
 	$(info )
 	$(info Compilation de test_dtc)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS) -lm
 
 # this is a suffix replacement rule for building .o's from .c's
 # it uses automatic variables $<: the name of the prerequisite of

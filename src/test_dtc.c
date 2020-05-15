@@ -16,7 +16,7 @@ int main(void) {
     }
     printf("\n");
     // test DTC sur une matrice 8x8 donnée
-    float matrice_spatiale[8][8] = {{16, 11, 10, 16, 24, 40, 51, 61},
+    double matrice_spatiale[8][8] = {{16, 11, 10, 16, 24, 40, 51, 61},
                                     {12, 12, 14, 19, 26, 58, 60, 55},
                                     {14, 13, 16, 24, 40, 57, 69, 56},
                                     {14, 17, 22, 29, 51, 87, 80, 62},
@@ -24,7 +24,7 @@ int main(void) {
                                     {24, 35, 55, 64, 81, 104, 113, 92},
                                     {49, 64, 78, 87, 103, 121, 120, 101},
                                     {72, 92, 95, 98, 112, 100, 103, 99}};
-    float** matrice_freq;
+    double** matrice_freq;
     matrice_freq = DTC(matrice_spatiale, matrices_dtc, 8);
     printf("matrice spatiale : \n");
     for (uint8_t x = 0; x < 8; x++) {
