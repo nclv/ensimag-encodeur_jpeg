@@ -11,6 +11,8 @@ typedef struct MCUs {
     uint32_t nombre_blocs;
 } MCUs;
 
+
+
 /*
  * type: image_ppm*
  * rtype: MCUs*
