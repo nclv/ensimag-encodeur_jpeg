@@ -1,6 +1,6 @@
 #include "../include/zigzag.h"
 
-tableau zigzag2(bloc matrice) {
+tableau zigzag(bloc matrice) {
 
   tableau tab;
   tab.tableau[0] = matrice.bloc[0][0];

@@ -1,5 +1,5 @@
-#ifndef _ZIG_H
-#define _ZIG_H
+#ifndef _ZIGZAG_H
+#define _ZIGZAG_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,6 +19,6 @@ typedef struct bloc {
  * L'opération de réorganisation en "zig-zag" permet de représenter un
  * bloc 8 x 8 sous forme de vecteur 1D de 64 coefficients
  */
-extern tableau zigzag1(bloc matrice);
+extern tableau zigzag(bloc matrice);
 
 #endif
