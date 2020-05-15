@@ -1,10 +1,11 @@
 #include "dtc.h"
 
-#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#define M_PI 3.14159265358979323846
 
 matrice_cosinus_dct* creer_matrice_i_j(uint8_t i, uint8_t j, uint8_t n) {
     matrice_cosinus_dct* matrice_i_j = (matrice_cosinus_dct*)malloc(sizeof(matrice_cosinus_dct));
