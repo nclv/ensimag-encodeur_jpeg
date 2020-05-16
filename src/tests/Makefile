@@ -9,8 +9,9 @@
 
 CC = gcc
 LD = gcc
-INCLUDE = ../include
+INCLUDE = ../../include
 INCLUDES = -I$(INCLUDE)
+SRC = ../
 
 # -O0 désactive les optimisations à la compilation
 # C'est utile pour débugger, par contre en "production"
@@ -21,47 +22,47 @@ LDFLAGS = -Wl,--gc-sections -Wl,--print-gc-sections
 # typing 'make' will invoke the first target entry in the file 
 
 TARGET = test_conversion test_mcus test_ppm test_bitstream test_dct test_zigzag test_quantification
-OBJS = conversion.o test_conversion.o \
- 	mcus.o test_mcus.o \
-	ppm.o test_ppm.o \
-	bitstream.o test_bitstream.o\
-	dct.o test_dct.o\
-	zigzag.o test_zigzag.o\
-	quantification.o test_quantification.o
+OBJS = $(SRC)conversion.o test_conversion.o \
+ 	$(SRC)mcus.o test_mcus.o \
+	$(SRC)ppm.o test_ppm.o \
+	$(SRC)bitstream.o test_bitstream.o\
+	$(SRC)dct.o test_dct.o\
+	$(SRC)zigzag.o test_zigzag.o\
+	$(SRC)quantification.o test_quantification.o
 
 all: $(TARGET)
 
-test_conversion: conversion.o test_conversion.o
+test_conversion: $(SRC)conversion.o test_conversion.o
 	$(info )
 	$(info Compilation de test_conversion)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
-test_mcus: mcus.o test_mcus.o ppm.o conversion.o
+test_mcus: $(SRC)mcus.o test_mcus.o ppm.o $(SRC)conversion.o
 	$(info )
 	$(info Compilation de test_mcus)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
-test_ppm: ppm.o test_ppm.o conversion.o
+test_ppm: $(SRC)ppm.o test_ppm.o $(SRC)conversion.o
 	$(info )
 	$(info Compilation de test_ppm)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
-test_bitstream: bitstream.o test_bitstream.o
+test_bitstream: $(SRC)bitstream.o test_bitstream.o
 	$(info )
 	$(info Compilation de test_bitstream)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
-test_dct: dct.o test_dct.o
+test_dct: $(SRC)dct.o test_dct.o
 	$(info )
 	$(info Compilation de test_dct)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
-test_zigzag: zigzag.o test_zigzag.o
+test_zigzag: $(SRC)zigzag.o test_zigzag.o
 	$(info )
 	$(info Compilation de test_zigzag)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
-test_quantification: quantification.o test_quantification.o
+test_quantification: $(SRC)quantification.o test_quantification.o
 	$(info )
 	$(info Compilation de test_quantification)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
@@ -82,7 +83,7 @@ clean_all: clean clean_executable
 
 clean:
 	$(info Suppression des .su, .o, .h.gch)
-	rm -rf *.su *.o *~ $(INCLUDE)/*.h.gch
+	rm -rf *.su *.o $(SRC)*.su $(SRC)*.o *~ $(INCLUDE)/*.h.gch
 
 clean_executable:
 	$(info Supression des exécutables)
