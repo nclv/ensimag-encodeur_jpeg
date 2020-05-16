@@ -34,116 +34,116 @@ void dct(int8_t input[8][8], int16_t output[8][8]) {
                      racine2sin6 = 1337 /* sqrt(2)*cos(2pi/16) << 10 */,
                      racine2 = 181; /* sqrt(2) << 7*/
 
-    int x0, x1, x2, x3, x4, x5, x6, x7, x8;
+    int a0, a1, a2, a3, a4, a5, a6, a7, a8;
 
     /* opérations sur les lignes */
     for (i = 0; i < 8; i++) {
-        x0 = (int)(input[0][i]);
-        x1 = (int)(input[1][i]);
-        x2 = (int)(input[2][i]);
-        x3 = (int)(input[3][i]);
-        x4 = (int)(input[4][i]);
-        x5 = (int)(input[5][i]);
-        x6 = (int)(input[6][i]);
-        x7 = (int)(input[7][i]);
+        a0 = (int)(input[0][i]);
+        a1 = (int)(input[1][i]);
+        a2 = (int)(input[2][i]);
+        a3 = (int)(input[3][i]);
+        a4 = (int)(input[4][i]);
+        a5 = (int)(input[5][i]);
+        a6 = (int)(input[6][i]);
+        a7 = (int)(input[7][i]);
 
         /* Stage 1 */
-        x8 = x7 + x0;
-        x0 -= x7;
-        x7 = x1 + x6;
-        x1 -= x6;
-        x6 = x2 + x5;
-        x2 -= x5;
-        x5 = x3 + x4;
-        x3 -= x4;
+        a8 = a7 + a0;
+        a0 -= a7;
+        a7 = a1 + a6;
+        a1 -= a6;
+        a6 = a2 + a5;
+        a2 -= a5;
+        a5 = a3 + a4;
+        a3 -= a4;
 
         /* Stage 2 */
-        x4 = x8 + x5;
-        x8 -= x5;
-        x5 = x7 + x6;
-        x7 -= x6;
-        x6 = cos1 * (x1 + x2);
-        x2 = (-cos7 - cos1) * x2 + x6;
-        x1 = (cos7 - cos1) * x1 + x6;
-        x6 = cos3 * (x0 + x3);
-        x3 = (-cos5 - cos3) * x3 + x6;
-        x0 = (cos5 - cos3) * x0 + x6;
+        a4 = a8 + a5;
+        a8 -= a5;
+        a5 = a7 + a6;
+        a7 -= a6;
+        a6 = cos1 * (a1 + a2);
+        a2 = (-cos7 - cos1) * a2 + a6;
+        a1 = (cos7 - cos1) * a1 + a6;
+        a6 = cos3 * (a0 + a3);
+        a3 = (-cos5 - cos3) * a3 + a6;
+        a0 = (cos5 - cos3) * a0 + a6;
 
         /* Stage 3 */
-        x6 = x4 + x5;
-        x4 -= x5;
-        x5 = racine2cos6 * (x7 + x8);
-        x7 = (-racine2sin6 - racine2cos6) * x7 + x5;
-        x8 = (racine2sin6 - racine2cos6) * x8 + x5;
-        x5 = x0 + x2;
-        x0 -= x2;
-        x2 = x3 + x1;
-        x3 -= x1;
+        a6 = a4 + a5;
+        a4 -= a5;
+        a5 = racine2cos6 * (a7 + a8);
+        a7 = (-racine2sin6 - racine2cos6) * a7 + a5;
+        a8 = (racine2sin6 - racine2cos6) * a8 + a5;
+        a5 = a0 + a2;
+        a0 -= a2;
+        a2 = a3 + a1;
+        a3 -= a1;
 
         /* Stage 4 and output */
-        rows[i][0] = x6;
-        rows[i][4] = x4;
-        rows[i][2] = (x8 >> 10); // redécallage de 10
-        rows[i][6] = (x7 >> 10);
-        rows[i][7] = ((x2 - x5) >> 10);
-        rows[i][1] = ((x2 + x5) >> 10);
-        rows[i][3] = ((x3 * racine2) >> 17); // redécallage de 10 + 7
-        rows[i][5] = ((x0 * racine2) >> 17);
+        rows[i][0] = a6;
+        rows[i][4] = a4;
+        rows[i][2] = (a8 >> 10); // redécallage de 10
+        rows[i][6] = (a7 >> 10);
+        rows[i][7] = ((a2 - a5) >> 10);
+        rows[i][1] = ((a2 + a5) >> 10);
+        rows[i][3] = ((a3 * racine2) >> 17); // redécallage de 10 + 7
+        rows[i][5] = ((a0 * racine2) >> 17);
     }
 
     /* opérations sur les colonnes */
     for (i = 0; i < 8; i++) {
-        x0 = rows[0][i];
-        x1 = rows[1][i];
-        x2 = rows[2][i];
-        x3 = rows[3][i];
-        x4 = rows[4][i];
-        x5 = rows[5][i];
-        x6 = rows[6][i];
-        x7 = rows[7][i];
+        a0 = rows[0][i];
+        a1 = rows[1][i];
+        a2 = rows[2][i];
+        a3 = rows[3][i];
+        a4 = rows[4][i];
+        a5 = rows[5][i];
+        a6 = rows[6][i];
+        a7 = rows[7][i];
 
         /* Stage 1 */
-        x8 = x7 + x0;
-        x0 -= x7;
-        x7 = x1 + x6;
-        x1 -= x6;
-        x6 = x2 + x5;
-        x2 -= x5;
-        x5 = x3 + x4;
-        x3 -= x4;
+        a8 = a7 + a0;
+        a0 -= a7;
+        a7 = a1 + a6;
+        a1 -= a6;
+        a6 = a2 + a5;
+        a2 -= a5;
+        a5 = a3 + a4;
+        a3 -= a4;
 
         /* Stage 2 */
-        x4 = x8 + x5;
-        x8 -= x5;
-        x5 = x7 + x6;
-        x7 -= x6;
-        x6 = cos1 * (x1 + x2);
-        x2 = (-cos7 - cos1) * x2 + x6;
-        x1 = (cos7 - cos1) * x1 + x6;
-        x6 = cos3 * (x0 + x3);
-        x3 = (-cos5 - cos3) * x3 + x6;
-        x0 = (cos5 - cos3) * x0 + x6;
+        a4 = a8 + a5;
+        a8 -= a5;
+        a5 = a7 + a6;
+        a7 -= a6;
+        a6 = cos1 * (a1 + a2);
+        a2 = (-cos7 - cos1) * a2 + a6;
+        a1 = (cos7 - cos1) * a1 + a6;
+        a6 = cos3 * (a0 + a3);
+        a3 = (-cos5 - cos3) * a3 + a6;
+        a0 = (cos5 - cos3) * a0 + a6;
 
         /* Stage 3 */
-        x6 = x4 + x5;
-        x4 -= x5;
-        x5 = racine2cos6 * (x7 + x8);
-        x7 = (-racine2sin6 - racine2cos6) * x7 + x5;
-        x8 = (racine2sin6 - racine2cos6) * x8 + x5;
-        x5 = x0 + x2;
-        x0 -= x2;
-        x2 = x3 + x1;
-        x3 -= x1;
+        a6 = a4 + a5;
+        a4 -= a5;
+        a5 = racine2cos6 * (a7 + a8);
+        a7 = (-racine2sin6 - racine2cos6) * a7 + a5;
+        a8 = (racine2sin6 - racine2cos6) * a8 + a5;
+        a5 = a0 + a2;
+        a0 -= a2;
+        a2 = a3 + a1;
+        a3 -= a1;
 
         /* Stage 4 and output */
         /* La racine de deux change les décallages */
-        output[0][i] = (int16_t)((x6 + 4) >> 3); // redécallage de 0 + (10 - 7), ajout de 1/4 pour un meilleur résultat
-        output[4][i] = (int16_t)((x4 + 4) >> 3);
-        output[2][i] = (int16_t)((x8 + 4096) >> 13); // redécallage de 10 + (10 - 7), ajout de 1/2
-        output[6][i] = (int16_t)((x7 + 4096) >> 13);
-        output[7][i] = (int16_t)((x2 - x5 + 4096) >> 13);
-        output[1][i] = (int16_t)((x2 + x5 + 4096) >> 13);
-        output[3][i] = (int16_t)(((x3 >> 8) * racine2 + 2048) >> 12); // redécallage de 17 - 8 + (10 - 7), ajout de 1/2
-        output[5][i] = (int16_t)(((x0 >> 8) * racine2 + 2048) >> 12);
+        output[0][i] = (int16_t)((a6 + 4) >> 3); // redécallage de 0 + (10 - 7), ajout de 1/4 pour un meilleur résultat
+        output[4][i] = (int16_t)((a4 + 4) >> 3);
+        output[2][i] = (int16_t)((a8 + 4096) >> 13); // redécallage de 10 + (10 - 7), ajout de 1/2
+        output[6][i] = (int16_t)((a7 + 4096) >> 13);
+        output[7][i] = (int16_t)((a2 - a5 + 4096) >> 13);
+        output[1][i] = (int16_t)((a2 + a5 + 4096) >> 13);
+        output[3][i] = (int16_t)(((a3 >> 8) * racine2 + 2048) >> 12); // redécallage de 17 - 8 + (10 - 7), ajout de 1/2
+        output[5][i] = (int16_t)(((a0 >> 8) * racine2 + 2048) >> 12);
     }
 }
