@@ -1,7 +1,6 @@
 #include "quantification.h"
 
-int main (void) {
-
+int main(void) {
     uint8_t matrice_spatiale[64] = {25, 11, 10, 16, 24, 40, 51, 30,
                                     12, 12, 14, 19, 26, 58, 60, 55,
                                     14, 13, 16, 24, 40, 57, 69, 56,
@@ -12,7 +11,7 @@ int main (void) {
                                     72, 92, 95, 98, 112, 100, 103, 99};
 
     uint8_t* quantified_zigzag = quantifier(matrice_spatiale, 0);
-    for (uint8_t i=0;i<64;i++) {
+    for (uint8_t i = 0; i < 64; i++) {
         printf("%i | ", quantified_zigzag[i]);
     }
 }
