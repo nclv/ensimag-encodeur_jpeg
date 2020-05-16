@@ -21,15 +21,14 @@ LDFLAGS = -Wl,--gc-sections -Wl,--print-gc-sections
 
 # typing 'make' will invoke the first target entry in the file 
 
-TARGET = test_conversion test_mcus test_ppm test_bitstream test_dct test_zigzag test_quantification
+TARGET = test_conversion test_ppm test_bitstream test_dct test_zigzag test_quantification
 OBJS = $(SRC)conversion.o test_conversion.o \
- 	$(SRC)mcus.o test_mcus.o \
 	$(SRC)ppm.o test_ppm.o \
 	$(SRC)bitstream.o test_bitstream.o\
 	$(SRC)dct.o test_dct.o\
 	$(SRC)zigzag.o test_zigzag.o\
-	$(SRC)quantification.o test_quantification.o
-
+	$(SRC)quantification.o test_quantification.o\
+	$(SRC)echantillonage.o
 all: $(TARGET)
 
 test_conversion: $(SRC)conversion.o test_conversion.o
@@ -37,12 +36,7 @@ test_conversion: $(SRC)conversion.o test_conversion.o
 	$(info Compilation de test_conversion)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
-test_mcus: $(SRC)mcus.o test_mcus.o ppm.o $(SRC)conversion.o
-	$(info )
-	$(info Compilation de test_mcus)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
-
-test_ppm: $(SRC)ppm.o test_ppm.o $(SRC)conversion.o
+test_ppm: $(SRC)ppm.o test_ppm.o $(SRC)conversion.o $(SRC)echantillonage.o
 	$(info )
 	$(info Compilation de test_ppm)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)

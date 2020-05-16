@@ -7,7 +7,7 @@ int main(int argc, char** argv) {
     strcpy(nom_fichier, argv[1]);
     printf("Nom du fichier : %s\n", nom_fichier);
 
-    image_ppm* image = lire_ppm(nom_fichier);
+    image_ppm* image = lire_ppm(nom_fichier, 4, 4);
 
     MCUs* matrice = recuperer_blocs(image);
     afficher_MCUs(matrice);

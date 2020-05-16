@@ -1,16 +1,15 @@
-#include "conversion.h"
-
 #include <assert.h>
 #include <stdint.h>
 
 #include "ppm.h"
+#include "conversion.h"
 
-void conversion(pixel* p) {
-    p->triplet_ycbcr[0] = (uint8_t)(0.299 * p->triplet_rgb[0] + 0.587 * p->triplet_rgb[1] + 0.114 * p->triplet_rgb[2]);
-    p->triplet_ycbcr[1] = (uint8_t)(-0.1687 * p->triplet_rgb[0] - 0.3313 * p->triplet_rgb[1] + 0.5000 * p->triplet_rgb[2] + 128);
-    p->triplet_ycbcr[2] = (uint8_t)(0.5000 * p->triplet_rgb[0] - 0.4187 * p->triplet_rgb[1] - 0.0813 * p->triplet_rgb[2] + 128);
+void conversion(pixel* p, uint8_t r, uint8_t g, uint8_t b) {
+    p->couleurs[Y] = (uint8_t)(0.299 * r + 0.587 * g + 0.114 * b);
+    p->couleurs[CB] = (uint8_t)(-0.1687 * r - 0.3313 * g + 0.5000 * b + 128);
+    p->couleurs[CR] = (uint8_t)(0.5000 * r - 0.4187 * g - 0.0813 * b + 128);
 
-    assert(0 <= p->triplet_ycbcr[0] && p->triplet_ycbcr[0] <= 255);
-    assert(0 <= p->triplet_ycbcr[1] && p->triplet_ycbcr[1] <= 255);
-    assert(0 <= p->triplet_ycbcr[2] && p->triplet_ycbcr[2] <= 255);
+    /*assert(0 <= p->couleurs[Y] <= 255);
+    assert(0 <= p->couleurs[CB] <= 255);
+    assert(0 <= p->couleurs[CR] <= 255);*/
 }

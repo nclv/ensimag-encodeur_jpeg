@@ -1,129 +1,159 @@
 #include "ppm.h"
-
-#include <stdint.h>
-
 #include "conversion.h"
 
-static image_ppm* lire_p5(FILE* fichier_ppm, image_ppm* image, uint8_t octet) {
-    for (size_t i = 0; i < image->hauteur; i++) {
-        for (size_t j = 0; j < image->largeur; j++) {
-            size_t couleur = fread(&octet, sizeof(uint8_t), 1, fichier_ppm);
-            if (couleur != 1) return NULL;
-            image->matrice[i][j].triplet_rgb[0] = octet;
-            image->matrice[i][j].triplet_rgb[1] = octet;
-            image->matrice[i][j].triplet_rgb[2] = octet;
-            conversion(&image->matrice[i][j]);
-        }
-    }
-	fclose(fichier_ppm);
-    return image;
+extern pixel** initialiser_matrice(uint32_t hauteur, uint32_t largeur, uint32_t nb_couleurs) {
+	/*Initialisation en hauteur*/
+	pixel** matrice = malloc(hauteur * sizeof(pixel*));
+	if (matrice == NULL) exit(EXIT_FAILURE);
+
+	/*Initialisation en largeur*/
+	for (size_t i = 0; i < hauteur; i++) {
+		matrice[i] = malloc(largeur * sizeof(pixel));	
+		if (matrice[i] == NULL)  exit(EXIT_FAILURE);
+	}
+
+	/*Initialisation des couleurs
+	 *1 pour P5
+	 *3 pour P6
+	 */
+	for (size_t i = 0; i < hauteur; i++) {
+		for(size_t j = 0; j < largeur; j++) {
+			matrice[i][j].couleurs = malloc(nb_couleurs * sizeof(uint8_t));
+			if (matrice[i][j].couleurs == NULL) exit(EXIT_FAILURE);
+		}
+	}
+
+	return matrice;
 }
 
-static image_ppm* lire_p6(FILE* fichier_ppm, image_ppm* image) {
-    for (size_t i = 0; i < image->hauteur; i++) {
-        for (size_t j = 0; j < image->largeur; j++) {
-            size_t r = fread(&image->matrice[i][j].triplet_rgb[0], sizeof(uint8_t), 1, fichier_ppm);
-            if (r != 1) return NULL;
-            size_t g = fread(&image->matrice[i][j].triplet_rgb[1], sizeof(uint8_t), 1, fichier_ppm);
-            if (g != 1) return NULL;
-            size_t b = fread(&image->matrice[i][j].triplet_rgb[2], sizeof(uint8_t), 1, fichier_ppm);
-            if (b != 1) return NULL;
-            conversion(&image->matrice[i][j]);
-        }
-    }
-	fclose(fichier_ppm);
-    return image;
+extern bool choix_remplissage(char mode[]) {
+	return (!strcmp(mode, NIVEAUX_GRIS));
 }
 
-image_ppm* lire_ppm(char* nom_fichier) {
-    /*Ouverture du fichier*/
-    FILE* fichier_ppm = fopen(nom_fichier, "r");
-    if (fichier_ppm == NULL) {
-        printf("ERREUR : Pointeur NULL dans lire_ppm() / Nom de fichier invalide\n");
-        return NULL;
-    }
+extern void parse_p5(image_ppm* image, FILE* fichier) {
+	uint8_t octet;
+	size_t erreur;
+	/*Lecture des pixels*/
+	for (size_t i = 0; i < image->hauteur; i++) {
+		for (size_t j = 0; j < image->largeur; j++) {
+			erreur = fread(&octet, sizeof(uint8_t), 1, fichier);
+			if (erreur != 1) exit(EXIT_FAILURE);
+			*image->matrice[i][j].couleurs = octet;
+		}
+	}
+	fclose(fichier);
+}
 
-    image_ppm* image = malloc(sizeof *image);
-    if (image == NULL) {
-        return NULL;
-    }
+extern void parse_p6(image_ppm* image, FILE* fichier) {
+	size_t erreur;
+	uint8_t r, g, b;
+	/*Lecture des pixels*/
+	for (size_t i = 0; i < image->hauteur; i++) {
+		for (size_t j = 0; j < image->largeur; j++) {
+			erreur = fread(&r, sizeof(uint8_t), 1, fichier);
+			if (erreur != 1) exit(EXIT_FAILURE);
+			erreur = fread(&g, sizeof(uint8_t), 1, fichier);
+			if (erreur != 1) exit(EXIT_FAILURE);
+			erreur = fread(&b, sizeof(uint8_t), 1, fichier);
+			if (erreur != 1) exit(EXIT_FAILURE);
+			conversion(&image->matrice[i][j], r, g, b);
+		}
+	}
+	fclose(fichier);
+}
 
-    /*Parsing en-tete*/
-    int mode = fscanf(fichier_ppm, "%2s", image->mode);
-    if (mode != 1) return NULL;
-    int largeur = fscanf(fichier_ppm, "%d", &image->largeur);
-    if (largeur != 1) return NULL;
-    int hauteur = fscanf(fichier_ppm, "%d", &image->hauteur);
-    if (hauteur != 1) return NULL;
-    int plage = fscanf(fichier_ppm, "%d", &image->nb_couleurs);
-    if (plage != 1) return NULL;
+extern image_ppm* lire_ppm(char* nom_fichier, uint8_t h, uint8_t v) {
+	/*Ouverture du fichier*/
+	FILE* fichier_ppm = fopen(nom_fichier, "r");
+	if (fichier_ppm == NULL) exit(EXIT_FAILURE);
 
-    /*
-		Initialisation de la matrice
-		Voir https://stackoverflow.com/a/15067120
-	*/
-    image->matrice = malloc(image->hauteur * sizeof *image->matrice);
-    if (image->matrice == NULL) {
-        free(image);
-        return NULL;
-    }
+	/*Initialisation de l'image*/
+	image_ppm* image = malloc(sizeof(image_ppm));
+	if (image == NULL) exit(EXIT_FAILURE);
 
-    image->matrice[0] = malloc(image->hauteur * image->largeur * sizeof image->matrice);
-    if (image->matrice[0] == NULL) {
-        free(image->matrice);
-        free(image);
-        return NULL;
-    }
+	/*Parsing en-tête*/
+	int mode = fscanf(fichier_ppm, "%2s", image->mode);
+    if (mode != 1) exit(EXIT_FAILURE);
+	int largeur = fscanf(fichier_ppm, "%d", &image->largeur);
+	if (largeur != 1) exit(EXIT_FAILURE);
+	int hauteur = fscanf(fichier_ppm, "%d", &image->hauteur);
+	if (hauteur != 1) exit(EXIT_FAILURE);
+	int plage = fscanf(fichier_ppm, "%d", &image->nb_couleurs);
+	if (plage != 1) exit(EXIT_FAILURE);
 
-    for (size_t i = 0; i < image->hauteur; i++) {
-        image->matrice[i] = image->matrice[0] + i * image->largeur;
-    }
+	/*Choix du sous-échantillonage*/
+	ech echantillonage = recuperer_echantillonage(h, v);
+	MCUs* bloc = recuperer_dimensions(echantillonage);
+	uint32_t hauteur_totale = recuperer_hauteur(bloc, image->hauteur);
+	uint32_t largeur_totale = recuperer_largeur(bloc, image->largeur);
 
-    /* Parsing \n (de valeur 10) */
-    /* Lecture d'un élément de donnée de uint8_t byte de long */
-    uint8_t octet;
-    size_t newline = fread(&octet, sizeof(uint8_t), 1, fichier_ppm);
-    if (newline != 1) return NULL;
+	/*Initialisation de la matrice
+	 *avec complétion des MCUs*/
+	image->matrice = initialiser_matrice(hauteur_totale, largeur_totale, image->nb_couleurs);
+	
+	/*Parsing \n (de valeur 10*/
+	uint8_t octet;
+	size_t erreur = fread(&octet, sizeof(uint8_t), 1, fichier_ppm);
+	if (erreur != 1) exit(EXIT_FAILURE);
 
-    /*Remplissage de la matrice
+	/*Remplissage de la matrice avec conversion en YCbCr
+	 *Complétion de la matrice en fonction de la taille des MCUs
 	 *Remarque : on fait le choix de ne pas traiter les if dans une seule double boucle
 	 *pour éviter les if à répétition
 	 */
-    if (!strcmp(image->mode, "P5")) {
-        return lire_p5(fichier_ppm, image, octet);
-    } else {
-        return lire_p6(fichier_ppm, image);
-    }
+	if (choix_remplissage(image->mode)) {
+		parse_p5(image, fichier_ppm);
+		completer_image_p5(image, hauteur_totale, largeur_totale);
+	}
+	else {
+		parse_p6(image, fichier_ppm);
+		completer_image_p6(image, hauteur_totale, largeur_totale);
+	}
+	
+	return image;
 }
 
-void liberer_image(image_ppm** image) {
-    free((*image)->matrice[0]);
-	(*image)->matrice[0] = NULL;
-    free((*image)->matrice);
-	(*image)->matrice = NULL;
-    free(*image);
-	*image = NULL;
+extern void completer_image_p5(image_ppm* image, uint32_t hauteur, uint32_t largeur) {
+	/*Complétion en hauteur*/
+	for (size_t i = image->hauteur; i < hauteur; i++) {
+		for (size_t j = 0; j < image->largeur; j++) {
+			*image->matrice[i][j].couleurs = *image->matrice[image->hauteur - 1][j].couleurs;	
+		}
+	}
+
+	/*Complétion en largeur*/
+	for (size_t i = 0; i < hauteur; i++) {
+		for (size_t j = image->largeur; j < largeur; j++) {
+			*image->matrice[i][j].couleurs = *image->matrice[i][image->largeur - 1].couleurs;
+		}
+	}
+
+	image->hauteur = hauteur;
+	image->largeur = largeur;
+
 }
 
-void afficher_image(image_ppm* image) {
-    printf("Mode %s\n", image->mode);
-    printf("Largeur: %d\n", image->largeur);
-    printf("Hauteur: %d\n", image->hauteur);
-    printf("Plage d'une composante de couleurs: %d\n", image->nb_couleurs);
-    printf("Affichage des pixels en rgb\n");
-    for (uint32_t i = 0; i < image->hauteur; i++) {
-        for (uint32_t j = 0; j < image->largeur; j++) {
-            printf("%i %i %i\n", image->matrice[i][j].triplet_rgb[0],
-                   image->matrice[i][j].triplet_rgb[1],
-                   image->matrice[i][j].triplet_rgb[2]);
-        }
-    }
-    printf("Affichage des pixels en ycbcr\n");
-    for (uint32_t i = 0; i < image->hauteur; i++) {
-        for (uint32_t j = 0; j < image->largeur; j++) {
-            printf("%i %i %i\n", image->matrice[i][j].triplet_ycbcr[0],
-                   image->matrice[i][j].triplet_ycbcr[1],
-                   image->matrice[i][j].triplet_ycbcr[2]);
-        }
-    }
+extern void completer_image_p6(image_ppm* image, uint32_t hauteur, uint32_t largeur) {
+	/*Complétion en hauteur*/
+	for (size_t i = image->hauteur; i < hauteur; i++) {
+		for (size_t j = 0; j < largeur; j++) {
+			image->matrice[i][j].couleurs[Y] = image->matrice[image->hauteur - 1][j].couleurs[Y];
+			image->matrice[i][j].couleurs[CB] = image->matrice[image->hauteur - 1][j].couleurs[CB];
+			image->matrice[i][j].couleurs[CR] = image->matrice[image->hauteur - 1][j].couleurs[CR];
+		}
+	}
+	
+	/*Complétion en largeur*/
+	for (size_t i = 0; i < hauteur; i++) {
+		for (size_t j = image->largeur; j < largeur; j++) {
+			image->matrice[i][j].couleurs[Y] = image->matrice[i][image->largeur - 1].couleurs[Y];
+			image->matrice[i][j].couleurs[CB] = image->matrice[i][image->largeur - 1].couleurs[CB];
+			image->matrice[i][j].couleurs[CR] = image->matrice[i][image->largeur - 1].couleurs[CR];
+		}
+	}
+
+	image->hauteur = hauteur;
+	image->largeur = largeur;
+
 }
+
