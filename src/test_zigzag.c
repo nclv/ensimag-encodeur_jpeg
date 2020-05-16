@@ -3,10 +3,10 @@
 #include "zigzag.h"
 
 int main(void) {
-    // Matrice 8x8 de nombres aléatoirs entre 0 et 255
-    uint8_t matrice[8][8];
+    // Matrice 8x8 de nombres aléatoires entre -1024 et 1023 (output DCT)
+    int16_t matrice[8][8];
 
-    uint8_t nb = 0;
+    int16_t nb = 0;
 
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
@@ -17,7 +17,7 @@ int main(void) {
         printf("\n");
     }
 
-    uint8_t tableau[64];
+    int16_t tableau[64];
     zigzag(matrice, tableau);
 
     // Affichage zigzag de la matrice

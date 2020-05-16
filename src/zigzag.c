@@ -1,6 +1,6 @@
 #include "zigzag.h"
 
-void zigzag(uint8_t matrice[8][8], uint8_t tableau[64]) {
+void zigzag(int16_t matrice[8][8], int16_t tableau[64]) {
 
     tableau[0] = matrice[0][0];
 
