@@ -1,17 +1,18 @@
 #ifndef _ZIGZAG_H
 #define _ZIGZAG_H
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 // tableau en sortie de la fonction zigzag
 typedef struct tableau {
-  uint8_t tableau[64];
+    uint8_t tableau[64];
 } tableau;
 
 // bloc 8x8
 typedef struct bloc {
-  uint8_t bloc[8][8];
+    uint8_t bloc[8][8];
 } bloc;
 
 /* type : uint8_t
