@@ -9,6 +9,6 @@
  * rtype: uint8_t* de taille 64 (au format zigzag)
  * Creer et retourne le bloc zigzag quantifie
 */
-extern uint8_t* quantifier(uint8_t* bloc_zigzag_a_quantifier, uint8_t flag_composante);
+extern void quantifier(int16_t matrice_frequentiel_zigzag[8][8], uint8_t quantification_table[64]);
 
 #endif /* _QUANTIFICATION_H_ */

@@ -1,22 +1,14 @@
 #include "quantification.h"
 
+#include <stddef.h>
 #include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-#include "qtables.h"
-
-uint8_t* quantifier(uint8_t* bloc_zigzag_a_quantifier, uint8_t flag_composante) {
-    uint8_t* quantified_zigzag = malloc(64 * sizeof(uint8_t));
-    if (flag_composante == 0) {  // Y
-        for (uint8_t i = 0; i < 64; i++) {
-            quantified_zigzag[i] = (uint8_t)((float)bloc_zigzag_a_quantifier[i] / quantification_table_Y[i]);
+void quantifier(int16_t matrice_frequentiel_zigzag[8][8], uint8_t quantification_table[64]) {
+    size_t inc = 0;
+    for (size_t i = 0; i < 8; i++) {
+        for (size_t j = 0; j < 8; j++) {
+            matrice_frequentiel_zigzag[i][j] = (int16_t)(matrice_frequentiel_zigzag[i][j] / quantification_table[i + j + inc]);
         }
-    } else {  // Cb ou Cr
-        for (uint8_t i = 0; i < 64; i++) {
-            quantified_zigzag[i] = (uint8_t)((float)bloc_zigzag_a_quantifier[i] / quantification_table_CbCr[i]);
-        }
+        inc += 7;
     }
-    return quantified_zigzag;
 }
