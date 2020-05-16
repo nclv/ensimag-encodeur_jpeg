@@ -1,10 +1,11 @@
 # UTILISATION
 # make
-# make clean
 # make test_conversion équivalent à gcc conversion.c test_conversion.c -I../include -o test_conversion
 # make test_mcus
 # ...
+# make clean
 # make clean_executable
+# make clean_all
 
 CC = gcc
 LD = gcc
@@ -19,12 +20,13 @@ LDFLAGS = -Wl,--gc-sections -Wl,--print-gc-sections
 
 # typing 'make' will invoke the first target entry in the file 
 
-TARGET = test_conversion test_mcus test_ppm test_bitstream test_dct
+TARGET = test_conversion test_mcus test_ppm test_bitstream test_dct test_zigzag
 OBJS = conversion.o test_conversion.o \
  	mcus.o test_mcus.o \
 	ppm.o test_ppm.o \
 	bitstream.o test_bitstream.o\
-	dct.o test_dct.o
+	dct.o test_dct.o\
+	zigzag.o test_zigzag.o
 
 all: $(TARGET)
 
@@ -51,8 +53,12 @@ test_bitstream: bitstream.o test_bitstream.o
 test_dct: dct.o test_dct.o
 	$(info )
 	$(info Compilation de test_dct)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS) -lm
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
+test_zigzag: zigzag.o test_zigzag.o
+	$(info )
+	$(info Compilation de test_zigzag)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
 # this is a suffix replacement rule for building .o's from .c's
 # it uses automatic variables $<: the name of the prerequisite of
