@@ -10,6 +10,6 @@
  * L'opération de réorganisation en "zig-zag" permet de représenter un
  * bloc 8 x 8 sous forme de vecteur 1D de 64 coefficients
  */
-extern uint8_t *zigzag(uint8_t matrice[8][8]);
+extern void zigzag(uint8_t matrice[8][8], uint8_t tableau[64]);
 
 #endif
