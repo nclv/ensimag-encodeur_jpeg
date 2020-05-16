@@ -19,12 +19,12 @@ LDFLAGS = -Wl,--gc-sections -Wl,--print-gc-sections
 
 # typing 'make' will invoke the first target entry in the file 
 
-TARGET = test_conversion test_mcus test_ppm test_bitstream test_dtc
+TARGET = test_conversion test_mcus test_ppm test_bitstream test_dct
 OBJS = conversion.o test_conversion.o \
  	mcus.o test_mcus.o \
 	ppm.o test_ppm.o \
 	bitstream.o test_bitstream.o\
-	dtc.o test_dtc.o
+	dct.o test_dct.o
 
 all: $(TARGET)
 
@@ -48,9 +48,9 @@ test_bitstream: bitstream.o test_bitstream.o
 	$(info Compilation de test_bitstream)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
-test_dct: dtc.o test_dtc.o
+test_dct: dct.o test_dct.o
 	$(info )
-	$(info Compilation de test_dtc)
+	$(info Compilation de test_dct)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS) -lm
 
 
@@ -69,5 +69,7 @@ $(OBJS): %.o: %.c
 clean:
 	$(info Suppression des .su, .o, .h.gch)
 	rm -rf *.su *.o *~ $(INCLUDE)/*.h.gch
+
+clean_executable:
 	$(info Supression des exécutables)
 	rm -rf $(TARGET)
