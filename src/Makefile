@@ -64,7 +64,9 @@ $(OBJS): %.o: %.c
 	$(info Compilation des fichiers .o)
 	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@ 
 
-.PHONY: clean clean_executable
+.PHONY: clean clean_executable clean_all
+
+clean_all: clean clean_executable
 
 clean:
 	$(info Suppression des .su, .o, .h.gch)

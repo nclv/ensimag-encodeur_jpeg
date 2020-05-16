@@ -1,4 +1,4 @@
-#include "../include/zigzag.h"
+#include "zigzag.h"
 
 tableau zigzag(bloc matrice) {
     tableau tab;
