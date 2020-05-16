@@ -17,7 +17,7 @@ int main(void) {
         printf("\n");
     }
 
-    int16_t tableau[64];
+    int16_t tableau[64] = {0};
     zigzag(matrice, tableau);
 
     // Affichage zigzag de la matrice

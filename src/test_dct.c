@@ -13,7 +13,7 @@ int main(void) {
                                      {49, 64, 78, 87, 103, 121, 120, 101},
                                      {72, 92, 95, 98, 112, 100, 103, 99}};
 
-    printf("Matrice dans le domaine spatial");
+    printf("Matrice dans le domaine spatial\n");
     for (uint8_t x = 0; x < 8; x++) {
         for (uint8_t y = 0; y < 8; y++) {
             printf("%d\t", matrice_spatiale[y][x]);
@@ -24,7 +24,7 @@ int main(void) {
     int16_t dct_buf[8][8];
     dct(matrice_spatiale, dct_buf);
 
-    printf("Matrice dans le domaine fréquentiel");
+    printf("Matrice dans le domaine fréquentiel\n");
     for (uint8_t x = 0; x < 8; x++) {
         for (uint8_t y = 0; y < 8; y++) {
             printf("%d\t", dct_buf[y][x]);
