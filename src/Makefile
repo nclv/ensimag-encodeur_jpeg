@@ -20,13 +20,14 @@ LDFLAGS = -Wl,--gc-sections -Wl,--print-gc-sections
 
 # typing 'make' will invoke the first target entry in the file 
 
-TARGET = test_conversion test_mcus test_ppm test_bitstream test_dct test_zigzag
+TARGET = test_conversion test_mcus test_ppm test_bitstream test_dct test_zigzag test_quantification
 OBJS = conversion.o test_conversion.o \
  	mcus.o test_mcus.o \
 	ppm.o test_ppm.o \
 	bitstream.o test_bitstream.o\
 	dct.o test_dct.o\
-	zigzag.o test_zigzag.o
+	zigzag.o test_zigzag.o\
+	quantification.o test_quantification.o
 
 all: $(TARGET)
 
@@ -58,6 +59,11 @@ test_dct: dct.o test_dct.o
 test_zigzag: zigzag.o test_zigzag.o
 	$(info )
 	$(info Compilation de test_zigzag)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
+
+test_quantification: quantification.o test_quantification.o
+	$(info )
+	$(info Compilation de test_quantification)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
 # this is a suffix replacement rule for building .o's from .c's

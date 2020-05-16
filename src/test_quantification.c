@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "quantification.h"
 
 int main(void) {
@@ -14,4 +16,5 @@ int main(void) {
     for (uint8_t i = 0; i < 64; i++) {
         printf("%i | ", quantified_zigzag[i]);
     }
+    printf("\n");
 }
