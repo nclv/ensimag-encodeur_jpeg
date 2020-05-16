@@ -1,7 +1,42 @@
 #include "zigzag.h"
 
-void zigzag(int16_t matrice[8][8], int16_t tableau[64]) {
+#include <stdint.h>
+#include <string.h>
+#include <stdlib.h>
 
+uint8_t indices[64] = {
+    0, 1, 8, 16, 9, 2, 3, 10,
+    17, 24, 32, 25, 18, 11, 4, 5,
+    12, 19, 26, 33, 40, 48, 41, 34,
+    27, 20, 13, 6, 7, 14, 21, 28,
+    35, 42, 49, 56, 57, 50, 43, 36,
+    29, 22, 15, 23, 30, 37, 44, 51,
+    58, 59, 52, 45, 38, 31, 39, 46,
+    53, 60, 61, 54, 47, 55, 62, 63};
+
+void zigzag_inplace(int16_t matrice[8][8]) {
+    /* Allocation plus complexe avec une matrice */
+    int16_t tmp[64];
+
+    /* Copie de la matrice */
+    size_t inc1 = 0;
+    for (size_t i = 0; i < 8; i++) {
+        for (size_t j = 0; j < 8; j++) {
+            tmp[i + j + inc1] = matrice[i][j];
+        }
+        inc1 += 7;
+    }
+
+    size_t inc = 0;
+    for (size_t i = 0; i < 8; i++) {
+        for (size_t j = 0; j < 8; j++) {
+            matrice[i][j] = tmp[indices[i + j + inc]];
+        }
+        inc += 7;
+    }
+}
+
+void zigzag(int16_t matrice[8][8], int16_t tableau[64]) {
     tableau[0] = matrice[0][0];
 
     tableau[1] = matrice[0][1];

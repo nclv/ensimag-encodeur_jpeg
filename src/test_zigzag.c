@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdio.h>
 
 #include "zigzag.h"
 
@@ -20,13 +21,22 @@ int main(void) {
     int16_t tableau[64] = {0};
     zigzag(matrice, tableau);
 
-    // Affichage zigzag de la matrice
-    int inc = 0;
+    printf("Affichage zigzag de la matrice\n");
+    int inc = 8;
+    for (int i = 0; i < 64; i += inc) {
+        for (int j = 0; j < 8; j++) {
+            printf("%d ", tableau[i + j]);
+        }
+        printf("\n");
+    }
+
+    zigzag_inplace(matrice);
+
+    printf("Affichage zigzag_inplace de la matrice\n");
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
-            printf("%d ", tableau[i + j + inc]);
+            printf("%u ", matrice[i][j]);
         }
-        inc += 7;
         printf("\n");
     }
 }
