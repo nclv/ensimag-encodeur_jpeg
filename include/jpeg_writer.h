@@ -51,7 +51,13 @@ typedef struct jpeg {
     uint32_t image_width;
     uint8_t nb_components;
 
-    uint8_t sampling_factor;
+    /* 
+        4 bits : Facteur d'échantillonnage (sampling factor) horizontal, de 1 à 4
+        4 bits : Facteur d'échantillonnage (sampling factor) vertical, de 1 à 4
+    */
+    uint8_t y_sampling_factor;
+    uint8_t cb_sampling_factor;
+    uint8_t cr_sampling_factor;
 
     struct huff_table *huffman_table;
     uint8_t *quantization_tables;
