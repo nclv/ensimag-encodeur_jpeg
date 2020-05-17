@@ -3,6 +3,12 @@
 
 #include <stdint.h>
 
-extern void dct(int8_t input[8][8], int16_t output[8][8]);
+
+/*
+ * type: deux uint8_t -- DC courante et précédente
+ * rtype: uint32_t valeur d'encodage de DC
+ * Encode la valeur DC de la MCU courante et renvoie la valeur encodée
+*/
+extern uint32_t encoderDC(uint8_t MCU_courante_DC, uint8_t MCU_ancienne_DC);
 
 #endif
