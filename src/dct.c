@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-/* 
+/*
     Pour tester ses valeurs : https://asecuritysite.com/comms/dct2
 
     On a un écart corrigé en appliquant -1.
@@ -11,13 +11,13 @@
     Liens à consulter:
         https://www-ljk.imag.fr/membres/Valerie.Perrier/SiteWeb/node9.html
 
-    On n'invente rien ici. On utilise l'algorithme de Arai, Agui, et Nakajima (AAC) 
+    On n'invente rien ici. On utilise l'algorithme de Arai, Agui, et Nakajima (AAC)
     pour une transformée de 8 points. Tout d'abord sur les lignes puis sur les colonnes.
     En utilisant la représentation d'un nombre en virgule fixe (voir https://github.com/prtsh/aan_dct/blob/master/8point_DCT_AAN.c).
 
-    Implémentation de 
+    Implémentation de
     https://opencores.org/websvn/filedetails?repname=dct_idct&path=%2Fdct_idct%2Ftrunk%2Fdct%2FDoc%2Fdct_um.pdf
-    
+
     Simplifié à 3 phases.
     Les phases e, f, sa sont incluses dans les 3 premières.
     On transforme les produits de cosinus en sommes:
@@ -25,12 +25,19 @@
         2cos(pi/4)cos(pi/16) = cos(5pi/16) + cos(3pi/16)
         2cos(pi/4)cos(3pi/16) = cos(7pi/16) + cos(3pi/16)
 
-    The output array of DCT coefficients contains integers; 
+    The output array of DCT coefficients contains integers;
     these can range from -1024 to 1023.
 */
 void dct(int8_t input[8][8], int16_t output[8][8]) {
     size_t i;
     int tmp[8][8];
+
+    /* Offset du tableau d'entrée pour améliorer le codage par magnitude */
+    for (uint8_t k = 0; k<8; k++) {
+      for (uint8_t l = 0; l<8; l++) {
+        input[k][l] -= 128;
+      }
+    }
 
     /* Approximations entières des valeurs des cosinus */
     static const int cos1 = 1004, /* cos(pi/16) << 10 */
@@ -75,7 +82,7 @@ void dct(int8_t input[8][8], int16_t output[8][8]) {
         a5 = a3 + a4;
         a3 -= a4;
 
-        /* Etape 2 
+        /* Etape 2
         on remplace :
             c0 par a4,
             c3 par a5,
@@ -93,12 +100,12 @@ void dct(int8_t input[8][8], int16_t output[8][8]) {
         a3 = (-cos5 - cos3) * a3 + a6;
         a0 = (cos5 - cos3) * a0 + a6;
 
-        /* Etape 3 
+        /* Etape 3
         on remplace :
             d0 par a6,
             d1 par a4,
             d3 par a5 / racine2cos6,
-            
+
             f7 par a5,
             f3 par a2,
         */
