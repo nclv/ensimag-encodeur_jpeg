@@ -1,5 +1,31 @@
 #include "jpeg_writer.h"
 
+jpeg *jpeg_create(void) {
+    jpeg *jpg = malloc(sizeof *jpg);
+    if (jpg == NULL) return NULL;
+
+    jpg->huffman_table = malloc(sizeof jpg->huffman_table);
+    if (jpg->huffman_table == NULL) {
+        free(jpg);
+        return NULL;
+    }
+
+    jpg->jpeg_filename = NULL;
+    jpg->ppm_filename = NULL;
+
+    jpg->image_height = NULL;
+    jpg->image_width = NULL;
+    jpg->nb_components = NULL;
+
+    jpg->sampling_factor = NULL;
+    jpg->quantization_tables = NULL;
+}
+
+void jpeg_destroy(jpeg *jpg) {
+    free(jpg->huffman_table);
+    free(jpg);
+}
+
 bitstream *jpeg_get_bitstream(jpeg *jpg) {
     return bitstream_create(jpg->jpeg_filename);
 }
