@@ -1,6 +1,5 @@
 #include "jpeg_writer.h"
 
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-
+bitstream *jpeg_get_bitstream(jpeg *jpg) {
+    return bitstream_create(jpg->jpeg_filename);
+}
