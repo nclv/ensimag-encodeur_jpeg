@@ -15,8 +15,6 @@ void offset(int8_t input[8][8]) {
 /*
     Pour tester ses valeurs : https://asecuritysite.com/comms/dct2
 
-    On a un écart corrigé en appliquant -1.
-
     Liens à consulter:
         https://www-ljk.imag.fr/membres/Valerie.Perrier/SiteWeb/node9.html
 
