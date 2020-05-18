@@ -4,14 +4,14 @@
 
 #include "htables.h"
 
-Node *Node_create(void) {
+Node *Node_create(uint8_t symbol) {
     Node *node = malloc(sizeof *node);
     if (node == NULL) return NULL;
 
     node->left = NULL;
     node->right = NULL;
 
-    node->symbol = NULL;
+    node->symbol = symbol;
 
     return node;
 }
@@ -20,7 +20,7 @@ huff_table *huffman_table_create(uint8_t *nb_symb_per_lengths, uint8_t *symbols,
     huff_table *ht = malloc(sizeof *ht);
     if (ht == NULL) return NULL;
 
-    ht->root = Node_create();
+    ht->root = Node_create(NULL);
     if (ht->root = NULL) {
         free(ht);
         return NULL;
@@ -42,15 +42,27 @@ void Node_destroy(Node **node) {
     }
 }
 
+Node *fill_largeur(uint8_t *symbols, Node *root, uint8_t count, uint8_t nb_symbols, uint8_t *nb_symb_per_lengths, size_t i, uint8_t nb_symbols_level) {
+    if (count < nb_symbols) {
+        nb_symbols_level += nb_symb_per_lengths[i];
+        // noeud vide si étage rempli
+        if (count > nb_symbols_level) {
+            Node *temp = Node_create(NULL);
+        } else {
+            Node *temp = Node_create(symbols[count]);
+        }
+        root = temp;
+
+        root->left = fill_largeur(symbols, root->left, 2 * count + 1, nb_symbols, nb_symb_per_lengths, i + 1, nb_symbols_level);
+        root->right = fill_largeur(symbols, root->right, 2 * count + 2, nb_symbols, nb_symb_per_lengths, i + 1, nb_symbols_level);
+    }
+    return root;
+}
+
 huff_table *huffman_table_build(uint8_t *nb_symb_per_lengths, uint8_t *symbols, uint8_t nb_symbols) {
     huff_table *ht = huffman_table_create(nb_symb_per_lengths, symbols, nb_symbols);
 
-    /* La longueur correspond aux différents niveaux de l'arbre */
-    for (uint8_t longueur = 0; longueur < 16; longueur++) {
-        for (uint8_t i = 0; i < nb_symb_per_lengths[longueur]; i += 2) {
-            printf("");
-        }
-    }
+    Node *root = fill_largeur(symbols, ht->root, 0, nb_symbols, nb_symb_per_lengths, 0, 0);
 }
 
 void huffman_table_destroy(huff_table *ht) {
