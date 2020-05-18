@@ -2,7 +2,7 @@
 #include <math.h>
 #include <stdint.h>
 
-uint32_t encoderDC(uint8_t MCU_courante_DC, uint8_t MCU_ancienne_DC) {
+uint32_t encoderDC(int8_t MCU_courante_DC, int8_t MCU_ancienne_DC) {
     int8_t valeur_a_encoder = (int8_t) MCU_courante_DC - MCU_ancienne_DC;
     uint8_t est_negatif = 0;
     /* on rend valeur_a_encoder positif et on met à jour le flag negatif */
@@ -18,7 +18,9 @@ uint32_t encoderDC(uint8_t MCU_courante_DC, uint8_t MCU_ancienne_DC) {
     uint32_t indice = valeur_sup - valeur_a_encoder;
     if (est_negatif == 0) {
         uint32_t valeur_inf = (uint32_t) pow(2, classe_magnitude-1);
-        indice = valeur_a_encoder - valeur_inf + valeur_sup - valeur_inf + 1;
+        indice = valeur_a_encoder;
     }
+    /* la classe devra être codée sur 4 bits et l'indice sur la valeur de la classe bits
+       par exemple, 77 classe 7 indice 77 donc sur 4 + 7 = 11 bits */
     printf("classe : %i\nindice : %i\n", classe_magnitude, indice);
 }

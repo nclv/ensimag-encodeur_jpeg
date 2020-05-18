@@ -9,6 +9,6 @@
  * rtype: uint32_t valeur d'encodage de DC
  * Encode la valeur DC de la MCU courante et renvoie la valeur encodée
 */
-extern uint32_t encoderDC(uint8_t MCU_courante_DC, uint8_t MCU_ancienne_DC);
+extern uint32_t encoderDC(int8_t MCU_courante_DC, int8_t MCU_ancienne_DC);
 
 #endif
