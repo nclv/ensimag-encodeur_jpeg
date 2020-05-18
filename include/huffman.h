@@ -1,7 +1,7 @@
 #ifndef HUFFMAN_H
 #define HUFFMAN_H
 
-#include <jpeg_writer.h>
+#include "jpeg_writer.h"
 
 /* Type opaque représentant un arbre de Huffman. */
 struct huff_table;

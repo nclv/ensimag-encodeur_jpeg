@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include <jpeg_writer.h>
+#include "jpeg_writer.h"
 
 /*
     Table des nombres de symboles par longueur, indexée par le type
