@@ -91,7 +91,7 @@ extern image_ppm* lire_ppm(char* nom_fichier, uint8_t h, uint8_t v) {
 	 *avec complétion des MCUs*/
 	image->matrice = initialiser_matrice(hauteur_totale, largeur_totale, image->nb_couleurs);
 	
-	/*Parsing \n (de valeur 10*/
+	/*Parsing \n (de valeur 10) */
 	uint8_t octet;
 	size_t erreur = fread(&octet, sizeof(uint8_t), 1, fichier_ppm);
 	if (erreur != 1) exit(EXIT_FAILURE);
