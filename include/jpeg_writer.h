@@ -60,7 +60,8 @@ typedef struct jpeg {
     uint8_t cr_sampling_factor;
 
     struct huff_table *huffman_table;
-    uint8_t *quantization_tables;
+    uint8_t *Y_quantization_table;
+    uint8_t *CbCr_quantization_table;
 } jpeg;
 
 /* Type opaque représentant un arbre de Huffman. */

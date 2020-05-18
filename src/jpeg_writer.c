@@ -27,7 +27,8 @@ jpeg *jpeg_create(void) {
     jpg->cb_sampling_factor = 0;
     jpg->cr_sampling_factor = 0;
 
-    jpg->quantization_tables = NULL;
+    jpg->Y_quantization_table = NULL;
+    jpg->CbCr_quantization_table = NULL;
 
     return jpg;
 }
@@ -72,7 +73,7 @@ void jpeg_write_header(jpeg *jpg) {
     fwrite("\x00\x67", 2, 1, file);  // longueur de la section sur 2 octets
     fwrite("\x00", 1, 1, file);      // precision and quantization table index
     for (size_t i = 0; i < 64; i++) {
-        fwrite(&quantification_table_Y[indices_zigzag[i]], 1, 1, file);
+        fwrite(&jpg->Y_quantization_table[indices_zigzag[i]], 1, 1, file);
     }
 
     /* Cb / Cr quantization table */
@@ -80,7 +81,7 @@ void jpeg_write_header(jpeg *jpg) {
     fwrite("\x00\x67", 2, 1, file);  // longueur de la section sur 2 octets
     fwrite("\x01", 1, 1, file);      // precision and quantization table index
     for (size_t i = 0; i < 64; i++) {
-        fwrite(&quantification_table_CbCr[indices_zigzag[i]], 1, 1, file);
+        fwrite(&jpg->CbCr_quantization_table[indices_zigzag[i]], 1, 1, file);
     }
 
     fwrite(SOF0, sizeof SOF0, 1, file);
@@ -134,6 +135,16 @@ void jpeg_write_header(jpeg *jpg) {
     fclose(file);
 }
 
+void jpeg_write_footer(jpeg *jpg) {
+    FILE *file = fopen(jpg->jpeg_filename, "wb");
+
+    const unsigned char EOI[2] = {0xff, 0xd9};
+
+    fwrite(EOI, sizeof EOI, 1, file);   
+
+    fclose(file); 
+}
+
 /* Setters and getters */
 
 void jpeg_set_ppm_filename(jpeg *jpg, const char *ppm_filename) {
@@ -174,4 +185,30 @@ void jpeg_set_nb_components(jpeg *jpg, uint8_t nb_components) {
 
 uint8_t jpeg_get_nb_components(jpeg *jpg) {
     return jpg->nb_components;
+}
+
+void jpeg_set_quantization_table(jpeg *jpg, enum color_component cc, uint8_t *qtable) {
+    switch(cc) {
+        case Y:
+            jpg->Y_quantization_table = qtable;
+            break;
+        case Cb:
+        case Cr:
+            jpg->CbCr_quantization_table = qtable;
+            break;
+        default:
+            return;
+    }
+}
+
+uint8_t *jpeg_get_quantization_table(jpeg *jpg, enum color_component cc) {
+    switch(cc) {
+        case Y:
+            return jpg->Y_quantization_table;
+        case Cb:
+        case Cr:
+            return jpg->CbCr_quantization_table;
+        default:
+            return NULL;
+    }
 }
