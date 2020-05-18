@@ -43,7 +43,9 @@ void Node_destroy(Node **node) {
 }
 
 Node *fill_largeur(uint8_t *symbols, Node *root, uint8_t count, uint8_t nb_symbols, uint8_t *nb_symb_per_lengths, size_t i, uint8_t nb_symbols_level) {
-    if (count < nb_symbols) {
+    // test pour ne rajouter des noeuds qu'aux noeuds avec le champ symbol == NULL
+    // surement mal placé
+    if (count < nb_symbols && root->symbol != NULL) {
         nb_symbols_level += nb_symb_per_lengths[i];
         // noeud vide si étage rempli
         if (count > nb_symbols_level) {
@@ -52,7 +54,6 @@ Node *fill_largeur(uint8_t *symbols, Node *root, uint8_t count, uint8_t nb_symbo
             Node *temp = Node_create(symbols[count]);
         }
         root = temp;
-
         root->left = fill_largeur(symbols, root->left, 2 * count + 1, nb_symbols, nb_symb_per_lengths, i + 1, nb_symbols_level);
         root->right = fill_largeur(symbols, root->right, 2 * count + 2, nb_symbols, nb_symb_per_lengths, i + 1, nb_symbols_level);
     }
