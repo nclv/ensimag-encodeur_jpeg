@@ -3,6 +3,15 @@
 #include <stddef.h>
 #include <stdint.h>
 
+void offset(int8_t input[8][8]) {
+    /* Offset du tableau d'entrée pour améliorer le codage par magnitude */
+    for (uint8_t k = 0; k < 8; k++) {
+        for (uint8_t l = 0; l < 8; l++) {
+            input[k][l] -= 128;
+        }
+    }
+}
+
 /*
     Pour tester ses valeurs : https://asecuritysite.com/comms/dct2
 
@@ -32,21 +41,14 @@ void dct(int8_t input[8][8], int16_t output[8][8]) {
     size_t i;
     int tmp[8][8];
 
-    /* Offset du tableau d'entrée pour améliorer le codage par magnitude */
-    for (uint8_t k = 0; k<8; k++) {
-      for (uint8_t l = 0; l<8; l++) {
-        input[k][l] -= 128;
-      }
-    }
-
     /* Approximations entières des valeurs des cosinus */
     static const int cos1 = 1004, /* cos(pi/16) << 10 */
-                     cos7 = 200, /* cos(7pi/16) << 10 */
-                     cos3 = 851, /* cos(3pi/16) << 10 */
-                     cos5 = 569, /* cos(5pi/16) << 10 */
-                     racine2cos6 = 554, /* sqrt(2)*cos(6pi/16) << 10 */
-                     racine2cos2 = 1337, /* sqrt(2)*cos(2pi/16) << 10 */
-                     racine2 = 181; /* sqrt(2) << 7 */
+        cos7 = 200,               /* cos(7pi/16) << 10 */
+        cos3 = 851,               /* cos(3pi/16) << 10 */
+        cos5 = 569,               /* cos(5pi/16) << 10 */
+        racine2cos6 = 554,        /* sqrt(2)*cos(6pi/16) << 10 */
+        racine2cos2 = 1337,       /* sqrt(2)*cos(2pi/16) << 10 */
+        racine2 = 181;            /* sqrt(2) << 7 */
 
     int a0, a1, a2, a3, a4, a5, a6, a7, a8;
 
@@ -112,8 +114,8 @@ void dct(int8_t input[8][8], int16_t output[8][8]) {
         a6 = a4 + a5;
         a4 -= a5;
         a5 = racine2cos6 * (a7 + a8);
-        a7 = (-racine2cos2 - racine2cos6) * a7 + a5; // f3
-        a8 = (racine2cos2 - racine2cos6) * a8 + a5; // f2
+        a7 = (-racine2cos2 - racine2cos6) * a7 + a5;  // f3
+        a8 = (racine2cos2 - racine2cos6) * a8 + a5;   // f2
 
         a5 = a0 + a2;
         a0 -= a2;
