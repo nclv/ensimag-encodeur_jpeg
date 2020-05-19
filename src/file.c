@@ -15,7 +15,6 @@ void liberer_file(file **f) {
         element *current = (*f)->first;
         while ((current = (*f)->first) != NULL) {
             (*f)->first = (*f)->first->next;
-            free(current->node);
             free(current);
         }
     }
