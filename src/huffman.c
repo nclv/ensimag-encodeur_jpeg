@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 
+#include "file.h"
 #include "htables.h"
 
 Node *Node_create(uint8_t symbol) {
@@ -14,6 +15,15 @@ Node *Node_create(uint8_t symbol) {
     node->symbol = symbol;
 
     return node;
+}
+
+void Node_destroy(Node **node) {
+    if ((*node) != NULL) {
+        Node_destroy((*node)->left);
+        Node_destroy((*node)->right);
+        free(*node);
+        *node = NULL;
+    }
 }
 
 huff_table *huffman_table_create(uint8_t *nb_symb_per_lengths, uint8_t *symbols, uint8_t nb_symbols) {
@@ -33,37 +43,40 @@ huff_table *huffman_table_create(uint8_t *nb_symb_per_lengths, uint8_t *symbols,
     return ht;
 }
 
-void Node_destroy(Node **node) {
-    if ((*node) != NULL) {
-        Node_destroy((*node)->left);
-        Node_destroy((*node)->right);
-        free(*node);
-        *node = NULL;
-    }
-}
-
-Node *fill_largeur(uint8_t *symbols, Node *root, uint8_t count, uint8_t nb_symbols, uint8_t *nb_symb_per_lengths, size_t i, uint8_t nb_symbols_level) {
-    // test pour ne rajouter des noeuds qu'aux noeuds avec le champ symbol == NULL
-    // surement mal placé
-    if (count < nb_symbols && root->symbol != NULL) {
-        nb_symbols_level += nb_symb_per_lengths[i];
-        // noeud vide si étage rempli
-        if (count > nb_symbols_level) {
-            Node *temp = Node_create(NULL);
-        } else {
-            Node *temp = Node_create(symbols[count]);
-        }
-        root = temp;
-        root->left = fill_largeur(symbols, root->left, 2 * count + 1, nb_symbols, nb_symb_per_lengths, i + 1, nb_symbols_level);
-        root->right = fill_largeur(symbols, root->right, 2 * count + 2, nb_symbols, nb_symb_per_lengths, i + 1, nb_symbols_level);
-    }
-    return root;
-}
-
 huff_table *huffman_table_build(uint8_t *nb_symb_per_lengths, uint8_t *symbols, uint8_t nb_symbols) {
     huff_table *ht = huffman_table_create(nb_symb_per_lengths, symbols, nb_symbols);
 
-    Node *root = fill_largeur(symbols, ht->root, 0, nb_symbols, nb_symb_per_lengths, 0, 0);
+    /* Allocation d'une file */
+    file *f = creer_file();
+
+    /* Root node and children */
+    ht->root->left = Node_create(NULL);
+    if (ht->root->left == NULL) return NULL;
+    ht->root->right = Node_create(NULL);
+    if (ht->root->right == NULL) return NULL;
+
+    enfiler(f, ht->root->left);
+    enfiler(f, ht->root->right);
+
+    uint8_t level = 0;
+    uint8_t nb_symbols_level_cumulee = nb_symb_per_lengths[level];
+
+    uint8_t count = 0;
+    while (count < nb_symbols) {
+        Node *node = defiler(f);
+        if (count == nb_symbols_level_cumulee) {
+            /* On crè les 2 noeuds vide suivant s'il n'y a pas de symboles sur ce niveau */
+            node->left = Node_create(NULL);
+            node->right = Node_create(NULL);
+            enfiler(f, node->left);
+            enfiler(f, node->right);
+            nb_symbols_level_cumulee += nb_symb_per_lengths[level++];
+        } else {
+            /* On assigne un symbole au noeud */
+            node->symbol = symbols[count++];
+        }
+    }
+    liberer_file(&f);
 }
 
 void huffman_table_destroy(huff_table *ht) {

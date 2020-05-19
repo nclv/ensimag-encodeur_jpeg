@@ -16,6 +16,9 @@ typedef struct Node {
     Node *left, *right;
 } Node;
 
+extern Node *Node_create(uint8_t symbol);
+extern void Node_destroy(Node **node);
+
 /*
     Construit un arbre de Huffman à partir d'une table
     de symboles comme présenté en section 2.10.1 du sujet.
