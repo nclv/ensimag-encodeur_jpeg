@@ -3,6 +3,11 @@
 
 #include "jpeg_writer.h"
 
+typedef struct Node {
+    uint8_t symbol;
+    struct Node *left, *right;
+} Node;
+
 /* Type opaque représentant un arbre de Huffman. */
 typedef struct huff_table {
     uint8_t *nb_symb_per_lengths;
@@ -10,11 +15,6 @@ typedef struct huff_table {
     uint8_t nb_symbols;
     Node *root;
 } huff_table;
-
-typedef struct Node {
-    uint8_t symbol;
-    Node *left, *right;
-} Node;
 
 extern Node *Node_create(uint8_t symbol);
 extern void Node_destroy(Node **node);

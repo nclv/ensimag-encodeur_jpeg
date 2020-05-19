@@ -5,7 +5,7 @@
 
 typedef struct element {
     Node *node;
-    element *next;
+    struct element *next;
 } element;
 
 typedef struct file {

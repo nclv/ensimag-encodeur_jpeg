@@ -1,11 +1,12 @@
 #include "file.h"
 
-#include <stdlib.h>
+#include <stdio.h>
 
 file *creer_file(void) {
     file *f = malloc(sizeof *f);
     if (f == NULL) return NULL;
 
+    f->first = NULL;
     return f;
 }
 
@@ -23,10 +24,10 @@ void liberer_file(file **f) {
 }
 
 void enfiler(file *f, Node *node) {
-    if (f == NULL) return NULL;
+    if (f == NULL) exit(EXIT_FAILURE);
 
     element *new = malloc(sizeof *new);
-    if (new == NULL) return NULL;
+    if (new == NULL) exit(EXIT_FAILURE);
 
     new->node = node;
     new->next = NULL;
@@ -52,7 +53,6 @@ Node *defiler(file *f) {
         element *out = f->first;
         node = out->node;
         f->first = out->next;
-        free(out->node);
         free(out);
     }
     return node;
@@ -61,11 +61,13 @@ Node *defiler(file *f) {
 void afficher_file(file *f) {
     if (f->first != NULL) {
         element *current = f->first;
+        printf("%i\n", current->node->symbol);
         while (current->next != NULL) {
-            printf("%i", current->node->symbol);
             current = current->next;
+            printf("%i\n", current->node->symbol);
         }
+
     } else {
-        printf("File vide.");
+        printf("File vide.\n");
     }
 }
