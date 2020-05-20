@@ -82,18 +82,6 @@ static void huffman_node_encode(const Node *node, uint8_t *code, uint8_t indice,
             power += 1;
         }
 
-        /* Code fonctionnel avec uint8_t **codes en paramètres */
-        // codes[index] = malloc(indice * sizeof *codes[index]);
-        // for (size_t j = 0; j < indice; j++) {
-        //     codes[index][j] = code[j];
-        // }
-
-        /* Affichage des codes stockés */
-        // for (size_t j = 0; j < indice; j++) {
-        //     printf("%u", codes[index][j]);
-        // }
-        // printf("\n");
-
         index++;
     }
 }
@@ -163,14 +151,6 @@ huff_table *huffman_table_build(uint8_t *nb_symb_per_lengths, uint8_t *symbols, 
     for (size_t j = 0; j < nb_symbols; j++) {
         printf("%u\n", codes[j]);
     }
-
-    /* Affichage des codes */
-    // for (size_t j = 0; j < nb_symbols; j++) {
-    //     for (size_t i = 0; i < lengths[j]; i++) {
-    //         printf("%u", codes[j][i]);
-    //     }
-    //     printf("\n");
-    // }
 
     return ht;
 }
