@@ -5,20 +5,23 @@
 
 typedef struct Node {
     uint8_t symbol;
+    uint8_t numero;
     struct Node *left, *right;
 } Node;
 
 /* Type opaque représentant un arbre de Huffman. */
 typedef struct huff_table {
-    uint8_t *nb_symb_per_lengths;
     uint8_t *symbols;
-    uint8_t **codes;
+    uint8_t *nb_symb_per_lengths;
+    uint8_t nb_symbols;
+    uint8_t *lengths;
+    uint32_t *codes;
     Node *root;
 } huff_table;
 
 extern Node *Node_create(const uint8_t symbol);
 extern void Node_destroy(Node **node);
-extern void afficher_huffman_tree(const Node *root);
+extern void afficher_huff_table(huff_table *ht);
 
 /*
     Construit un arbre de Huffman à partir d'une table
