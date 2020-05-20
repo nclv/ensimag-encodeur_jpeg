@@ -12,12 +12,13 @@ typedef struct Node {
 typedef struct huff_table {
     uint8_t *nb_symb_per_lengths;
     uint8_t *symbols;
+    uint8_t **codes;
     Node *root;
 } huff_table;
 
-extern Node *Node_create(uint8_t symbol);
+extern Node *Node_create(const uint8_t symbol);
 extern void Node_destroy(Node **node);
-extern void afficher_huffman_tree(Node *root);
+extern void afficher_huffman_tree(const Node *root);
 
 /*
     Construit un arbre de Huffman à partir d'une table

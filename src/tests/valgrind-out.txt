@@ -1,106 +1,268 @@
-==37403== Memcheck, a memory error detector
-==37403== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==37403== Using Valgrind-3.15.0-608cb11914-20190413 and LibVEX; rerun with -h for copyright info
-==37403== Command: ./test_huffman
-==37403== Parent PID: 2166
-==37403== 
---37403-- 
---37403-- Valgrind options:
---37403--    --leak-check=full
---37403--    --show-leak-kinds=all
---37403--    --track-origins=yes
---37403--    --verbose
---37403--    --log-file=valgrind-out.txt
---37403-- Contents of /proc/version:
---37403--   Linux version 5.5.0-1parrot1-amd64 (team@parrotsec.org) (gcc version 9.3.0 (Debian 9.3.0-10)) #1 SMP Parrot 5.5.17-1parrot1 (2020-04-25)
---37403-- 
---37403-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-rdtscp-sse3-ssse3-avx
---37403-- Page sizes: currently 4096, max supported 4096
---37403-- Valgrind library directory: /usr/lib/x86_64-linux-gnu/valgrind
---37403-- Reading syms from /home/n0way/Documents/Projets/encodeur-jpeg/src/tests/test_huffman
---37403-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-2.30.so
---37403--   Considering /usr/lib/debug/.build-id/8a/980b57d17a1e050e7646f9604e8a96824d3691.debug ..
---37403--   .. build-id is valid
---37403-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/memcheck-amd64-linux
---37403--   Considering /usr/lib/debug/.build-id/80/5d052772dc3c48dbe4654094fcd7ddddfdb87a.debug ..
---37403--   .. build-id is valid
---37403--    object doesn't have a dynamic symbol table
---37403-- Scheduler: using generic scheduler lock implementation.
---37403-- Reading suppressions file: /usr/lib/x86_64-linux-gnu/valgrind/default.supp
-==37403== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-37403-by-n0way-on-???
-==37403== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-37403-by-n0way-on-???
-==37403== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-37403-by-n0way-on-???
-==37403== 
-==37403== TO CONTROL THIS PROCESS USING vgdb (which you probably
-==37403== don't want to do, unless you know exactly what you're doing,
-==37403== or are doing some strange experiment):
-==37403==   /usr/lib/x86_64-linux-gnu/valgrind/../../bin/vgdb --pid=37403 ...command...
-==37403== 
-==37403== TO DEBUG THIS PROCESS USING GDB: start GDB like this
-==37403==   /path/to/gdb ./test_huffman
-==37403== and then give GDB the following command
-==37403==   target remote | /usr/lib/x86_64-linux-gnu/valgrind/../../bin/vgdb --pid=37403
-==37403== --pid is optional if only one valgrind process is running
-==37403== 
---37403-- REDIR: 0x401e5b0 (ld-linux-x86-64.so.2:strlen) redirected to 0x580c9a82 (vgPlain_amd64_linux_REDIR_FOR_strlen)
---37403-- REDIR: 0x401e390 (ld-linux-x86-64.so.2:index) redirected to 0x580c9a9c (vgPlain_amd64_linux_REDIR_FOR_index)
---37403-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_core-amd64-linux.so
---37403--   Considering /usr/lib/debug/.build-id/1f/dbd27e1b18006ce47917636dcc0d35bd6729c5.debug ..
---37403--   .. build-id is valid
---37403-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so
---37403--   Considering /usr/lib/debug/.build-id/0c/9a6e9d3907392310d89e285e3d6edaa3802ec5.debug ..
---37403--   .. build-id is valid
-==37403== WARNING: new redirection conflicts with existing -- ignoring it
---37403--     old: 0x0401e5b0 (strlen              ) R-> (0000.0) 0x580c9a82 vgPlain_amd64_linux_REDIR_FOR_strlen
---37403--     new: 0x0401e5b0 (strlen              ) R-> (2007.0) 0x04839d80 strlen
---37403-- REDIR: 0x401add0 (ld-linux-x86-64.so.2:strcmp) redirected to 0x483ae40 (strcmp)
---37403-- REDIR: 0x401eaf0 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x483e860 (mempcpy)
---37403-- Reading syms from /usr/lib/x86_64-linux-gnu/libc-2.30.so
---37403--   Considering /usr/lib/debug/.build-id/40/f80fd23b36ba3a7e20f63d615dc1aca83f4262.debug ..
---37403--   .. build-id is valid
---37403-- REDIR: 0x48f8710 (libc.so.6:memmove) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f7ad0 (libc.so.6:strncpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f8a30 (libc.so.6:strcasecmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f7420 (libc.so.6:strcat) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f7b30 (libc.so.6:rindex) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f9db0 (libc.so.6:rawmemchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x4911fe0 (libc.so.6:wmemchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x4911ba0 (libc.so.6:wcscmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f8870 (libc.so.6:mempcpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f86a0 (libc.so.6:bcmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f7a70 (libc.so.6:strncmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f74d0 (libc.so.6:strcmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f87d0 (libc.so.6:memset) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x4911b60 (libc.so.6:wcschr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f79d0 (libc.so.6:strnlen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f75a0 (libc.so.6:strcspn) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f8a80 (libc.so.6:strncasecmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f7540 (libc.so.6:strcpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f8bd0 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x49131c0 (libc.so.6:wcsnlen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x4911be0 (libc.so.6:wcscpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f7b70 (libc.so.6:strpbrk) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f7480 (libc.so.6:index) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f7990 (libc.so.6:strlen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48fe160 (libc.so.6:memrchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f8ad0 (libc.so.6:strcasecmp_l) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f8660 (libc.so.6:memchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x4911c80 (libc.so.6:wcslen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f7e10 (libc.so.6:strspn) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f89d0 (libc.so.6:stpncpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f8970 (libc.so.6:stpcpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f9df0 (libc.so.6:strchrnul) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x48f8b20 (libc.so.6:strncasecmp_l) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---37403-- REDIR: 0x4906de0 (libc.so.6:__strrchr_sse2) redirected to 0x48397d0 (__strrchr_sse2)
---37403-- REDIR: 0x48f3a10 (libc.so.6:malloc) redirected to 0x4836710 (malloc)
---37403-- REDIR: 0x48f4050 (libc.so.6:free) redirected to 0x4837940 (free)
---37403-- REDIR: 0x4906bd0 (libc.so.6:__strchrnul_sse2) redirected to 0x483e390 (strchrnul)
---37403-- REDIR: 0x4910ef0 (libc.so.6:__mempcpy_sse2_unaligned) redirected to 0x483e4a0 (mempcpy)
-==37403== 
-==37403== HEAP SUMMARY:
-==37403==     in use at exit: 0 bytes in 0 blocks
-==37403==   total heap usage: 24 allocs, 24 frees, 1,480 bytes allocated
-==37403== 
-==37403== All heap blocks were freed -- no leaks are possible
-==37403== 
-==37403== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==47707== Memcheck, a memory error detector
+==47707== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==47707== Using Valgrind-3.15.0-608cb11914-20190413 and LibVEX; rerun with -h for copyright info
+==47707== Command: ./test_huffman
+==47707== Parent PID: 2166
+==47707== 
+--47707-- 
+--47707-- Valgrind options:
+--47707--    --leak-check=full
+--47707--    --show-leak-kinds=all
+--47707--    --track-origins=yes
+--47707--    --verbose
+--47707--    --log-file=valgrind-out.txt
+--47707-- Contents of /proc/version:
+--47707--   Linux version 5.5.0-1parrot1-amd64 (team@parrotsec.org) (gcc version 9.3.0 (Debian 9.3.0-10)) #1 SMP Parrot 5.5.17-1parrot1 (2020-04-25)
+--47707-- 
+--47707-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-rdtscp-sse3-ssse3-avx
+--47707-- Page sizes: currently 4096, max supported 4096
+--47707-- Valgrind library directory: /usr/lib/x86_64-linux-gnu/valgrind
+--47707-- Reading syms from /home/n0way/Documents/Projets/encodeur-jpeg/src/tests/test_huffman
+--47707-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-2.30.so
+--47707--   Considering /usr/lib/debug/.build-id/8a/980b57d17a1e050e7646f9604e8a96824d3691.debug ..
+--47707--   .. build-id is valid
+--47707-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/memcheck-amd64-linux
+--47707--   Considering /usr/lib/debug/.build-id/80/5d052772dc3c48dbe4654094fcd7ddddfdb87a.debug ..
+--47707--   .. build-id is valid
+--47707--    object doesn't have a dynamic symbol table
+--47707-- Scheduler: using generic scheduler lock implementation.
+--47707-- Reading suppressions file: /usr/lib/x86_64-linux-gnu/valgrind/default.supp
+==47707== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-47707-by-n0way-on-???
+==47707== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-47707-by-n0way-on-???
+==47707== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-47707-by-n0way-on-???
+==47707== 
+==47707== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==47707== don't want to do, unless you know exactly what you're doing,
+==47707== or are doing some strange experiment):
+==47707==   /usr/lib/x86_64-linux-gnu/valgrind/../../bin/vgdb --pid=47707 ...command...
+==47707== 
+==47707== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==47707==   /path/to/gdb ./test_huffman
+==47707== and then give GDB the following command
+==47707==   target remote | /usr/lib/x86_64-linux-gnu/valgrind/../../bin/vgdb --pid=47707
+==47707== --pid is optional if only one valgrind process is running
+==47707== 
+--47707-- REDIR: 0x401e5b0 (ld-linux-x86-64.so.2:strlen) redirected to 0x580c9a82 (vgPlain_amd64_linux_REDIR_FOR_strlen)
+--47707-- REDIR: 0x401e390 (ld-linux-x86-64.so.2:index) redirected to 0x580c9a9c (vgPlain_amd64_linux_REDIR_FOR_index)
+--47707-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_core-amd64-linux.so
+--47707--   Considering /usr/lib/debug/.build-id/1f/dbd27e1b18006ce47917636dcc0d35bd6729c5.debug ..
+--47707--   .. build-id is valid
+--47707-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so
+--47707--   Considering /usr/lib/debug/.build-id/0c/9a6e9d3907392310d89e285e3d6edaa3802ec5.debug ..
+--47707--   .. build-id is valid
+==47707== WARNING: new redirection conflicts with existing -- ignoring it
+--47707--     old: 0x0401e5b0 (strlen              ) R-> (0000.0) 0x580c9a82 vgPlain_amd64_linux_REDIR_FOR_strlen
+--47707--     new: 0x0401e5b0 (strlen              ) R-> (2007.0) 0x04839d80 strlen
+--47707-- REDIR: 0x401add0 (ld-linux-x86-64.so.2:strcmp) redirected to 0x483ae40 (strcmp)
+--47707-- REDIR: 0x401eaf0 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x483e860 (mempcpy)
+--47707-- Reading syms from /usr/lib/x86_64-linux-gnu/libc-2.30.so
+--47707--   Considering /usr/lib/debug/.build-id/40/f80fd23b36ba3a7e20f63d615dc1aca83f4262.debug ..
+--47707--   .. build-id is valid
+--47707-- REDIR: 0x48f8710 (libc.so.6:memmove) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f7ad0 (libc.so.6:strncpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f8a30 (libc.so.6:strcasecmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f7420 (libc.so.6:strcat) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f7b30 (libc.so.6:rindex) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f9db0 (libc.so.6:rawmemchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x4911fe0 (libc.so.6:wmemchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x4911ba0 (libc.so.6:wcscmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f8870 (libc.so.6:mempcpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f86a0 (libc.so.6:bcmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f7a70 (libc.so.6:strncmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f74d0 (libc.so.6:strcmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f87d0 (libc.so.6:memset) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x4911b60 (libc.so.6:wcschr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f79d0 (libc.so.6:strnlen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f75a0 (libc.so.6:strcspn) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f8a80 (libc.so.6:strncasecmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f7540 (libc.so.6:strcpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f8bd0 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x49131c0 (libc.so.6:wcsnlen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x4911be0 (libc.so.6:wcscpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f7b70 (libc.so.6:strpbrk) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f7480 (libc.so.6:index) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f7990 (libc.so.6:strlen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48fe160 (libc.so.6:memrchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f8ad0 (libc.so.6:strcasecmp_l) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f8660 (libc.so.6:memchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x4911c80 (libc.so.6:wcslen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f7e10 (libc.so.6:strspn) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f89d0 (libc.so.6:stpncpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f8970 (libc.so.6:stpcpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f9df0 (libc.so.6:strchrnul) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x48f8b20 (libc.so.6:strncasecmp_l) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--47707-- REDIR: 0x4906de0 (libc.so.6:__strrchr_sse2) redirected to 0x48397d0 (__strrchr_sse2)
+--47707-- REDIR: 0x48f3a10 (libc.so.6:malloc) redirected to 0x4836710 (malloc)
+--47707-- REDIR: 0x48f4050 (libc.so.6:free) redirected to 0x4837940 (free)
+--47707-- REDIR: 0x4906bd0 (libc.so.6:__strchrnul_sse2) redirected to 0x483e390 (strchrnul)
+--47707-- REDIR: 0x4910ef0 (libc.so.6:__mempcpy_sse2_unaligned) redirected to 0x483e4a0 (mempcpy)
+==47707== Invalid write of size 8
+==47707==    at 0x10943F: huffman_node_encode (huffman.c:74)
+==47707==    by 0x109357: huffman_node_encode (huffman.c:61)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x1096D7: huffman_table_build (huffman.c:133)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707==  Address 0x4a30858 is 0 bytes after a block of size 40 alloc'd
+==47707==    at 0x483677F: malloc (vg_replace_malloc.c:309)
+==47707==    by 0x109676: huffman_table_build (huffman.c:128)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707== 
+==47707== Invalid write of size 8
+==47707==    at 0x10943C: huffman_node_encode (huffman.c:74)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x1096D7: huffman_table_build (huffman.c:133)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707==  Address 0x4a30858 is 0 bytes after a block of size 40 alloc'd
+==47707==    at 0x483677F: malloc (vg_replace_malloc.c:309)
+==47707==    by 0x109676: huffman_table_build (huffman.c:128)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707== 
+==47707== Invalid write of size 8
+==47707==    at 0x10943F: huffman_node_encode (huffman.c:74)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x1096D7: huffman_table_build (huffman.c:133)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707==  Address 0x4a30860 is 8 bytes after a block of size 40 alloc'd
+==47707==    at 0x483677F: malloc (vg_replace_malloc.c:309)
+==47707==    by 0x109676: huffman_table_build (huffman.c:128)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707== 
+==47707== Invalid read of size 1
+==47707==    at 0x109709: huffman_table_build (huffman.c:137)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707==  Address 0x0 is not stack'd, malloc'd or (recently) free'd
+==47707== 
+==47707== 
+==47707== Process terminating with default action of signal 11 (SIGSEGV)
+==47707==  Access not within mapped region at address 0x0
+==47707==    at 0x109709: huffman_table_build (huffman.c:137)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707==  If you believe this happened as a result of a stack
+==47707==  overflow in your program's main thread (unlikely but
+==47707==  possible), you can try to increase the size of the
+==47707==  main thread stack using the --main-stacksize= flag.
+==47707==  The main thread stack size used in this run was 8388608.
+==47707== 
+==47707== HEAP SUMMARY:
+==47707==     in use at exit: 416 bytes in 18 blocks
+==47707==   total heap usage: 30 allocs, 12 frees, 1,608 bytes allocated
+==47707== 
+==47707== Searching for pointers to 18 not-freed blocks
+==47707== Checked 74,680 bytes
+==47707== 
+==47707== 24 bytes in 1 blocks are still reachable in loss record 1 of 8
+==47707==    at 0x483677F: malloc (vg_replace_malloc.c:309)
+==47707==    by 0x10918B: Node_create (huffman.c:11)
+==47707==    by 0x1092BC: huffman_table_create (huffman.c:45)
+==47707==    by 0x109484: huffman_table_build (huffman.c:80)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707== 
+==47707== 24 bytes in 1 blocks are still reachable in loss record 2 of 8
+==47707==    at 0x483677F: malloc (vg_replace_malloc.c:309)
+==47707==    by 0x10918B: Node_create (huffman.c:11)
+==47707==    by 0x1094B6: huffman_table_build (huffman.c:87)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707== 
+==47707== 24 bytes in 1 blocks are still reachable in loss record 3 of 8
+==47707==    at 0x483677F: malloc (vg_replace_malloc.c:309)
+==47707==    by 0x10918B: Node_create (huffman.c:11)
+==47707==    by 0x1094E7: huffman_table_build (huffman.c:89)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707== 
+==47707== 32 bytes in 1 blocks are still reachable in loss record 4 of 8
+==47707==    at 0x483677F: malloc (vg_replace_malloc.c:309)
+==47707==    by 0x1092A0: huffman_table_create (huffman.c:42)
+==47707==    by 0x109484: huffman_table_build (huffman.c:80)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707== 
+==47707== 40 bytes in 1 blocks are still reachable in loss record 5 of 8
+==47707==    at 0x483677F: malloc (vg_replace_malloc.c:309)
+==47707==    by 0x109676: huffman_table_build (huffman.c:128)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707== 
+==47707== 80 bytes in 5 blocks are definitely lost in loss record 6 of 8
+==47707==    at 0x483677F: malloc (vg_replace_malloc.c:309)
+==47707==    by 0x1096A2: huffman_table_build (huffman.c:130)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707== 
+==47707== 96 bytes in 4 blocks are still reachable in loss record 7 of 8
+==47707==    at 0x483677F: malloc (vg_replace_malloc.c:309)
+==47707==    by 0x10918B: Node_create (huffman.c:11)
+==47707==    by 0x10958E: huffman_table_build (huffman.c:104)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707== 
+==47707== 96 bytes in 4 blocks are still reachable in loss record 8 of 8
+==47707==    at 0x483677F: malloc (vg_replace_malloc.c:309)
+==47707==    by 0x10918B: Node_create (huffman.c:11)
+==47707==    by 0x1095A0: huffman_table_build (huffman.c:105)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707== 
+==47707== LEAK SUMMARY:
+==47707==    definitely lost: 80 bytes in 5 blocks
+==47707==    indirectly lost: 0 bytes in 0 blocks
+==47707==      possibly lost: 0 bytes in 0 blocks
+==47707==    still reachable: 336 bytes in 13 blocks
+==47707==         suppressed: 0 bytes in 0 blocks
+==47707== 
+==47707== ERROR SUMMARY: 5 errors from 5 contexts (suppressed: 0 from 0)
+==47707== 
+==47707== 1 errors in context 1 of 5:
+==47707== Invalid read of size 1
+==47707==    at 0x109709: huffman_table_build (huffman.c:137)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707==  Address 0x0 is not stack'd, malloc'd or (recently) free'd
+==47707== 
+==47707== 
+==47707== 1 errors in context 2 of 5:
+==47707== Invalid write of size 8
+==47707==    at 0x10943F: huffman_node_encode (huffman.c:74)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x1096D7: huffman_table_build (huffman.c:133)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707==  Address 0x4a30860 is 8 bytes after a block of size 40 alloc'd
+==47707==    at 0x483677F: malloc (vg_replace_malloc.c:309)
+==47707==    by 0x109676: huffman_table_build (huffman.c:128)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707== 
+==47707== 
+==47707== 1 errors in context 3 of 5:
+==47707== Invalid write of size 8
+==47707==    at 0x10943C: huffman_node_encode (huffman.c:74)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x1096D7: huffman_table_build (huffman.c:133)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707==  Address 0x4a30858 is 0 bytes after a block of size 40 alloc'd
+==47707==    at 0x483677F: malloc (vg_replace_malloc.c:309)
+==47707==    by 0x109676: huffman_table_build (huffman.c:128)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707== 
+==47707== 
+==47707== 1 errors in context 4 of 5:
+==47707== Invalid write of size 8
+==47707==    at 0x10943F: huffman_node_encode (huffman.c:74)
+==47707==    by 0x109357: huffman_node_encode (huffman.c:61)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x109394: huffman_node_encode (huffman.c:65)
+==47707==    by 0x1096D7: huffman_table_build (huffman.c:133)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707==  Address 0x4a30858 is 0 bytes after a block of size 40 alloc'd
+==47707==    at 0x483677F: malloc (vg_replace_malloc.c:309)
+==47707==    by 0x109676: huffman_table_build (huffman.c:128)
+==47707==    by 0x1099A0: main (test_huffman.c:11)
+==47707== 
+==47707== ERROR SUMMARY: 5 errors from 5 contexts (suppressed: 0 from 0)
