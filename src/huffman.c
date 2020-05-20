@@ -54,8 +54,10 @@ static huff_table *huffman_table_create(uint8_t *nb_symb_per_lengths, uint8_t *s
     return ht;
 }
 
-static void huffman_node_encode(const Node *node, uint8_t *code, uint8_t indice, uint8_t **codes) {
+static void huffman_node_encode(const Node *node, uint8_t *code, uint8_t indice, uint32_t *codes) {
+    /* Indice de remplissage de codes */
     static uint8_t index = 0;
+
     if (node->left != NULL) {
         code[indice] = 0;
         huffman_node_encode(node->left, code, (uint8_t)(indice + 1), codes);
@@ -65,13 +67,33 @@ static void huffman_node_encode(const Node *node, uint8_t *code, uint8_t indice,
         huffman_node_encode(node->right, code, (uint8_t)(indice + 1), codes);
     }
     if ((node->left == NULL || node->right == NULL)) {
-        printf("%i: ", node->symbol);
-        for (size_t i = 0; i < indice; i++) {
-            printf("%u", code[i]);
+        /* Affichage des codes */
+        // printf("%i: ", node->symbol);
+        // for (size_t i = 0; i < indice; i++) {
+        //     printf("%u", code[i]);
+        // }
+        // printf("\n");
+
+        /* Encodage en uint32_t */
+        int power = 0;
+        codes[index] = 0;
+        for (int j = indice - 1; j >= 0; j--) {
+            codes[index] += (uint32_t)(code[j] << power);
+            power += 1;
         }
-        printf("\n");
-        // codes[index] = code;
-        memcpy(&codes[index], code, sizeof *codes[index]);
+
+        /* Code fonctionnel avec uint8_t **codes en paramètres */
+        // codes[index] = malloc(indice * sizeof *codes[index]);
+        // for (size_t j = 0; j < indice; j++) {
+        //     codes[index][j] = code[j];
+        // }
+
+        /* Affichage des codes stockés */
+        // for (size_t j = 0; j < indice; j++) {
+        //     printf("%u", codes[index][j]);
+        // }
+        // printf("\n");
+
         index++;
     }
 }
@@ -124,20 +146,31 @@ huff_table *huffman_table_build(uint8_t *nb_symb_per_lengths, uint8_t *symbols, 
 
     /* Code de longueur maximale 16 */
     uint8_t code[16] = {0};
-
-    uint8_t **codes = malloc(nb_symbols * sizeof *codes);
-    for (size_t i = 0; i < nb_symbols; i++) {
-        codes[i] = malloc(16 * sizeof *codes[i]);
-    }
+    uint32_t codes[nb_symbols];
 
     huffman_node_encode(ht->root, code, 0, codes);
 
+    /* Construction du tableau des tailles */
+    // uint8_t lengths[nb_symbols];
+    // uint8_t cumul = 0;
+    // for (uint8_t i = 0; i < 16; i++) {
+    //     for (uint8_t j = 0; j < nb_symb_per_lengths[i]; j++) {
+    //         lengths[j + cumul] = (uint8_t)(i + 1);
+    //     }
+    //     cumul = (uint8_t)(cumul + nb_symb_per_lengths[i]);
+    // }
+
     for (size_t j = 0; j < nb_symbols; j++) {
-        for (size_t i = 0; i < 16; i++) {
-            printf("%u", codes[j][i]);
-        }
-        printf("\n");
+        printf("%u\n", codes[j]);
     }
+
+    /* Affichage des codes */
+    // for (size_t j = 0; j < nb_symbols; j++) {
+    //     for (size_t i = 0; i < lengths[j]; i++) {
+    //         printf("%u", codes[j][i]);
+    //     }
+    //     printf("\n");
+    // }
 
     return ht;
 }
