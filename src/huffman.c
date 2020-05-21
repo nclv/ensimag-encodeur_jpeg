@@ -58,7 +58,7 @@ huff_table *huffman_table_build(uint8_t *nb_symb_per_lengths, uint8_t *symbols, 
         return NULL;
     }
 
-    /* Construction des codes */
+    /* Construction des codes canoniques: https://stackoverflow.com/a/34569068 */
     uint32_t code = 0;
     uint8_t count = 0;
     while (count < nb_symbols) {
