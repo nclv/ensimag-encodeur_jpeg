@@ -21,15 +21,15 @@ int main(void) {
     afficher_file(f);
 
     Node *n1 = defiler(f);
-    printf("Element défilé: %i\n", n1->symbol);
+    printf("Element défilé: %i\n", n1->code);
     Node_destroy(&n1);
     afficher_file(f);
 
     Node *n2 = defiler(f);
-    printf("Element défilé: %i\n", n2->symbol);
+    printf("Element défilé: %i\n", n2->code);
     Node_destroy(&n2);
     Node *n3 = defiler(f);
-    printf("Element défilé: %i\n", n3->symbol);
+    printf("Element défilé: %i\n", n3->code);
     Node_destroy(&n3);
     afficher_file(f);
 

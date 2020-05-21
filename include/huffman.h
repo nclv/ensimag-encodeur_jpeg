@@ -4,8 +4,7 @@
 #include "jpeg_writer.h"
 
 typedef struct Node {
-    uint8_t symbol;
-    uint8_t numero;
+    uint32_t code; // donnée binaire encodée en entier
     struct Node *left, *right;
 } Node;
 
@@ -19,7 +18,7 @@ typedef struct huff_table {
     Node *root;
 } huff_table;
 
-extern Node *Node_create(const uint8_t symbol);
+extern Node *Node_create(const uint32_t code);
 extern void Node_destroy(Node **node);
 extern void afficher_huff_table(huff_table *ht);
 

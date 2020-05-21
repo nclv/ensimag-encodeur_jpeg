@@ -60,10 +60,10 @@ Node *defiler(file *f) {
 void afficher_file(file *f) {
     if (f->first != NULL) {
         element *current = f->first;
-        printf("%i\n", current->node->symbol);
+        printf("%i\n", current->node->code);
         while (current->next != NULL) {
             current = current->next;
-            printf("%i\n", current->node->symbol);
+            printf("%i\n", current->node->code);
         }
 
     } else {
