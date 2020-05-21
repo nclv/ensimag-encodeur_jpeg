@@ -26,7 +26,7 @@ void offset(int8_t input[8][8]) {
     https://opencores.org/websvn/filedetails?repname=dct_idct&path=%2Fdct_idct%2Ftrunk%2Fdct%2FDoc%2Fdct_um.pdf
 
     Simplifié à 3 phases.
-    Les phases e, f, sa sont incluses dans les 3 premières.
+    Les phases e, f, a sont incluses dans les 3 premières.
     On transforme les produits de cosinus en sommes:
         2cos(pi/4)cos(pi/8) = cos(3pi/8) + cos(pi/8) (f2 et f3 au signe près)
         2cos(pi/4)cos(pi/16) = cos(5pi/16) + cos(3pi/16)

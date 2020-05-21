@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 
-
 /*
  * type: deux uint8_t -- DC courante et précédente
  * rtype: uint32_t valeur d'encodage de DC
