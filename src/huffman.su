@@ -1,0 +1,11 @@
+huffman.c:10:7:Node_create	48	static
+huffman.c:22:6:Node_destroy	32	static
+huffman.c:31:13:afficher_huffman_tree	32	static
+huffman.c:41:6:afficher_huff_table	80	static
+huffman.c:61:20:huffman_table_create	64	static
+huffman.c:100:13:huffman_tree_build	80	static
+huffman.c:145:13:huffman_table_build	64	static
+huffman.c:166:10:huffman_table_get_path	16	static
+huffman.c:179:10:huffman_table_get_symbols	16	static
+huffman.c:183:10:huffman_table_get_length_vector	16	static
+huffman.c:187:6:huffman_table_destroy	32	static

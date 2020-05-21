@@ -3,11 +3,6 @@
 
 #include "jpeg_writer.h"
 
-typedef struct Node {
-    uint32_t code; // donnée binaire encodée en entier
-    struct Node *left, *right;
-} Node;
-
 /* Type opaque représentant un arbre de Huffman. */
 typedef struct huff_table {
     uint8_t *symbols;
@@ -15,12 +10,7 @@ typedef struct huff_table {
     uint8_t nb_symbols;
     uint8_t *lengths;
     uint32_t *codes;
-    Node *root;
 } huff_table;
-
-extern Node *Node_create(const uint32_t code);
-extern void Node_destroy(Node **node);
-extern void afficher_huff_table(huff_table *ht);
 
 /*
     Construit un arbre de Huffman à partir d'une table
