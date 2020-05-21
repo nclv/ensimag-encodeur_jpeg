@@ -12,6 +12,8 @@ typedef struct huff_table {
     uint32_t *codes;
 } huff_table;
 
+extern void afficher_huff_table(huff_table *ht);
+
 /*
     Construit un arbre de Huffman à partir d'une table
     de symboles comme présenté en section 2.10.1 du sujet.

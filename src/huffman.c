@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include <string.h>
 
 #include "htables.h"
 
@@ -26,25 +25,22 @@ void afficher_huff_table(huff_table *ht) {
     }
 }
 
-static huff_table *huffman_table_create(uint8_t *nb_symb_per_lengths, uint8_t *symbols, uint8_t nb_symbols) {
+huff_table *huffman_table_build(uint8_t *nb_symb_per_lengths, uint8_t *symbols, uint8_t nb_symbols) {
     huff_table *ht = malloc(sizeof *ht);
     if (ht == NULL) return NULL;
 
-    ht->root = Node_create(0);
-    if (ht->root == NULL) {
+    ht->nb_symb_per_lengths = nb_symb_per_lengths;
+    ht->symbols = symbols;
+    ht->nb_symbols = nb_symbols;
+
+    /* Initialisation des tailles. */
+    ht->lengths = malloc(nb_symbols * sizeof ht->lengths);
+    if (ht->lengths == NULL) {
         free(ht);
         return NULL;
     }
 
-    /* Initialisation des codes. */
-    ht->codes = calloc(nb_symbols, sizeof ht->codes);
-    if (ht->codes == NULL) {
-        free(ht);
-        return NULL;
-    }
     /* Construction du tableau des tailles à partir de nb_symb_per_lengths */
-    ht->lengths = malloc(nb_symbols * sizeof ht->lengths);
-    if (ht->lengths == NULL) return NULL;
     uint8_t cumul = 0;
     for (uint8_t i = 0; i < 16; i++) {
         if (nb_symb_per_lengths[i] != 0) {
@@ -56,34 +52,18 @@ static huff_table *huffman_table_create(uint8_t *nb_symb_per_lengths, uint8_t *s
         if (cumul == nb_symbols) break;
     }
 
-    if (ht->lengths == NULL) return NULL;
-    uint8_t cumul = 0;
-    for (uint8_t i = 0; i < 16; i++) {
-        if (nb_symb_per_lengths[i] != 0) {
-            uint8_t count = 0;
-            while (nb_symb_per_lengths[i + count - 1] == 0) {
-                count++;
-            }
-            ht->lengths[cumul - 1] = (uint8_t)(count + 1);
-            cumul = (uint8_t)(cumul + nb_symb_per_lengths[i]);
-        }
-        if (cumul == nb_symbols) break;
+    /* Initialisation des codes. */
+    ht->codes = calloc(nb_symbols, sizeof ht->codes);
+    if (ht->codes == NULL) {
+        free(ht->lengths);
+        free(ht);
+        return NULL;
     }
 
-    ht->nb_symb_per_lengths = nb_symb_per_lengths;
-    ht->symbols = symbols;
-    ht->nb_symbols = nb_symbols;
-
-    return ht;
-}
-
-huff_table *huffman_table_build(uint8_t *nb_symb_per_lengths, uint8_t *symbols, uint8_t nb_symbols) {
-    huff_table *ht = huffman_table_create(nb_symb_per_lengths, symbols, nb_symbols);
-
+    /* Construction des codes */
     uint32_t code = 0;
     uint8_t count = 0;
     while (count < nb_symbols) {
-        printf("%d: %d: %d\n", symbols[count], code, ht->lengths[count]);
         ht->codes[count] = code;
         code = (code + 1) << (ht->lengths[count + 1] - ht->lengths[count]);
         count++;
