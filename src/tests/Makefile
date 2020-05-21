@@ -71,7 +71,7 @@ test_jpeg_writer: $(SRC)jpeg_writer.o test_jpeg_writer.o
 	$(info Compilation de test_jpeg_writer)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
-test_huffman: $(SRC)huffman.o $(SRC)file.o test_huffman.o
+test_huffman: $(SRC)huffman.o test_huffman.o
 	$(info )
 	$(info Compilation de test_huffman)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)

@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "huffman.h"
+#include "htables.h"
 
 int main(void) {
     /* On n'est pas obligé de mettre 16 éléments */

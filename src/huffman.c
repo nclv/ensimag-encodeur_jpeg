@@ -3,8 +3,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "htables.h"
-
 void afficher_huff_table(huff_table *ht) {
     uint8_t *get_symbols = huffman_table_get_symbols(ht);
     for (size_t i = 0; i < ht->nb_symbols; i++) {
@@ -73,8 +71,9 @@ huff_table *huffman_table_build(uint8_t *nb_symb_per_lengths, uint8_t *symbols, 
 }
 
 uint32_t huffman_table_get_path(huff_table *ht, uint8_t value, uint8_t *nb_bits) {
-    uint32_t code = 0;
-    /* Coût linéaire (une table de hashage c'est mieux !!) */
+    /* Si la valeur n'est pas dans la table on renvoie 65535 (16 * 1 en binaire )*/
+    uint32_t code = 65535;
+    /* Coût linéaire */
     for (size_t i = 0; i < ht->nb_symbols; i++) {
         if (ht->symbols[i] == value) {
             code = ht->codes[i];
