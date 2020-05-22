@@ -18,10 +18,8 @@ uint32_t encode_DC_freq(int8_t difference_DC) {
     /* On code la différence entre valeurs DC de deux blocs consécutifs */
     uint32_t classe_magnitude = get_magnitude(difference_DC);
     unsigned int indice = abs(difference_DC);
-    uint8_t valeur_sup = 1<<classe_magnitude;
-    //printf("valeur sup : %u", valeur_sup);
     if (difference_DC < 0) {
-        indice = valeur_sup - indice;  // complémentaire
+        indice = (1 << classe_magnitude) - indice;
     }
     /* la classe devra être codée sur 4 bits et l'indice sur la valeur de la classe bits
        par exemple, 77 classe 7 indice 77 donc sur 4 + 7 = 11 bits */
@@ -36,16 +34,15 @@ uint32_t encoderAC(int8_t MCU_coefficient, uint8_t nb_zeros_enchaines) {
     uint8_t nombre_zero_restants = 0;
     if (MCU_coefficient == 0) {
         zeros_count++;
-    }
-    else {
-        nombre_16_zeros = zeros_count/16;
-        nombre_zero_restants = zeros_count%16;
+    } else {
+        nombre_16_zeros = zeros_count / 16;
+        nombre_zero_restants = zeros_count % 16;
         zeros_count = 0;
         printf("coef : %i\n", MCU_coefficient);
         /* même algo de classe | indice que pour l'encodage DC */
         uint32_t classe_magnitude = get_magnitude(MCU_coefficient);
         unsigned int indice = abs(MCU_coefficient);
-        uint8_t valeur_sup = 1<<classe_magnitude;
+        uint8_t valeur_sup = 1 << classe_magnitude;
         if (MCU_coefficient < 0) {
             indice = valeur_sup - indice;  // complémentaire
         }
@@ -58,7 +55,6 @@ uint32_t encoderAC(int8_t MCU_coefficient, uint8_t nb_zeros_enchaines) {
            l'encodage DC */
     }
 }
-
 
 /*
 int main()
