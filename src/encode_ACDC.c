@@ -42,8 +42,8 @@ uint32_t encoderAC(int8_t MCU_coefficient, uint8_t nb_zeros_enchaines) {
         printf("coef : %i\n", MCU_coefficient);
         /* même algo de classe | indice que pour l'encodage DC */
         uint32_t classe_magnitude = get_magnitude(MCU_coefficient);
-        unsigned int indice = abs(difference_DC);
-        if (difference_DC < 0) {
+        unsigned int indice = abs(MCU_coefficient);
+        if (MCU_coefficient < 0) {
             indice = ~indice;  // complémentaire
         }
         printf("classe : %i\nindice : %i\n", classe_magnitude, indice);
