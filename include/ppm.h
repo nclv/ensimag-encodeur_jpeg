@@ -1,107 +1,155 @@
 #ifndef _PPM_H_
 #define _PPM_H_
 
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "echantillonage.h"
 
+#define TAILLE_BLOC 8
 #define TAILLE_PPM 2
 #define NIVEAUX_GRIS "P5"
 
-/*Définition d'une structure pour un pixel
- *Pour la sémantique et éviter d'utiliser des triples pointeurs*/
+/*Définition d'un pixel en fonction du mode P5 ou P6*/
 typedef struct pixel {
 	uint8_t* couleurs;
 } pixel;
 
-/* Définition et déclaration d'une image ppm*/
+/*Définition d'une image au format PPM
+ *Contient les dimensions réelles de l'image
+ *Contient les dimensions complétées de l'image
+ *Contient la plage de couleurs
+ *Contient le nombre de MCUs
+ *Contient le format associé*/
 typedef struct image_ppm {
-	pixel** matrice;
-	uint32_t hauteur;
 	uint32_t largeur;
+	uint32_t hauteur;
+	uint32_t largeur_totale;
+	uint32_t hauteur_totale;
 	uint32_t nb_couleurs;
-	char mode[TAILLE_PPM];
+	uint32_t nb_MCUs;
+	char format[TAILLE_PPM];
 } image_ppm;
 
-/*
- * type: uint32_t
- * type: uint32_t
- * type: uint32_t
- * rtype: pixel**
- * Initialise une matrice de pixels avec les hauteurs et largeurs TOTALES
- * Initialise la taille des couleurs (1 pour P5, 3 pour P6)
- */
-extern pixel** initialiser_matrice(uint32_t hauteur, uint32_t largeur, uint32_t nb_couleurs); 
+/*Définition des MCUs
+ *Contient la hauteur et la largeur des MCUs
+ *Contient le numéro ligne/colonne du MCU courant
+ *Contient la matrice de pixels associée à un MCU*/
+typedef struct MCUs {
+	uint32_t largeur;
+	uint32_t hauteur;
+	uint32_t numero_ligne;
+	uint32_t numero_colonne;
+	pixel** matrice;
+} MCUs;
 
-/*
- * type: char[]
- * rtype: bool
- * Choisit le mode de remplissage, P5 ou P6
+/* type: char*
+ * rtype: FILE*
+ * Ouvre le fichier PPM/PGM
  */
-extern bool choix_remplissage(char mode[]);
+extern FILE* ouvrir_fichier(char* nom_fichier);
 
-/*
- * type: image_ppm*
- * type: FILE*
+/* type: FILE*
  * rtype: void
- * Lit les octets de l'image format P5
+ * Ferme le fichier PPM/PGM
  */
-extern void parse_p5(image_ppm* image, FILE* fichier);
+extern void fermer_fichier(FILE* fichier);
 
-/*
- * type: image_ppm*
- * type: FILE*
- * rtype: void
- * Lit les octets de l'image format P6
- */
-extern void parse_p6(image_ppm* image, FILE* fichier);
-
-/* 
- * type: char*
+/* type: FILE*
  * rtype: image_ppm*
- * Lit et stocke une image au format ppm
- * Conversion en format YCbCr
- * Complétion des MCUs
+ * Parse l'en-tête  du fichier PPM/PGM
+ * Stocke les informations dans une structure image_ppm
  */
-extern image_ppm* lire_ppm(char* nom_fichier, uint8_t h, uint8_t v);
+extern image_ppm* parse_entete(FILE* fichier);
 
-/*
+/* type: char
+ * rtype: bool
+ * Choisit le mode de remplissage P5 ou P6
+ */
+extern bool choix_remplissage(char format[]);
+
+/* type: image_ppm*
+ * type: ech
+ * rtype: MCUs*
+ * Initialise les MCUs en fonction de l'échantillonage
+ * et des dimensions de l'image
+ */
+extern MCUs* initialiser_MCUs(image_ppm* image, ech echantillonage);
+
+/* type: MCUs*
+ * type: uint32_t
+ * rtype: uint32_t
+ * Récupère la largeur des MCUs
+ */
+extern uint32_t recuperer_largeur(MCUs* bloc, uint32_t largeur);
+
+/* type: MCUs*
+ * type: uint32_t
+ * rtype: uint32_t
+ * Récupère la hauteur des MCUs
+ */
+extern uint32_t recuperer_hauteur(MCUs* bloc, uint32_t hauteur);
+
+/* type: FILE*
  * type: image_ppm*
+ * type: MCUs*
+ * rtype: void
+ * Récupère les MCUs à la volée un par un
+ */
+extern void recuperer_MCUs(FILE* fichier, image_ppm* image, MCUs* bloc);
+
+/* type: MCUs*
  * type: uint32_t
  * type: uint32_t
  * rtype: void
- * Complète l'image en fonction des dimensions des MCUs
- * Et du type de l'image P5
+ * Complète en largeur et en hauteur le MCU donné
+ * Pour un format P5
  */
-extern void completer_image_p5(image_ppm* image, uint32_t hauteur, uint32_t largeur);
+extern void completer_bloc_P5(MCUs* bloc, uint32_t largeur, uint32_t hauteur);
 
-/*
- * type: image_ppm*
+/* type: MCUs*
  * type: uint32_t
  * type: uint32_t
  * rtype: void
- * Complète l'image en fonction des dimensions des MCUs
- * Et du type de l'image P6
+ * Complète en largeur et en hauteur le MCU donné
+ * Pour un format P6
  */
-extern void completer_image_p6(image_ppm* image, uint32_t hauteur, uint32_t largeur);
+extern void completer_bloc_P6(MCUs* bloc, uint32_t largeur, uint32_t hauteur);
 
-/*
+/* type: FILE*
  * type: image_ppm*
+ * type: MCUs*
+ * type: uint32_t
+ * type: uint32_t
  * rtype: void
- * Affiche une image au format ppm en format YCbCr
- * Format hexadecimal
+ * Parse l'image en P5 (MCU par MCU à la volée)
+ */
+extern void parse_P5(FILE* fichier, image_ppm* image, MCUs* bloc, uint32_t largeur, uint32_t hauteur);
+
+/* type: FILE*
+ * type: image_ppm*
+ * type: MCUs*
+ * type: uint32_t
+ * type: uint32_t
+ * rtype: void
+ * Parse l'image en P6 (MCU par MCU à la volée)
+ */
+extern void parse_P6(FILE* fichier, image_ppm* image, MCUs* bloc, uint32_t largeur, uint32_t hauteur);
+
+/* type: image_ppm*
+ * rtype: void
+ * Affiche les informations de l'image
  */
 extern void afficher_image(image_ppm* image);
 
-/*
- * type: image_ppm*
+/* type: MCUs*
+ * type: bool
  * rtype: void
- * Libère l'image au format ppm
+ * Affiche un MCU en héxadécimal en fonction de P5 ou P6
  */
-extern void liberer_image(image_ppm* image);
+extern void afficher_MCUs(MCUs* bloc, bool choix);
 
 #endif

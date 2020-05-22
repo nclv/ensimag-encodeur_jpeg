@@ -7,7 +7,7 @@
 
 #define Y 0
 #define CB 1
-#define CR 2
+#define CR 1
 
 /*
  * type: pixel*
