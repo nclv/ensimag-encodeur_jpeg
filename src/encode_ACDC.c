@@ -26,56 +26,36 @@ uint32_t encode_DC_freq(int8_t difference_DC) {
     printf("classe : %i\nindice : %i\n", classe_magnitude, indice);
 }
 
-uint32_t encoderAC(int8_t MCU_courante[8][8]) {
+uint32_t encoderAC(int8_t MCU_coefficient, uint8_t nb_zeros_enchaines) {
     /* déclaration des variables comptant les zéros et déterminant les
        symboles à coder pour les coefficients non nuls */
-    uint8_t zeros_count = 0;
+    uint8_t zeros_count = nb_zeros_enchaines;
     uint8_t nombre_16_zeros = 0;
     uint8_t nombre_zero_restants = 0;
-    for (uint8_t k = 0; k<8; k++) {
-        for (uint8_t l = 0; l<8; l++) {
-            /* on passe la valeur moyenne [0][0] qui à déjà été encodée et ne doit
-               pas être prise en compte ici */
-            if (k  != 0 || l != 0) {
-                int8_t MCU_coefficient = MCU_courante[k][l];
-                if (MCU_coefficient == 0) {
-                    zeros_count++;
-                }
-                /* on a trouvé un coefficient non nul */
-                else {
-                    nombre_16_zeros = zeros_count/16;
-                    nombre_zero_restants = zeros_count%16;
-                    zeros_count = 0;
-                    printf("coef : %i\n", MCU_coefficient);
-                    /* même algo de classe | indice que pour l'encodage DC */
-                    uint8_t est_negatif = 0;
-                    if (MCU_coefficient < 0) {
-                        MCU_coefficient = -MCU_coefficient;
-                        est_negatif = 1;
-                    }
-                    uint32_t classe_magnitude = ((uint32_t)log2(MCU_coefficient))+1;
-                    uint32_t valeur_sup = (uint32_t) pow(2, classe_magnitude) - 1;
-                    uint32_t indice = valeur_sup - MCU_coefficient;
-                    if (est_negatif == 0) {
-                        uint32_t valeur_inf = (uint32_t) pow(2, classe_magnitude-1);
-                        indice = MCU_coefficient;
-                    }
-                    printf("classe : %i\nindice : %i\n", classe_magnitude, indice);
-                    printf("16 zeros : %i\nzeros restants : %i\n", nombre_16_zeros, nombre_zero_restants);
-                    printf("-----------------------\n");
-                    /* on doit coder dansle bitstream nombre_16_zeros * 0xF0
-                       suivi de 0xnombre_zero_restantsClasseMagnitude suivi
-                       de l'indice codé sur ClasseMagnitude bits comme dans
-                       l'encodage DC */
-                }
-            }
-        }
+    if (MCU_coefficient == 0) {
+        zeros_count++;
     }
-    if (zeros_count != 0) {
-        printf("end of block reached\n");
-        /* coder dans le bitstream ENDOFBLOCK */
+    else {
+        nombre_16_zeros = zeros_count/16;
+        nombre_zero_restants = zeros_count%16;
+        zeros_count = 0;
+        printf("coef : %i\n", MCU_coefficient);
+        /* même algo de classe | indice que pour l'encodage DC */
+        uint32_t classe_magnitude = get_magnitude(MCU_coefficient);
+        unsigned int indice = abs(difference_DC);
+        if (difference_DC < 0) {
+            indice = ~indice;  // complémentaire
+        }
+        printf("classe : %i\nindice : %i\n", classe_magnitude, indice);
+        printf("16 zeros : %i\nzeros restants : %i\n", nombre_16_zeros, nombre_zero_restants);
+        printf("-----------------------\n");
+        /* on doit coder dansle bitstream nombre_16_zeros * 0xF0
+           suivi de 0xnombre_zero_restantsClasseMagnitude suivi
+           de l'indice codé sur ClasseMagnitude bits comme dans
+           l'encodage DC */
     }
 }
+
 
 /*
 int main()
@@ -88,7 +68,11 @@ int main()
                              {0, 0, 0, 0, 0, 0, 1, 0},
                              {0, 0, 0, 0, 0, 0, 0, 0},
                              {0, 0, 0, 0, 0, 0, 0, 0}};
-    encoderAC(matrice);
+    for (uint8_t k=0;k<8;k++) {
+      for (uint8_t l=0;l<8;l++) {
+        encoderAC(matrice[k][l]);
+      }
+    }
     return 0;
 }
 */
