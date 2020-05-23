@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "bitstream.h"
+#include "huffman.h"
 
 /********************/
 /* Types de données */
@@ -59,13 +60,14 @@ typedef struct jpeg {
     uint8_t cb_sampling_factor;
     uint8_t cr_sampling_factor;
 
-    struct huff_table *huffman_table;
+    huff_table *ht_Y_DC;
+    huff_table *ht_Y_AC;
+    huff_table *ht_CbCr_DC;
+    huff_table *ht_CbCr_AC;
+
     uint8_t *Y_quantization_table;
     uint8_t *CbCr_quantization_table;
 } jpeg;
-
-/* Type opaque représentant un arbre de Huffman. */
-struct huff_table;
 
 /***********************************************/
 /* Ouverture, fermeture et fonctions générales */
@@ -179,16 +181,16 @@ extern uint8_t jpeg_get_sampling_factor(jpeg *jpg,
 extern void jpeg_set_huffman_table(jpeg *jpg,
                                    enum sample_type acdc,
                                    enum color_component cc,
-                                   struct huff_table *htable);
+                                   huff_table *htable);
 
 /*
     Retourne un pointeur vers la table de Huffman utilisée pour encoder
     les données de la composante fréquentielle acdc pour la composante 
     de couleur cc, lue dans la structure jpeg.
 */
-extern struct huff_table *jpeg_get_huffman_table(jpeg *jpg,
-                                                 enum sample_type acdc,
-                                                 enum color_component cc);
+extern huff_table *jpeg_get_huffman_table(jpeg *jpg,
+                                          enum sample_type acdc,
+                                          enum color_component cc);
 
 /*
     Ecrit dans la structure jpeg la table de quantification à utiliser

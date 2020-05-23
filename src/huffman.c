@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 void afficher_huff_table(huff_table *ht) {
     uint8_t *get_symbols = huffman_table_get_symbols(ht);

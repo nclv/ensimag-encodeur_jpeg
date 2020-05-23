@@ -35,6 +35,8 @@ OBJS = $(SRC)conversion.o test_conversion.o \
 	$(SRC)huffman.o test_huffman.o \
 	$(SRC)compression.o test_compression.o
 
+OBJS_PROF = ../../obj_prof/htables_prof.o
+
 all: $(TARGET)
 
 test_conversion: $(SRC)conversion.o test_conversion.o
@@ -67,10 +69,10 @@ test_quantification: $(SRC)quantification.o test_quantification.o
 	$(info Compilation de test_quantification)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
-test_jpeg_writer: $(SRC)jpeg_writer.o test_jpeg_writer.o
+test_jpeg_writer: $(SRC)huffman.o $(SRC)jpeg_writer.o test_jpeg_writer.o
 	$(info )
 	$(info Compilation de test_jpeg_writer)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS_PROF) $^ $(LDFLAGS)
 
 test_huffman: $(SRC)huffman.o test_huffman.o
 	$(info )
