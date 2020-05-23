@@ -5,12 +5,10 @@
 
 #include "ppm.h"
 
-#define Y 0
-#define CB 1
-#define CR 1
-
 /*
- * type: pixel*
+ * type: MCUs*
+ * type: uint8_t**
+ * type: uint8_t**
  * type: uint8_t
  * type: uint8_t
  * type: uint8_t
@@ -18,6 +16,6 @@
  * Convertit un pixel RGB en YCbCr
  * Ne concerne que les images en couleurs
  */
-void conversion(pixel* p, uint8_t r, uint8_t g, uint8_t b);
+void conversion(MCUs* bloc, size_t i, size_t j, uint8_t r, uint8_t g, uint8_t b);
 
 #endif

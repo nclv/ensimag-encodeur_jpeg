@@ -8,43 +8,7 @@
 #include <string.h>
 
 #include "echantillonage.h"
-
-#define TAILLE_BLOC 8
-#define TAILLE_PPM 2
-#define NIVEAUX_GRIS "P5"
-
-/*Définition d'un pixel en fonction du mode P5 ou P6*/
-typedef struct pixel {
-	uint8_t* couleurs;
-} pixel;
-
-/*Définition d'une image au format PPM
- *Contient les dimensions réelles de l'image
- *Contient les dimensions complétées de l'image
- *Contient la plage de couleurs
- *Contient le nombre de MCUs
- *Contient le format associé*/
-typedef struct image_ppm {
-	uint32_t largeur;
-	uint32_t hauteur;
-	uint32_t largeur_totale;
-	uint32_t hauteur_totale;
-	uint32_t nb_couleurs;
-	uint32_t nb_MCUs;
-	char format[TAILLE_PPM];
-} image_ppm;
-
-/*Définition des MCUs
- *Contient la hauteur et la largeur des MCUs
- *Contient le numéro ligne/colonne du MCU courant
- *Contient la matrice de pixels associée à un MCU*/
-typedef struct MCUs {
-	uint32_t largeur;
-	uint32_t hauteur;
-	uint32_t numero_ligne;
-	uint32_t numero_colonne;
-	pixel** matrice;
-} MCUs;
+#include "structures.h"
 
 /* type: char*
  * rtype: FILE*

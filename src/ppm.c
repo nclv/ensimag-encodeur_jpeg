@@ -59,19 +59,35 @@ MCUs* initialiser_MCUs(image_ppm* image, ech echantillonage) {
 			bloc->hauteur = TAILLE_BLOC;
 	}
 
-	bloc->matrice = malloc(bloc->hauteur * sizeof(pixel*));
-	if (bloc->matrice == NULL) exit(EXIT_FAILURE);
+	bloc->echantillonage = echantillonage;
 
-	for (size_t i = 0; i < bloc->hauteur; i++) {
-		bloc->matrice[i] = malloc(bloc->largeur * sizeof(pixel));
-		if (bloc->matrice[i] == NULL) exit(EXIT_FAILURE);
+	bloc->Y = malloc(bloc->hauteur * sizeof(uint8_t*));
+
+	/*On traite les boucles dans les if
+	 *c'est plus performant que de tout traiter en
+	 *même temps. On évite les if dans les boucles
+	 */
+	if (choix_remplissage(image->format)) {
+		bloc->Cb = NULL;
+		bloc->Cr = NULL;
+		for (size_t i = 0; i < bloc->hauteur; i++) {
+			bloc->Y[i] = malloc(bloc->largeur * sizeof(uint8_t));
+		}
+	}
+	else {
+		bloc->Cb = malloc(bloc->hauteur * sizeof(uint8_t*));
+		bloc->Cr = malloc(bloc->hauteur * sizeof(uint8_t*));
+		for (size_t i = 0; i < bloc->hauteur; i++) {
+			bloc->Y[i] = malloc(bloc->largeur * sizeof(uint8_t));
+			bloc->Cb[i] = malloc(bloc->largeur * sizeof(uint8_t));
+			bloc->Cr[i] = malloc(bloc->largeur * sizeof(uint8_t));
+		}
 	}
 
-	for (size_t i = 0; i < bloc->hauteur; i++) {
-		for (size_t j = 0; j < bloc->largeur; j++) {
-			bloc->matrice[i][j].couleurs = malloc((choix_remplissage(image->format) ? 1 : 3) * sizeof(uint8_t));
-			if (bloc->matrice[i][j].couleurs == NULL) exit(EXIT_FAILURE);
-		}
+	if (echantillonage == SIMPLE) {
+		bloc->comp_Y = NULL;
+		bloc->Cb_downsampling = NULL;
+		bloc->Cr_downsampling = NULL;
 	}
 
 	bloc->numero_ligne = 0;
@@ -147,16 +163,16 @@ void completer_bloc_P5(MCUs* bloc, uint32_t largeur, uint32_t hauteur) {
 	if (bloc->hauteur != hauteur) {
 		for (size_t i = hauteur; i < bloc->hauteur; i++) {
 			for (size_t j = 0; j < bloc->largeur; j++) {
-				*bloc->matrice[i][j].couleurs = *bloc->matrice[hauteur - 1][j].couleurs;
+				bloc->Y[i][j] = bloc->Y[hauteur - 1][j];
 			}
 		}
 	}
 
 	/*Complétion en largeur*/
 	if (bloc->largeur != largeur) {
-		for (size_t i = 0; i < hauteur; i++) {
+		for (size_t i = 0; i < bloc->hauteur; i++) { //Modification ici (à vérifier)
 			for (size_t j = largeur; j < bloc->largeur; j++) {
-				*bloc->matrice[i][j].couleurs = *bloc->matrice[i][largeur - 1].couleurs;
+				bloc->Y[i][j] = bloc->Y[i][largeur - 1];
 			}
 		}
 	}
@@ -167,23 +183,24 @@ void completer_bloc_P6(MCUs* bloc, uint32_t largeur, uint32_t hauteur) {
 	if (bloc->hauteur != hauteur) {
 		for (size_t i = hauteur; i < bloc->hauteur; i++) {
 			for (size_t j = 0; j < bloc->largeur; j++) {
-				bloc->matrice[i][j].couleurs[0] = bloc->matrice[hauteur - 1][j].couleurs[0];
-				bloc->matrice[i][j].couleurs[1] = bloc->matrice[hauteur - 1][j].couleurs[1];
-				bloc->matrice[i][j].couleurs[2] = bloc->matrice[hauteur - 1][j].couleurs[2];
+				bloc->Y[i][j] = bloc->Y[hauteur - 1][j];
+				bloc->Cb[i][j] = bloc->Cb[hauteur -1][j];
+				bloc->Cr[i][j] = bloc->Cr[hauteur - 1][j];
 			}
 		}
 	}
 
 	/*Complétion en largeur*/
 	if (bloc->largeur != largeur) {
-		for (size_t i = 0; i < hauteur; i++) {
+		for (size_t i = 0; i < bloc->hauteur; i++) {
 			for (size_t j = largeur; j < bloc->largeur; j++) {
-				bloc->matrice[i][j].couleurs[0] = bloc->matrice[i][largeur - 1].couleurs[0];
-				bloc->matrice[i][j].couleurs[1] = bloc->matrice[i][largeur - 1].couleurs[1];
-				bloc->matrice[i][j].couleurs[2] = bloc->matrice[i][largeur - 1].couleurs[2];
+				bloc->Y[i][j] = bloc->Y[i][largeur - 1];
+				bloc->Cb[i][j] = bloc->Cb[i][largeur - 1];
+				bloc->Cr[i][j] = bloc->Cr[i][largeur - 1];
 			}
 		}
 	}
+
 }
 
 void parse_P5(FILE* fichier, image_ppm* image, MCUs* bloc, uint32_t largeur, uint32_t hauteur) {
@@ -194,7 +211,8 @@ void parse_P5(FILE* fichier, image_ppm* image, MCUs* bloc, uint32_t largeur, uin
 		for (size_t j = 0; j < largeur; j++) {
 			erreur = fread(&octet, sizeof(uint8_t), 1, fichier);
 			if (erreur != 1) exit(EXIT_FAILURE);
-			*bloc->matrice[i][j].couleurs = octet;
+			//*bloc->matrice[i][j].couleurs = octet;
+			bloc->Y[i][j] = octet;
 		}
 		fseek(fichier, (long) image->largeur - largeur, SEEK_CUR);
 	}
@@ -216,13 +234,13 @@ void parse_P6(FILE* fichier, image_ppm* image, MCUs* bloc, uint32_t largeur, uin
 			if (erreur != 1) exit(EXIT_FAILURE);
 			erreur = fread(&b, sizeof(uint8_t), 1, fichier);
 			if (erreur != 1) exit(EXIT_FAILURE);
-			conversion(&bloc->matrice[i][j], r, g, b);
+			conversion(bloc, i, j, r, g, b);
 		}
 		fseek(fichier, (long) (image->largeur - largeur) * 3, SEEK_CUR);
 	}
 	fseek(fichier, - (long) (3 * image->largeur * hauteur), SEEK_CUR);
 	fseek(fichier, - (long) (bloc->numero_ligne * image->largeur * bloc->hauteur * 3 + bloc->numero_colonne * bloc->largeur * 3), SEEK_CUR); //On revient au début
-	
+
 	completer_bloc_P6(bloc, largeur, hauteur);
 }
 
@@ -242,7 +260,7 @@ void afficher_MCUs(MCUs* bloc, bool choix) {
 	if (choix) {
 		for (size_t i = 0; i < bloc->hauteur; i++) {
 			for (size_t j = 0; j < bloc->largeur; j++) {
-				printf("%02hhX ", *bloc->matrice[i][j].couleurs);
+				printf("%02hhX ", bloc->Y[i][j]);
 			}
 			printf("\n");
 		}
@@ -250,9 +268,9 @@ void afficher_MCUs(MCUs* bloc, bool choix) {
 	else {
 		for (size_t i = 0; i < bloc->hauteur; i++) {
 			for (size_t j = 0; j < bloc->largeur; j++) {
-				printf("%02hhX ", bloc->matrice[i][j].couleurs[0]);
-				printf("%02hhX ", bloc->matrice[i][j].couleurs[1]);
-				printf("%02hhX ", bloc->matrice[i][j].couleurs[2]);
+				printf("%02hhX ", bloc->Y[i][j]);
+				printf("%02hhX ", bloc->Cb[i][j]);
+				printf("%02hhX ", bloc->Cr[i][j]);
 			}
 			printf("\n");
 		}
