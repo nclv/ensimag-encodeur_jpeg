@@ -5,9 +5,9 @@
 
 void offset(int8_t input[8][8]) {
     /* Offset du tableau d'entrée pour améliorer le codage par magnitude */
-    for (uint8_t k = 0; k < 8; k++) {
-        for (uint8_t l = 0; l < 8; l++) {
-            input[k][l] -= 128;
+    for (size_t i = 0; i < 8; i++) {
+        for (size_t j = 0; j < 8; j++) {
+            input[i][j] = (int8_t)(input[i][j] - 128);
         }
     }
 }
@@ -36,11 +36,10 @@ void offset(int8_t input[8][8]) {
     these can range from -1024 to 1023.
 */
 void dct(int8_t input[8][8], int16_t output[8][8]) {
-    size_t i;
-    int tmp[8][8];
+    int32_t tmp[8][8];
 
     /* Approximations entières des valeurs des cosinus */
-    static const int cos1 = 1004, /* cos(pi/16) << 10 */
+    static const int16_t cos1 = 1004, /* cos(pi/16) << 10 */
         cos7 = 200,               /* cos(7pi/16) << 10 */
         cos3 = 851,               /* cos(3pi/16) << 10 */
         cos5 = 569,               /* cos(5pi/16) << 10 */
@@ -48,18 +47,18 @@ void dct(int8_t input[8][8], int16_t output[8][8]) {
         racine2cos2 = 1337,       /* sqrt(2)*cos(2pi/16) << 10 */
         racine2 = 181;            /* sqrt(2) << 7 */
 
-    int a0, a1, a2, a3, a4, a5, a6, a7, a8;
+    int32_t a0, a1, a2, a3, a4, a5, a6, a7, a8;
 
     /* opérations sur les lignes */
-    for (i = 0; i < 8; i++) {
-        a0 = (int)(input[0][i]);
-        a1 = (int)(input[1][i]);
-        a2 = (int)(input[2][i]);
-        a3 = (int)(input[3][i]);
-        a4 = (int)(input[4][i]);
-        a5 = (int)(input[5][i]);
-        a6 = (int)(input[6][i]);
-        a7 = (int)(input[7][i]);
+    for (size_t i = 0; i < 8; i++) {
+        a0 = (int32_t)(input[0][i]);
+        a1 = (int32_t)(input[1][i]);
+        a2 = (int32_t)(input[2][i]);
+        a3 = (int32_t)(input[3][i]);
+        a4 = (int32_t)(input[4][i]);
+        a5 = (int32_t)(input[5][i]);
+        a6 = (int32_t)(input[6][i]);
+        a7 = (int32_t)(input[7][i]);
 
         /* Etape 1: correspond aux b
         on remplace :
@@ -132,15 +131,15 @@ void dct(int8_t input[8][8], int16_t output[8][8]) {
     }
 
     /* opérations sur les colonnes */
-    for (i = 0; i < 8; i++) {
-        a0 = tmp[0][i];
-        a1 = tmp[1][i];
-        a2 = tmp[2][i];
-        a3 = tmp[3][i];
-        a4 = tmp[4][i];
-        a5 = tmp[5][i];
-        a6 = tmp[6][i];
-        a7 = tmp[7][i];
+    for (size_t j = 0; j < 8; j++) {
+        a0 = tmp[0][j];
+        a1 = tmp[1][j];
+        a2 = tmp[2][j];
+        a3 = tmp[3][j];
+        a4 = tmp[4][j];
+        a5 = tmp[5][j];
+        a6 = tmp[6][j];
+        a7 = tmp[7][j];
 
         /* Etape 1 */
         a8 = a7 + a0;
@@ -177,13 +176,13 @@ void dct(int8_t input[8][8], int16_t output[8][8]) {
 
         /* Etape 4 */
         /* La racine de deux change les décallages */
-        output[0][i] = (int16_t)((a6 + 4) >> 3);  // redécallage de 0 + (10 - 7), ajout de 1/4 pour un meilleur résultat
-        output[4][i] = (int16_t)((a4 + 4) >> 3);
-        output[2][i] = (int16_t)((a8 + 4096) >> 13);  // redécallage de 10 + (10 - 7), ajout de 1/2
-        output[6][i] = (int16_t)((a7 + 4096) >> 13);
-        output[7][i] = (int16_t)((a2 - a5 + 4096) >> 13);
-        output[1][i] = (int16_t)((a2 + a5 + 4096) >> 13);
-        output[3][i] = (int16_t)(((a3 >> 8) * racine2 + 2048) >> 12);  // redécallage de 17 - 8 + (10 - 7), ajout de 1/2
-        output[5][i] = (int16_t)(((a0 >> 8) * racine2 + 2048) >> 12);
+        output[0][j] = (int16_t)((a6 + 4) >> 3);  // redécallage de 0 + (10 - 7), ajout de 1/4 pour un meilleur résultat
+        output[4][j] = (int16_t)((a4 + 4) >> 3);
+        output[2][j] = (int16_t)((a8 + 4096) >> 13);  // redécallage de 10 + (10 - 7), ajout de 1/2
+        output[6][j] = (int16_t)((a7 + 4096) >> 13);
+        output[7][j] = (int16_t)((a2 - a5 + 4096) >> 13);
+        output[1][j] = (int16_t)((a2 + a5 + 4096) >> 13);
+        output[3][j] = (int16_t)(((a3 >> 8) * racine2 + 2048) >> 12);  // redécallage de 17 - 8 + (10 - 7), ajout de 1/2
+        output[5][j] = (int16_t)(((a0 >> 8) * racine2 + 2048) >> 12);
     }
 }
