@@ -78,12 +78,6 @@ extern void fermer_fichier(FILE* fichier);
  */
 extern image_ppm* parse_entete(FILE* fichier);
 
-/* type: char
- * rtype: bool
- * Choisit le mode de remplissage P5 ou P6
- */
-extern bool choisir_format(char format[]);
-
 /* type: image_ppm*
  * rtype: MCUs*
  * Initialise les MCUs en fonction de l'échantillonage
@@ -91,19 +85,6 @@ extern bool choisir_format(char format[]);
  */
 extern MCUs* initialiser_MCUs(image_ppm* image, uint8_t facteurs[NOMBRE_FACTEURS]);
 
-/* type: MCUs*
- * type: uint32_t
- * rtype: uint32_t
- * Récupère la largeur des MCUs
- */
-extern uint32_t recuperer_largeur(MCUs* bloc, uint32_t largeur);
-
-/* type: MCUs*
- * type: uint32_t
- * rtype: uint32_t
- * Récupère la hauteur des MCUs
- */
-extern uint32_t recuperer_hauteur(MCUs* bloc, uint32_t hauteur);
 
 /* type: FILE*
  * type: image_ppm*
@@ -112,44 +93,6 @@ extern uint32_t recuperer_hauteur(MCUs* bloc, uint32_t hauteur);
  * Récupère les MCUs à la volée un par un
  */
 extern void recuperer_MCUs(FILE* fichier, image_ppm* image, MCUs* bloc);
-
-/* type: MCUs*
- * type: uint32_t
- * type: uint32_t
- * rtype: void
- * Complète en largeur et en hauteur le MCU donné
- * Pour un format P5
- */
-extern void completer_grayscale(MCUs* bloc, uint32_t largeur, uint32_t hauteur);
-
-/* type: MCUs*
- * type: uint32_t
- * type: uint32_t
- * rtype: void
- * Complète en largeur et en hauteur le MCU donné
- * Pour un format P6
- */
-extern void completer_RGB(MCUs* bloc, uint32_t largeur, uint32_t hauteur);
-
-/* type: FILE*
- * type: image_ppm*
- * type: MCUs*
- * type: uint32_t
- * type: uint32_t
- * rtype: void
- * Parse l'image en P5 (MCU par MCU à la volée)
- */
-extern void parse_grayscale(FILE* fichier, image_ppm* image, MCUs* bloc, uint32_t largeur, uint32_t hauteur);
-
-/* type: FILE*
- * type: image_ppm*
- * type: MCUs*
- * type: uint32_t
- * type: uint32_t
- * rtype: void
- * Parse l'image en P6 (MCU par MCU à la volée)
- */
-extern void parse_RGB(FILE* fichier, image_ppm* image, MCUs* bloc, uint32_t largeur, uint32_t hauteur);
 
 /* type: image_ppm*
  * type: MCUs*
