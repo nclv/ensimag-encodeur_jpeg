@@ -22,9 +22,9 @@ LDFLAGS = -Wl,--gc-sections -Wl,--print-gc-sections
 # typing 'make' will invoke the first target entry in the file 
 
 TARGET = test_conversion test_ppm test_bitstream test_dct test_zigzag test_quantification\
-	test_jpeg_writer test_file test_huffman test_compression
+	test_jpeg_writer test_file test_huffman
 OBJS = $(SRC)conversion.o test_conversion.o \
-	$(SRC)ppm.o\
+	$(SRC)ppm.o test_ppm.o\
 	$(SRC)bitstream.o test_bitstream.o\
 	$(SRC)dct.o test_dct.o\
 	$(SRC)zigzag.o test_zigzag.o\
@@ -32,7 +32,6 @@ OBJS = $(SRC)conversion.o test_conversion.o \
 	$(SRC)jpeg_writer.o test_jpeg_writer.o\
 	$(SRC)file.o test_file.o\
 	$(SRC)huffman.o test_huffman.o \
-	$(SRC)compression.o test_compression.o
 
 OBJS_PROF = ../../obj_prof/htables_prof.o
 
@@ -43,7 +42,7 @@ test_conversion: $(SRC)conversion.o test_conversion.o
 	$(info Compilation de test_conversion)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
-test_ppm: $(SRC)ppm.o test_ppm.o $(SRC)conversion.o $(SRC)echantillonage.o
+test_ppm: $(SRC)ppm.o test_ppm.o
 	$(info )
 	$(info Compilation de test_ppm)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
@@ -76,11 +75,6 @@ test_jpeg_writer: $(SRC)huffman.o $(SRC)jpeg_writer.o test_jpeg_writer.o
 test_huffman: $(SRC)huffman.o test_huffman.o
 	$(info )
 	$(info Compilation de test_huffman)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
-
-test_compression: $(SRC)ppm.o $(SRC)compression.o $(SRC)conversion.o test_compression.o
-	$(info )
-	$(info Compilation de test_compression)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
 # this is a suffix replacement rule for building .o's from .c's

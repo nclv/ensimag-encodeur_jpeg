@@ -1,7 +1,6 @@
 #include <assert.h>
 #include <stdint.h>
 
-#include "ppm.h"
 #include "conversion.h"
 
 void conversion(MCUs* bloc, size_t i, size_t j, uint8_t r, uint8_t g, uint8_t b) {
