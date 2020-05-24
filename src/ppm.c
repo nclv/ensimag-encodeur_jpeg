@@ -323,16 +323,16 @@ static void afficher_MCU_grayscale(MCUs* mcu) {
 static void afficher_MCU_RGB(MCUs* mcu) {
     for (size_t i = 0; i < mcu->hauteur; i++) {
         for (size_t j = 0; j < mcu->largeur; j++) {
-            printf("%02hhX ", mcu->Y[i][j]);
+            // printf("%02hhX ", mcu->Y[i][j]);
             printf("%02hhX ", mcu->Cb[i][j]);
-            printf("%02hhX ", mcu->Cr[i][j]);
+            // printf("%02hhX ", mcu->Cr[i][j]);
         }
         printf("\n");
     }
 }
 
-void afficher_MCUs(image_ppm* image, MCUs* mcu) {
-    if (is_grayscale_format(image->format)) {
+void afficher_MCUs(char format[TAILLE_PPM], MCUs* mcu) {
+    if (is_grayscale_format(format)) {
         afficher_MCU_grayscale(mcu);
     } else {
         afficher_MCU_RGB(mcu);

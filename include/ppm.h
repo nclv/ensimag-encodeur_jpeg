@@ -99,6 +99,6 @@ extern void recuperer_MCUs(FILE* fichier, image_ppm* image, MCUs* bloc);
  * rtype: void
  * Affiche un MCU en héxadécimal en fonction de P5 ou P6
  */
-extern void afficher_MCUs(image_ppm* image, MCUs* bloc);
+extern void afficher_MCUs(char format[TAILLE_PPM], MCUs* bloc);
 
 #endif
