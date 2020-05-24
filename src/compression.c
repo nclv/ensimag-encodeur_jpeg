@@ -1,38 +1,31 @@
 #include "compression.h"
 
-bool compression(char* nom_fichier, uint8_t h, uint8_t v) {
+bool compression(char* nom_fichier) {
 	/*Ouverture du fichier*/
 	FILE* fichier = ouvrir_fichier(nom_fichier);
 
 	/*Parsing en-tête*/
 	image_ppm* image = parse_entete(fichier);
 
-	/*Choix du sous-échantillonage*/
-	ech echantillonage;
-	if (choix_remplissage(image->format)) {
-		echantillonage = SIMPLE;
-	}
-	else {
-		echantillonage = recuperer_echantillonage(h, v);
-	}
+	MCUs* bloc = initialiser_MCUs(image);
 
-	MCUs* bloc = initialiser_MCUs(image, echantillonage);
+	printf("Largeur image : %d\n", image->largeur);
+	printf("Hauteur image : %d\n", image->hauteur);
+	printf("Largeur totale : %d\n", image->largeur_totale);
+	printf("Hauteur totale : %d\n", image->hauteur_totale);
+	printf("Plage de couleurs : %d\n", image->nb_couleurs);
+	printf("Nombre de MCUs : %d\n", image->nb_MCUs);
+	printf("Format : %2s\n", image->format);
+
+	printf("Largeur_bloc = %d\n", bloc->largeur);
+	printf("Hauteur_bloc = %d\n", bloc->hauteur);
+
 
 	/*Traitement des MCUs*/
 	for (size_t i = 0; i < image->nb_MCUs; i++) {
 		printf("Traitement du bloc %ld\n", i + 1);
 		recuperer_MCUs(fichier, image, bloc);
-		if (choix_remplissage(image->format)) {
-			afficher_MCUs(bloc, true);
-		}
-		else {
-			afficher_MCUs(bloc, false);
-		}
-		if (!choix_remplissage(image->format) && realiser_downsampling(bloc->echantillonage)) {
-			initialiser_composantes(bloc);
-			downsampling(bloc);
-			afficher_MCUs_Downsampling(bloc);
-		}
+		afficher_MCUs(image, bloc);
 	}
 
 	/*Fermeture du fichier*/

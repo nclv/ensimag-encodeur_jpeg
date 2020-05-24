@@ -6,16 +6,14 @@
 #include <stdint.h>
 
 #include "ppm.h"
-#include "echantillonage.h"
+#include "structures.h"
 
 /* type: char*
- * type: uint8_t
- * type: uint8_t
  * rtype: bool
  * Compresse l'image au format ppm
  * Renvoie True si la compression s'est bien effectuée
  * False sinon
  */
-extern bool compression(char* nom_fichier, uint8_t h, uint8_t v);
+extern bool compression(char* nom_fichier);
 
 #endif

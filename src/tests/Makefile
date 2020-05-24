@@ -29,7 +29,6 @@ OBJS = $(SRC)conversion.o test_conversion.o \
 	$(SRC)dct.o test_dct.o\
 	$(SRC)zigzag.o test_zigzag.o\
 	$(SRC)quantification.o test_quantification.o\
-	$(SRC)echantillonage.o\
 	$(SRC)jpeg_writer.o test_jpeg_writer.o\
 	$(SRC)file.o test_file.o\
 	$(SRC)huffman.o test_huffman.o \
@@ -79,7 +78,7 @@ test_huffman: $(SRC)huffman.o test_huffman.o
 	$(info Compilation de test_huffman)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
-test_compression: $(SRC)ppm.o $(SRC)compression.o $(SRC)conversion.o $(SRC)echantillonage.o test_compression.o
+test_compression: $(SRC)ppm.o $(SRC)compression.o $(SRC)conversion.o test_compression.o
 	$(info )
 	$(info Compilation de test_compression)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)

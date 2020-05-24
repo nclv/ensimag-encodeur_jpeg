@@ -1,0 +1,13 @@
+ppm.c:4:7:ouvrir_fichier	48	static
+ppm.c:12:6:fermer_fichier	32	static
+ppm.c:17:12:parse_entete	64	static
+ppm.c:41:6:choisir_format	32	static
+ppm.c:46:7:initialiser_MCUs	80	static
+ppm.c:107:10:recuperer_largeur	16	static
+ppm.c:120:10:recuperer_hauteur	16	static
+ppm.c:133:6:recuperer_MCUs	64	static
+ppm.c:168:6:completer_grayscale	16	static
+ppm.c:188:6:completer_RGB	16	static
+ppm.c:212:6:parse_grayscale	80	static
+ppm.c:238:6:parse_RGB	80	static
+ppm.c:265:6:afficher_MCUs	64	static

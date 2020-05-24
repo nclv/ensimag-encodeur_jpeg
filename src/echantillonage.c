@@ -1,5 +1,17 @@
 #include "echantillonage.h"
 
+/*bool verifier_facteurs(uint8_t h1, uint8_t h2, uint8_t h3, uint8_t v1, uint8_t v2, uint8_t v3) {
+	return (h1 >= 1 && h1 <= 4 &&
+			h2 >= 1 && h2 <= 4 &&
+			h3 >= 1 && h3 <= 4 &&
+			v1 >= 1 && v1 <= 4 &&
+			v2 >= 1 && v2 <= 4 &&
+			v3 >= 1 && v3 <= 4 &&
+			(h1 * v1 + h2 * v2 + h3 * v3) <= 10 &&
+			(h1 % h2 == 0) && (h1 % h3 == 0) &&
+			(v1 % v2 == 0) && (v1 % v3 == 0);
+}*/
+
 ech recuperer_echantillonage(uint8_t h, uint8_t v) {
 	/*Spécifiée uniquement pour les types du sujet
 	 *pour le moment*/

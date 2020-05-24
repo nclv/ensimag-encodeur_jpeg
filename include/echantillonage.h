@@ -11,6 +11,12 @@
 
 /* type: uint8_t
  * type: uint8_t
+ * rtype: bool
+ */
+//extern bool verifier_facteurs(uint8_t h1, uint8_t h2, uint8_t h3, uint8_t v1, uint8_t, v2, uint8_t v3);
+
+/* type: uint8_t
+ * type: uint8_t
  * rtype: ech
  * Récupère l'échantillonage
  */
