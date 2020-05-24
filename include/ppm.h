@@ -27,21 +27,6 @@ typedef struct image_ppm {
     char format[TAILLE_PPM];
 } image_ppm;
 
-/*Définition des composantes Y*/
-typedef struct Y {
-    uint8_t** Y_downsampling;
-} Y;
-
-/*Définition des composantes Cb*/
-typedef struct Cb {
-    uint8_t** Cb_downsampling;
-} Cb;
-
-/*Définition des composants Cr*/
-typedef struct Cr {
-    uint8_t** Cr_downsampling;
-} Cr;
-
 /*Définition des MCUs*/
 typedef struct MCUs {
     uint32_t largeur;
@@ -54,9 +39,6 @@ typedef struct MCUs {
     uint8_t** Y;
     uint8_t** Cb;
     uint8_t** Cr;
-    Y* comp_Y;
-    Cb* comp_Cb;
-    Cr* comp_Cr;
 } MCUs;
 
 /* type: char*

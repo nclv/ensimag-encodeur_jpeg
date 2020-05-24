@@ -13,59 +13,63 @@ void afficher_data_unit(uint8_t** data_unit) {
     }
 }
 
-void process_data_units(MCUs* mcu, uint8_t facteurs[NOMBRE_FACTEURS], uint8_t** data_unit) {
+void process_Y(uint8_t **Y, uint8_t h1, uint8_t v1, uint8_t** data_unit) {
     /* Traitement des blocs Y */
-    // printf("%d %d\n", facteurs[V1], facteurs[H1]);
-    // for (size_t v = 0; v < facteurs[V1]; v++) {
-    //     for (size_t h = 0; h < facteurs[H1]; h++) {
-    //         for (size_t i = 0; i < 8; i++) {
-    //             for (size_t j = 0; j < 8; j++) {
-    //                 data_unit[i][j] = mcu->Y[i + 8 * v][j + 8 * h];
-    //             }
-    //         }
-    //         /* Encodage de data_unit */
-    //         afficher_data_unit(data_unit);
-    //     }
-    // }
-
-    /* Traitement des blocs Cb avec échantillonnage horizontal */
-    // printf("%d %d\n", facteurs[H2], facteurs[V2]);
-    // for (size_t v = 0; v < facteurs[V1]; v++) {
-    //     uint8_t count_horizontal = 1;
-    //     for (size_t h = 0; h < facteurs[H1]; h++) {
-    //         for (size_t i = 0; i < 8; i++) {
-    //             for (size_t j = 0; j < 8; j++) {
-    //                 data_unit[i][j] = (uint8_t)(data_unit[i][j] + mcu->Cb[i + 8 * v][j + 8 * h] * facteurs[H2] / facteurs[H1]);
-    //             }
-    //         }
-    //         printf("Horizontal %d\n", count_horizontal);
-    //         if (count_horizontal == facteurs[H1] / facteurs[H2]) {
-    //             /* Encodage de data_unit */
-    //             afficher_data_unit(data_unit);
-    //             /* Mise à zéro de data_unit */
-    //             for (size_t i = 0; i < 8; i++) {
-    //                 for (size_t j = 0; j < 8; j++) {
-    //                     data_unit[i][j] = 0;
-    //                 }
-    //             }
-    //             count_horizontal = 0;
-    //         }
-    //         count_horizontal++;
-    //     }
-    // }
-
-    /* Traitement des blocs Cb avec échantillonnage vertical */
-    printf("%d %d\n", facteurs[H2], facteurs[V2]);
-    for (size_t h = 0; h < facteurs[H1]; h++) {
-        uint8_t count_vertical = 1;
-        for (size_t v = 0; v < facteurs[V1]; v++) {
+    printf("%d %d\n", v1, h1);
+    for (size_t v = 0; v < v1; v++) {
+        for (size_t h = 0; h < h1; h++) {
             for (size_t i = 0; i < 8; i++) {
                 for (size_t j = 0; j < 8; j++) {
-                    data_unit[i][j] = (uint8_t)(data_unit[i][j] + mcu->Cb[i + 8 * v][j + 8 * h] * facteurs[V2] / facteurs[V1]);
+                    data_unit[i][j] = Y[i + 8 * v][j + 8 * h];
+                }
+            }
+            /* Encodage de data_unit */
+            afficher_data_unit(data_unit);
+        }
+    }
+}
+
+void process_horizontal(uint8_t **chroma, uint8_t h1, uint8_t v1, uint8_t h_chroma, uint8_t v_chroma, uint8_t** data_unit) {
+    /* Traitement des blocs Cb / Cr avec échantillonnage horizontal */
+    printf("%d %d\n", h_chroma, v_chroma);
+    for (size_t v = 0; v < v1; v++) {
+        uint8_t count_horizontal = 1;
+        for (size_t h = 0; h < h1; h++) {
+            for (size_t i = 0; i < 8; i++) {
+                for (size_t j = 0; j < 8; j++) {
+                    data_unit[i][j] = (uint8_t)(data_unit[i][j] + chroma[i + 8 * v][j + 8 * h] * h_chroma / h1);
+                }
+            }
+            printf("Horizontal %d\n", count_horizontal);
+            if (count_horizontal == h1 / h_chroma) {
+                /* Encodage de data_unit */
+                afficher_data_unit(data_unit);
+                /* Mise à zéro de data_unit */
+                for (size_t i = 0; i < 8; i++) {
+                    for (size_t j = 0; j < 8; j++) {
+                        data_unit[i][j] = 0;
+                    }
+                }
+                count_horizontal = 0;
+            }
+            count_horizontal++;
+        }
+    }
+}
+
+void process_vertical(uint8_t **chroma, uint8_t h1, uint8_t v1, uint8_t h_chroma, uint8_t v_chroma, uint8_t** data_unit) {
+    /* Traitement des blocs Cb / Cr avec échantillonnage horizontal */
+    printf("%d %d\n", h_chroma, v_chroma);
+    for (size_t h = 0; h < h1; h++) {
+        uint8_t count_vertical = 1;
+        for (size_t v = 0; v < v1; v++) {
+            for (size_t i = 0; i < 8; i++) {
+                for (size_t j = 0; j < 8; j++) {
+                    data_unit[i][j] = (uint8_t)(data_unit[i][j] + chroma[i + 8 * v][j + 8 * h] * v_chroma / v1);
                 }
             }
             printf("vertical %d\n", count_vertical);
-            if (count_vertical == facteurs[V1] / facteurs[V2]) {
+            if (count_vertical == v1 / v_chroma) {
                 /* Encodage de data_unit */
                 afficher_data_unit(data_unit);
                 /* Mise à zéro de data_unit */
@@ -79,8 +83,16 @@ void process_data_units(MCUs* mcu, uint8_t facteurs[NOMBRE_FACTEURS], uint8_t** 
             count_vertical++;
         }
     }
+}
 
-    
+void process_data_units(MCUs* mcu, uint8_t facteurs[NOMBRE_FACTEURS], uint8_t** data_unit) {
+    // process_Y(mcu->Y, facteurs[H1], facteurs[V1], data_unit);
+
+    // process_horizontal(mcu->Cb, facteurs[H1], facteurs[V1], facteurs[H2], facteurs[V2], data_unit);
+    process_vertical(mcu->Cb, facteurs[H1], facteurs[V1], facteurs[H2], facteurs[V2], data_unit);
+
+    // process_horizontal(mcu->Cr, facteurs[H1], facteurs[V1], facteurs[H3], facteurs[V3], data_unit);
+    // process_vertical(mcu->Cr, facteurs[H1], facteurs[V1], facteurs[H3], facteurs[V3], data_unit);    
 }
 
 int main(int argc, char** argv) {
