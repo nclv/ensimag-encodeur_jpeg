@@ -1,4 +1,5 @@
 #include "ppm.h"
+#include "structures.h"
 #include "conversion.h"
 
 FILE* ouvrir_fichier(char* nom_fichier) {

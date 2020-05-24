@@ -7,8 +7,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "structures.h"
-
 /* type: char*
  * rtype: FILE*
  * Ouvre le fichier PPM/PGM
