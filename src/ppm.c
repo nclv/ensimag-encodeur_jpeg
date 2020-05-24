@@ -47,6 +47,27 @@ bool choisir_format(char format[]) {
     return !strcmp(format, NIVEAUX_GRIS);
 }
 
+static void allocate_MCUs_grayscale(MCUs *bloc) {
+    bloc->largeur = TAILLE_BLOC;
+    bloc->hauteur = TAILLE_BLOC;
+
+    bloc->Cb = NULL;
+    bloc->Cr = NULL;
+    bloc->comp_Y = NULL;
+    bloc->comp_Cb = NULL;
+    bloc->comp_Cr = NULL;
+
+    /*Allocation Y*/
+    bloc->Y = malloc(bloc->hauteur * sizeof(uint8_t*));
+    if (bloc->Y == NULL) {
+        free(bloc);
+        exit(EXIT_FAILURE);
+    }
+    for (size_t i = 0; i < bloc->hauteur; i++) {
+        bloc->Y[i] = malloc(bloc->largeur * sizeof(uint8_t));
+    }
+}
+
 MCUs* initialiser_MCUs(image_ppm* image, uint8_t facteurs[NOMBRE_FACTEURS]) {
     /*Initialisation des blocs*/
     MCUs* bloc = malloc(sizeof(MCUs));
@@ -57,20 +78,7 @@ MCUs* initialiser_MCUs(image_ppm* image, uint8_t facteurs[NOMBRE_FACTEURS]) {
 	 *même temps. On évite les if dans les boucles*/
     /*Grayscale*/
     if (choisir_format(image->format)) {
-        bloc->largeur = TAILLE_BLOC;
-        bloc->hauteur = TAILLE_BLOC;
-
-        bloc->Cb = NULL;
-        bloc->Cr = NULL;
-        bloc->comp_Y = NULL;
-        bloc->comp_Cb = NULL;
-        bloc->comp_Cr = NULL;
-
-        /*Allocation Y*/
-        bloc->Y = malloc(bloc->hauteur * sizeof(uint8_t*));
-        for (size_t i = 0; i < bloc->hauteur; i++) {
-            bloc->Y[i] = malloc(bloc->largeur * sizeof(uint8_t));
-        }
+        allocate_MCUs_grayscale(bloc);
     } else { /*RGB*/
         bloc->largeur = (uint32_t)facteurs[H1] * TAILLE_BLOC;
         bloc->hauteur = (uint32_t)facteurs[V1] * TAILLE_BLOC;

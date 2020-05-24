@@ -16,9 +16,6 @@
 #define H3 4
 #define V3 5
 
-/*Définition des facteurs d'échantillonage*/
-// extern uint8_t facteurs[NOMBRE_FACTEURS];
-
 /*Définition d'une image au format PPM/PGM*/
 typedef struct image_ppm {
     uint32_t largeur;
