@@ -57,9 +57,9 @@ static void allocate_MCUs_grayscale(MCUs* bloc) {
 
     bloc->Cb = NULL;
     bloc->Cr = NULL;
-    bloc->comp_Y = NULL;
-    bloc->comp_Cb = NULL;
-    bloc->comp_Cr = NULL;
+    // bloc->comp_Y = NULL;
+    // bloc->comp_Cb = NULL;
+    // bloc->comp_Cr = NULL;
 
     /*Allocation Y*/
     bloc->Y = malloc(bloc->hauteur * sizeof(uint8_t*));
@@ -76,16 +76,16 @@ static void allocate_MCUs_RGB(MCUs* bloc, uint8_t facteurs[NOMBRE_FACTEURS]) {
     bloc->largeur = (uint32_t)facteurs[H1] * TAILLE_BLOC;
     bloc->hauteur = (uint32_t)facteurs[V1] * TAILLE_BLOC;
     /*Sous-échantillonage simple*/
-    if (facteurs[H2] == 1 && facteurs[V2] == 1) {
-        bloc->comp_Cb = NULL;
-    }
-    if (facteurs[H3] == 1 && facteurs[V3] == 1) {
-        bloc->comp_Cr = NULL;
-    }
-    /*1x1, 1x1, 1x1*/
-    if (bloc->largeur == TAILLE_BLOC && bloc->hauteur == TAILLE_BLOC) {
-        bloc->comp_Y = NULL;
-    }
+    // if (facteurs[H2] == 1 && facteurs[V2] == 1) {
+    //     bloc->comp_Cb = NULL;
+    // }
+    // if (facteurs[H3] == 1 && facteurs[V3] == 1) {
+    //     bloc->comp_Cr = NULL;
+    // }
+    // /*1x1, 1x1, 1x1*/
+    // if (bloc->largeur == TAILLE_BLOC && bloc->hauteur == TAILLE_BLOC) {
+    //     bloc->comp_Y = NULL;
+    // }
 
     /*Allocations Y, Cb, Cr*/
     bloc->Y = malloc(bloc->hauteur * sizeof(uint8_t*));
