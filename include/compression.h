@@ -5,9 +5,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "ppm.h"
-#include "structures.h"
-
 /* type: char*
  * rtype: bool
  * Compresse l'image au format ppm
