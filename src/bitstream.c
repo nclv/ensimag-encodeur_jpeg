@@ -41,7 +41,7 @@ void bitstream_display(bitstream *stream) {
 
 void bitstream_flush(bitstream *stream) {
     size_t length = stream->last_written_bit_offset;
-    for (uint32_t i = 0; i < length; i++) {
+    for (size_t i = 0; i < length; i++) {
         printf("Ecriture du bit %d dans le fichier jpeg\n", stream->buffer[i]);
         stream->buffer[i] = 0;
         stream->last_written_bit_offset--;
@@ -64,7 +64,7 @@ void bitstream_write_bits(bitstream *stream, uint32_t value, uint8_t nb_bits, bo
     uint32_t mask = 1U << (nb_bits - 1);
 
     size_t current_bit_offset = stream->last_written_bit_offset;
-    for (uint32_t i = 0; i < nb_bits; i++) {
+    for (size_t i = 0; i < nb_bits; i++) {
         stream->buffer[current_bit_offset + i] = (value & mask) ? 1 : 0;
         value <<= 1;
         stream->last_written_bit_offset += 1;

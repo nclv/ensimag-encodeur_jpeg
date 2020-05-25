@@ -76,6 +76,7 @@ static void jpeg_write_header_grayscale(jpeg *jpg) {
     const unsigned char WIDTH[2] = {(jpg->image_width >> 8) & 0xff,
                                     jpg->image_width & 0xff};
 
+    /* 8-bit integer type donc pas besoin de & 0xff */
     uint8_t y_sampling_factor = (uint8_t)((jpg->sampling_factors[Y][H] << 4) | jpg->sampling_factors[Y][V]);
 
     fwrite(SOI, sizeof SOI, 1, file);
@@ -149,11 +150,13 @@ static void jpeg_write_header_RGB(jpeg *jpg) {
     const unsigned char SOS[2] = {0xff, 0xda};
 
     /* On doit inverser les octets pour l'écriture */
+    /* The masking is to avoid implicit sign extension. */
     const unsigned char HEIGTH[2] = {(jpg->image_height >> 8) & 0xff,
                                      jpg->image_height & 0xff};
     const unsigned char WIDTH[2] = {(jpg->image_width >> 8) & 0xff,
                                     jpg->image_width & 0xff};
 
+    /* 8-bit integer type donc pas besoin de & 0xff */
     uint8_t y_sampling_factor = (uint8_t)((jpg->sampling_factors[Y][H] << 4) | jpg->sampling_factors[Y][V]);
     uint8_t cb_sampling_factor = (uint8_t)((jpg->sampling_factors[Cb][H] << 4) | jpg->sampling_factors[Cb][V]);
     uint8_t cr_sampling_factor = (uint8_t)((jpg->sampling_factors[Cr][H] << 4) | jpg->sampling_factors[Cr][V]);
