@@ -175,7 +175,7 @@ void dct(int8_t input[8][8], int16_t output[8][8]) {
         a3 -= a1;
 
         /* Etape 4 */
-        /* La racine de deux change les décallages */
+        /* La racine de deux change les décallages, adaptation aux valeurs d'entrée négatives */
         output[0][j] = (int16_t)((a6 + 4) >> 3);  // redécallage de 0 + (10 - 7), ajout de 1/4 pour un meilleur résultat
         output[4][j] = (int16_t)((a4 + 4) >> 3);
         output[2][j] = (int16_t)((a8 + 4096) >> 13);  // redécallage de 10 + (10 - 7), ajout de 1/2
