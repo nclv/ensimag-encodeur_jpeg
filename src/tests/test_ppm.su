@@ -1,5 +1,0 @@
-test_ppm.c:6:6:afficher_data_unit	48	static
-test_ppm.c:16:6:process_Y	80	static
-test_ppm.c:32:6:process_chroma	128	static
-test_ppm.c:71:6:process_data_units	48	static
-test_ppm.c:77:5:main	112	static
