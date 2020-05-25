@@ -7,31 +7,30 @@
 
 #include "ppm.h"
 
-char doc[] = "Application qui convertit une image PPM en une image au format JPEG.\n\n./ppm2jpeg --outfile=sortie.jpeg --sample=hvx1,hvx2,hvx3 input.pgm";
+/*Documentation*/
+char doc[] = "Application qui convertit une image PPM en une image au format JPEG.\n\n \
+            ./ppm2jpeg --outfile=sortie.jpeg --sample=hvx1,hvx2,hvx3 input.pgm";
 
+/*Structure des options*/
 static struct argp_option options[] = {
     {"outfile", 'o', "sortie.jpg", 0, "Output to sortie.jpg instead of standard output.", 0},
     {"sample", 's', "hxv", 0, "Définie les facteurs d'échantillonnage hvx=h1xv1,h2xv2,h3xv3 des trois composantes de couleur.", 0},
     {0}};
 
+/*Structure des arguments*/
 typedef struct arguments {
     const char *inputfile;
     const char *outfile;
     const char *sample;
 } arguments;
 
+/*Parsing des options*/
 static error_t parse_option(int key, char *arg, struct argp_state *state) {
-    // state->input points to our user-defined argument structure
     arguments *args = state->input;
 
     switch (key) {
         case ARGP_KEY_ARG:
-            if (state->arg_num == 0) {
-                args->inputfile = arg;
-            } else {
-                // the user provided too many arguments
-                argp_usage(state);
-            }
+            (state->arg_num == 0) ? args->inputfile = arg : argp_usage(state);
             break;
         case 'o':
             args->outfile = arg;
@@ -40,19 +39,14 @@ static error_t parse_option(int key, char *arg, struct argp_state *state) {
             args->sample = arg;
             break;
         case ARGP_KEY_END:
-            // we are done processing arguments.
-            // validate that user provided an input file
-            if (args->inputfile == NULL) {
-                argp_usage(state);
-            }
+            if (args->inputfile == NULL) argp_usage(state);
             break;
         default:
             return ARGP_ERR_UNKNOWN;
     }
+
     return 0;
 }
-
-struct argp argp = {options, parse_option, 0, doc, 0, 0, 0};
 
 char *strdup(const char *str) {
     size_t len = strlen(str) + 1;
@@ -62,26 +56,31 @@ char *strdup(const char *str) {
     return (char *)memcpy(new, str, len);
 }
 
-bool name_outfile_correct(const char* name) {
+/*Vérifie que le nom du fichier IO est correct
+ *C'est à dire un seul point et une extension donné
+ *Renvoie true si le nombre de points est == 1*/
+bool nb_points(const char* name) {
 	uint32_t cmp = 0;
 	size_t i = 0;
-	size_t pos;
 
 	while (cmp < 2 && name[i] != '\0') {
-		if (name[i] == '.') {
-			cmp += 1;
-			pos = i;
-		}
+		if (name[i] == '.') cmp += 1;
 		i++;
 	}
 
-	return (cmp == 1 && !strcmp(&name[pos], ".jpg"));
+	return (cmp == 1);
 }
 
+bool extension(const char* name, const char* extension) {
+  return !strcmp(name, extension);
+}
+
+/*Renvoie True si le caractère c est un digit*/
 bool is_digit(const char c) {
 	return c >= '0' && c <= '9';
 }
 
+/*Vérifie la syntaxe des arguments donnés*/
 bool verifier_sample(const char* sample) {
 	return strlen(sample) == 11 &&
 			is_digit(sample[0]) &&
@@ -97,6 +96,7 @@ bool verifier_sample(const char* sample) {
 			is_digit(sample[10]);
 }
 
+/*Vérifie les spécifications de la norme JPEG*/
 bool verifier_facteurs(uint8_t facteurs[]) {
 	bool est_correct = true;
 	size_t i = 0;
@@ -110,62 +110,60 @@ bool verifier_facteurs(uint8_t facteurs[]) {
 	return est_correct;
 }
 
+void verifier_syntaxe(arguments args) {
+  if (!(nb_points(args.inputfile) && nb_points(args.outfile))) {
+    printf("ERREUR: Trop ou pas assez de points dans les noms de fichiers IO\n");
+    exit(EXIT_FAILURE);
+  }
+  if (!(extension(strchr(args.inputfile, '.'), ".ppm") || extension(strchr(args.inputfile, '.'), ".pgm"))) {
+    printf("ERREUR: Les fichiers d'entrée ne sont pas reconnus\n");
+    exit(EXIT_FAILURE);
+  }
+  if (!extension(strchr(args.outfile, '.'), ".jpg")) {
+    printf("ERREUR: Le fichier de sortie n'est pas reconnu\n");
+    exit(EXIT_FAILURE);
+  }
+  if (extension(strchr(args.inputfile, '.'), ".ppm") && !strcmp(args.sample, "")) {
+    printf("ERREUR: Les facteurs d'échantillonage ne sont pas spécifiés.\n");
+    exit(EXIT_FAILURE);
+  }
+  else if (!verifier_sample(args.sample)) {
+    printf("ERREUR: Le format des facteurs d'échantillonage est incorrect\n");
+    exit(EXIT_FAILURE);
+  }
+}
+
+/*Structure argp*/
+struct argp argp = {options, parse_option, 0, doc, 0, 0, 0};
+
+/*Programme principal*/
 int main(int argc, char *argv[]) {
 	/*Traitement des arguments*/
 	arguments args = {0};
-    args.sample = "";
-    args.outfile = "output.jpg";
+  args.sample = "";
+  args.outfile = "output.jpg";
 
-    error_t error = argp_parse(&argp, argc, argv, 0, 0, &args);
-    if (error != 0) exit(EXIT_FAILURE);
-    printf("input file: %s\noutput file: %s\nsample: %s\n", args.inputfile, args.outfile, args.sample);
+  /*Parsing des arguments*/
+  error_t error = argp_parse(&argp, argc, argv, 0, 0, &args);
+  if (error != 0) exit(EXIT_FAILURE);
 
-	/*Vérification args.outfile*/
-	if (!name_outfile_correct(args.outfile)) {
-		printf("Nom de fichier de sortie incorrect\n");
-		exit(EXIT_FAILURE);
-	}
+  verifier_syntaxe(args);
 
-    /*Vérification de sample si RGB*/
-	char* index_point = index(args.inputfile, '.');
-	if (index_point == NULL) {
-		printf("Format d'inputfile incorrect\n");
-		exit(EXIT_FAILURE);
-	}
-	if (!strcmp(index_point, ".ppm") && !strcmp(index_point, ".pgm")) {
-		printf("Format d'image inconnu\n");
-		exit(EXIT_FAILURE);
-	}
+  /*Stockage sample*/
+  const char *separators = "x,";
+  char *sample_copy = strdup(args.sample);
+  char *strToken = strtok(sample_copy, separators);
+  uint8_t facteurs[NOMBRE_FACTEURS];
+  for (size_t i = 0; i < NOMBRE_FACTEURS; i++) {
+      facteurs[i] = (uint8_t)atoi(strToken);
+      strToken = strtok(NULL, separators);
+  }
+  printf("%p\n", facteurs);
 
-	if (!strcmp(index(index_point, '.'), ".ppm") && !strcmp(args.sample, "")) {
-		printf("Image au format RGB sans facteurs d'échantillonage... Sortie...\n");
-		exit(EXIT_FAILURE);
-    }
-	else if (!verifier_sample(args.sample)) {
-		printf("Format des facteurs d'échantillonage incorrects\n");
-		exit(EXIT_FAILURE);
-	}
+  free(sample_copy);
 
-    /*Stockage sample*/
-    const char *separators = "x,";
-    char *sample_copy = strdup(args.sample);
-    char *strToken = strtok(sample_copy, separators);
-    uint8_t facteurs[NOMBRE_FACTEURS];
-    for (size_t i = 0; i < NOMBRE_FACTEURS; i++) {
-        facteurs[i] = (uint8_t)atoi(strToken);
-        strToken = strtok(NULL, separators);
-    }
+  printf("input file: %s\noutput file: %s\nsample: %s\n", args.inputfile, args.outfile, args.sample);
 
-	if (!verifier_facteurs(facteurs)) {
-		printf("Valeurs des facteurs d'échantillonage incorrects\n");
-		exit(EXIT_FAILURE);
-	}
-
-    free(sample_copy);
-
-	for (size_t i = 0; i < NOMBRE_FACTEURS; i++) {
-		printf("facteurs = %d\n", facteurs[i]);
-	}
 
 
 
