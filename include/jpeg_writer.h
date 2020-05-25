@@ -46,7 +46,7 @@ enum direction {
 */
 typedef struct jpeg {
     const char *jpeg_filename;
-    const char *ppm_filename;
+    const char *input_filename;
 
     uint32_t image_height;
     uint32_t image_width;
@@ -56,9 +56,7 @@ typedef struct jpeg {
         4 bits : Facteur d'échantillonnage (sampling factor) horizontal, de 1 à 4
         4 bits : Facteur d'échantillonnage (sampling factor) vertical, de 1 à 4
     */
-    uint8_t y_sampling_factor;
-    uint8_t cb_sampling_factor;
-    uint8_t cr_sampling_factor;
+    uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS];  // ou encore [3][2]
 
     huff_table *ht_Y_DC;
     huff_table *ht_Y_AC;
@@ -103,11 +101,11 @@ extern bitstream *jpeg_get_bitstream(jpeg *jpg);
 /* Gestion des paramètres de l'encodeur via le jpeg */
 /****************************************************/
 
-/* Ecrit le nom de fichier PPM ppm_filename dans la structure jpeg. */
+/* Ecrit le nom de fichier PPM/PGM input_filename dans la structure jpeg. */
 extern void jpeg_set_ppm_filename(jpeg *jpg,
-                                  const char *ppm_filename);
+                                  const char *input_filename);
 
-/* Retourne le nom de fichier PPM lu dans la structure jpeg. */
+/* Retourne le nom de fichier PPM/PGM lu dans la structure jpeg. */
 extern char *jpeg_get_ppm_filename(jpeg *jpg);
 
 /* Ecrit le nom du fichier de sortie jpeg_filename dans la structure jpeg. */

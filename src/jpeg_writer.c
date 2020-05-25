@@ -13,15 +13,11 @@ jpeg *jpeg_create(void) {
     jpg->ht_CbCr_AC = NULL;
 
     jpg->jpeg_filename = NULL;
-    jpg->ppm_filename = NULL;
+    jpg->input_filename = NULL;
 
     jpg->image_height = 256;
     jpg->image_width = 512;
     jpg->nb_components = 0;
-
-    jpg->y_sampling_factor = 0;
-    jpg->cb_sampling_factor = 0;
-    jpg->cr_sampling_factor = 0;
 
     jpg->Y_quantization_table = NULL;
     jpg->CbCr_quantization_table = NULL;
@@ -65,7 +61,7 @@ static void jpeg_write_dht_section(FILE *file, huff_table *ht, const char *HT_TY
     }
 }
 
-void jpeg_write_header(jpeg *jpg) {
+static void jpeg_write_header_grayscale(jpeg *jpg) {
     FILE *file = fopen(jpg->jpeg_filename, "wb");
 
     const unsigned char SOI[2] = {0xff, 0xd8};
@@ -79,6 +75,89 @@ void jpeg_write_header(jpeg *jpg) {
                                      jpg->image_height & 0xff};
     const unsigned char WIDTH[2] = {(jpg->image_width >> 8) & 0xff,
                                     jpg->image_width & 0xff};
+
+    uint8_t y_sampling_factor = (uint8_t)((jpg->sampling_factors[Y][H] << 4) | jpg->sampling_factors[Y][V]);
+
+    fwrite(SOI, sizeof SOI, 1, file);
+
+    fwrite(APP0, sizeof APP0, 1, file);
+    fwrite("\x00\x10", 2, 1, file);                      // longueur de la section sur 2 octets
+    fwrite("\x4a\x46\x49\x46\x00", 5, 1, file);          // JFIF\0
+    fwrite("\x01\x01", 2, 1, file);                      // version JFIF 1.1
+    fwrite("\x00\x00\x00\x00\x00\x00\x00", 7, 1, file);  // Données spécifiques au JFIF, non traitées
+
+    /* Pas de section COM */
+
+    /* Y quantization table */
+    fwrite(DQT, sizeof DQT, 1, file);
+    fwrite("\x00\x43", 2, 1, file);  // longueur de la section sur 2 octets
+    fwrite("\x00", 1, 1, file);      // precision and quantization table index
+    for (size_t i = 0; i < 64; i++) {
+        /* Les tables de quantification sont déja stockées au format zig-zag */
+        fwrite(&jpg->Y_quantization_table[i], 1, 1, file);
+    }
+    // fwrite(jpg->Y_quantization_table, sizeof jpg->Y_quantization_table, 8, file);
+    // fwrite(jpg->Y_quantization_table, sizeof(uint8_t), 64, file);
+
+    fwrite(SOF0, sizeof SOF0, 1, file);
+    /* Grayscale: 11, RGB: 17*/
+    fwrite("\x00\x0b", 2, 1, file);  // longueur de la section sur 2 octets
+
+    fwrite("\x08", 1, 1, file);  // sample precision
+
+    fwrite(HEIGTH, sizeof HEIGTH, 1, file);
+    fwrite(WIDTH, sizeof WIDTH, 1, file);
+
+    /* Grayscale: 1, RGB: 3*/
+    fwrite("\x01", 1, 1, file);  // nombre de composantes
+
+    fwrite("\x01", 1, 1, file);  // id
+    fwrite(&y_sampling_factor, 1, 1, file);
+    fwrite("\x00", 1, 1, file);  // quantization table index
+
+    /* Ecriture des tables de Huffman */
+    jpeg_write_dht_section(file, jpg->ht_Y_DC, "\x00");
+    jpeg_write_dht_section(file, jpg->ht_Y_AC, "\x10");
+
+    /* Une seule section SOS car "baseline sequential" */
+    fwrite(SOS, sizeof SOS, 1, file);
+    /* Grayscale: 8, RGB: 12 */
+    fwrite("\x00\x08", 2, 1, file);  // longueur de la section sur 2 octets
+    /* Grayscale: 1, RGB: 3*/
+    fwrite("\x01", 1, 1, file);  // nombre de composantes
+
+    /* DC and AC Huffman table indexes */
+    fwrite("\x01", 1, 1, file);  // id Y
+    fwrite("\x00", 1, 1, file);  // huff_dc / huff_ac
+
+    fwrite("\x00", 1, 1, file);  // Premier indice de la sélection spectrale
+    fwrite("\x63", 1, 1, file);  // Dernier indice de la sélection spectrale
+    fwrite("\x00", 1, 1, file);  // Approximation successive
+
+    /* Fin du header, écriture des coefficients */
+
+    fclose(file);
+}
+
+static void jpeg_write_header_RGB(jpeg *jpg) {
+    FILE *file = fopen(jpg->jpeg_filename, "wb");
+
+    const unsigned char SOI[2] = {0xff, 0xd8};
+    const unsigned char APP0[2] = {0xff, 0xe0};
+    const unsigned char DQT[2] = {0xff, 0xdb};
+    const unsigned char SOF0[2] = {0xff, 0xc0};
+    const unsigned char SOS[2] = {0xff, 0xda};
+
+    /* On doit inverser les octets pour l'écriture */
+    const unsigned char HEIGTH[2] = {(jpg->image_height >> 8) & 0xff,
+                                     jpg->image_height & 0xff};
+    const unsigned char WIDTH[2] = {(jpg->image_width >> 8) & 0xff,
+                                    jpg->image_width & 0xff};
+
+    uint8_t y_sampling_factor = (uint8_t)((jpg->sampling_factors[Y][H] << 4) | jpg->sampling_factors[Y][V]);
+    uint8_t cb_sampling_factor = (uint8_t)((jpg->sampling_factors[Cb][H] << 4) | jpg->sampling_factors[Cb][V]);
+    uint8_t cr_sampling_factor = (uint8_t)((jpg->sampling_factors[Cr][H] << 4) | jpg->sampling_factors[Cr][V]);
+
 
     fwrite(SOI, sizeof SOI, 1, file);
 
@@ -102,18 +181,17 @@ void jpeg_write_header(jpeg *jpg) {
     // fwrite(jpg->Y_quantization_table, sizeof(uint8_t), 64, file);
 
     /* Cb / Cr quantization table */
-    // fwrite(DQT, sizeof DQT, 1, file);
-    // fwrite("\x00\x43", 2, 1, file);  // longueur de la section sur 2 octets
-    // fwrite("\x01", 1, 1, file);      // precision and quantization table index
-    // for (size_t i = 0; i < 64; i++) {
-    //     /* Les tables de quantification sont déja stockées au format zig-zag */
-    //     fwrite(&jpg->CbCr_quantization_table[i], 1, 1, file);
-    // }
+    fwrite(DQT, sizeof DQT, 1, file);
+    fwrite("\x00\x43", 2, 1, file);  // longueur de la section sur 2 octets
+    fwrite("\x01", 1, 1, file);      // precision and quantization table index
+    for (size_t i = 0; i < 64; i++) {
+        /* Les tables de quantification sont déja stockées au format zig-zag */
+        fwrite(&jpg->CbCr_quantization_table[i], 1, 1, file);
+    }
 
     fwrite(SOF0, sizeof SOF0, 1, file);
     /* Grayscale: 11, RGB: 17*/
-    fwrite("\x00\x0b", 2, 1, file);  // longueur de la section sur 2 octets
-    // fwrite("\x00\x11", 2, 1, file);
+    fwrite("\x00\x11", 2, 1, file);  // longueur de la section sur 2 octets
 
     fwrite("\x08", 1, 1, file);  // sample precision
 
@@ -121,43 +199,40 @@ void jpeg_write_header(jpeg *jpg) {
     fwrite(WIDTH, sizeof WIDTH, 1, file);
 
     /* Grayscale: 1, RGB: 3*/
-    fwrite("\x01", 1, 1, file);  // nombre de composantes
-    // fwrite("\x03", 1, 1, file);
+    fwrite("\x03", 1, 1, file);  // nombre de composantes
 
     fwrite("\x01", 1, 1, file);  // id
-    fwrite(&jpg->y_sampling_factor, 1, 1, file);
+    fwrite(&y_sampling_factor, 1, 1, file);
     fwrite("\x00", 1, 1, file);  // quantization table index
 
-    // fwrite("\x01", 1, 1, file);  // id
-    // fwrite(jpg->cb_sampling_factor, 1, 1, file);
-    // fwrite("\x01", 1, 1, file);
+    fwrite("\x01", 1, 1, file);  // id
+    fwrite(&cb_sampling_factor, 1, 1, file);
+    fwrite("\x01", 1, 1, file);
 
-    // fwrite("\x01", 1, 1, file);  // id
-    // fwrite(jpg->cr_sampling_factor, 1, 1, file);
-    // fwrite("\x01", 1, 1, file);
+    fwrite("\x01", 1, 1, file);  // id
+    fwrite(&cr_sampling_factor, 1, 1, file);
+    fwrite("\x01", 1, 1, file);
 
     /* Ecriture des tables de Huffman */
     jpeg_write_dht_section(file, jpg->ht_Y_DC, "\x00");
     jpeg_write_dht_section(file, jpg->ht_Y_AC, "\x10");
-    // jpeg_write_dht_section(file, jpg->ht_CbCr_DC, "\x01");
-    // jpeg_write_dht_section(file, jpg->ht_CbCr_AC, "\x11");
+    jpeg_write_dht_section(file, jpg->ht_CbCr_DC, "\x01");
+    jpeg_write_dht_section(file, jpg->ht_CbCr_AC, "\x11");
 
     /* Une seule section SOS car "baseline sequential" */
     fwrite(SOS, sizeof SOS, 1, file);
     /* Grayscale: 8, RGB: 12 */
-    fwrite("\x00\x08", 2, 1, file);  // longueur de la section sur 2 octets
-    // fwrite("\x00\x0c", 2, 1, file);
+    fwrite("\x00\x0c", 2, 1, file);  // longueur de la section sur 2 octets
     /* Grayscale: 1, RGB: 3*/
-    fwrite("\x01", 1, 1, file);  // nombre de composantes
-    // fwrite("\x03", 1, 1, file);
+    fwrite("\x03", 1, 1, file);  // nombre de composantes
 
     /* DC and AC Huffman table indexes */
     fwrite("\x01", 1, 1, file);  // id Y
     fwrite("\x00", 1, 1, file);  // huff_dc / huff_ac
-    // fwrite("\x02", 1, 1, file);  // id Cb
-    // fwrite("\x11", 1, 1, file);
-    // fwrite("\x03", 1, 1, file);  // id Cr
-    // fwrite("\x11", 1, 1, file);
+    fwrite("\x02", 1, 1, file);  // id Cb
+    fwrite("\x11", 1, 1, file);
+    fwrite("\x03", 1, 1, file);  // id Cr
+    fwrite("\x11", 1, 1, file);
 
     fwrite("\x00", 1, 1, file);  // Premier indice de la sélection spectrale
     fwrite("\x63", 1, 1, file);  // Dernier indice de la sélection spectrale
@@ -166,6 +241,10 @@ void jpeg_write_header(jpeg *jpg) {
     /* Fin du header, écriture des coefficients */
 
     fclose(file);
+}
+
+void jpeg_write_header(jpeg *jpg) {
+    (jpg->nb_components == 1) ? jpeg_write_header_grayscale(jpg) : jpeg_write_header_RGB(jpg);
 }
 
 void jpeg_write_footer(jpeg *jpg) {
@@ -180,12 +259,12 @@ void jpeg_write_footer(jpeg *jpg) {
 
 /* Setters and getters */
 
-void jpeg_set_ppm_filename(jpeg *jpg, const char *ppm_filename) {
-    jpg->ppm_filename = ppm_filename;
+void jpeg_set_ppm_filename(jpeg *jpg, const char *input_filename) {
+    jpg->input_filename = input_filename;
 }
 
 char *jpeg_get_ppm_filename(jpeg *jpg) {
-    return (char *)jpg->ppm_filename;
+    return (char *)jpg->input_filename;
 }
 
 void jpeg_set_jpeg_filename(jpeg *jpg, const char *jpeg_filename) {
@@ -302,4 +381,12 @@ huff_table *jpeg_get_huffman_table(jpeg *jpg, enum sample_type acdc, enum color_
         default:
             return NULL;
     }
+}
+
+void jpeg_set_sampling_factor(jpeg *jpg, enum color_component cc, enum direction dir, uint8_t sampling_factor) {
+    jpg->sampling_factors[cc][dir] = sampling_factor;
+}
+
+uint8_t jpeg_get_sampling_factor(jpeg *jpg, enum color_component cc, enum direction dir) {
+    return jpg->sampling_factors[cc][dir];
 }

@@ -58,6 +58,7 @@ void process_chroma(uint8_t** chroma, uint8_t h1, uint8_t v1, uint8_t h_chroma, 
             }
             /* Traitement des DUs */
             afficher_data_unit(data_unit);
+            // à faire pdt l'écriture dans le bitstream.
             /* Mise à zéro de data_unit */
             for (size_t i = 0; i < 8; i++) {
                 for (size_t j = 0; j < 8; j++) {
