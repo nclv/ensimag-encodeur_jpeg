@@ -21,10 +21,9 @@ LDFLAGS = -Wl,--gc-sections -Wl,--print-gc-sections
 
 # typing 'make' will invoke the first target entry in the file 
 
-TARGET = test_conversion test_ppm test_bitstream test_dct test_zigzag test_quantification\
+TARGET = test_ppm test_bitstream test_dct test_zigzag test_quantification\
 	test_jpeg_writer test_file test_huffman
-OBJS = $(SRC)conversion.o test_conversion.o \
-	$(SRC)ppm.o test_ppm.o\
+OBJS = $(SRC)ppm.o test_ppm.o\
 	$(SRC)bitstream.o test_bitstream.o\
 	$(SRC)dct.o test_dct.o\
 	$(SRC)zigzag.o test_zigzag.o\
@@ -36,11 +35,6 @@ OBJS = $(SRC)conversion.o test_conversion.o \
 OBJS_PROF = ../../obj_prof/htables_prof.o
 
 all: $(TARGET)
-
-test_conversion: $(SRC)conversion.o test_conversion.o
-	$(info )
-	$(info Compilation de test_conversion)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
 test_ppm: $(SRC)ppm.o test_ppm.o
 	$(info )
