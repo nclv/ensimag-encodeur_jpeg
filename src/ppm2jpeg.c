@@ -127,7 +127,17 @@ int main(int argc, char *argv[]) {
 	}
 
     /*Vérification de sample si RGB*/
-    if (!strcmp(index(args.inputfile, '.'), ".ppm") && !strcmp(args.sample, "")) {
+	char* index_point = index(args.inputfile, '.');
+	if (index_point == NULL) {
+		printf("Format d'inputfile incorrect\n");
+		exit(EXIT_FAILURE);
+	}
+	if (!strcmp(index_point, ".ppm") && !strcmp(index_point, ".pgm")) {
+		printf("Format d'image inconnu\n");
+		exit(EXIT_FAILURE);
+	}
+
+	if (!strcmp(index(index_point, '.'), ".ppm") && !strcmp(args.sample, "")) {
 		printf("Image au format RGB sans facteurs d'échantillonage... Sortie...\n");
 		exit(EXIT_FAILURE);
     }
