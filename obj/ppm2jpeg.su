@@ -1,3 +1,7 @@
-ppm2jpeg.c:19:16:parse_option	64	static
-ppm2jpeg.c:53:7:strdup	48	static
-ppm2jpeg.c:61:5:main	96	static
+ppm2jpeg.c:23:16:parse_option	64	static
+ppm2jpeg.c:57:7:strdup	48	static
+ppm2jpeg.c:65:6:name_outfile_correct	64	static
+ppm2jpeg.c:81:6:is_digit	16	static
+ppm2jpeg.c:85:6:verifier_sample	32	static
+ppm2jpeg.c:100:6:verifier_facteurs	16	static
+ppm2jpeg.c:113:5:main	128	static

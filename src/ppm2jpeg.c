@@ -2,6 +2,10 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
+#include <stdint.h>
+
+#include "ppm.h"
 
 char doc[] = "Application qui convertit une image PPM en une image au format JPEG.\n\n./ppm2jpeg --outfile=sortie.jpeg --sample=hvx1,hvx2,hvx3 input.pgm";
 
@@ -58,24 +62,102 @@ char *strdup(const char *str) {
     return (char *)memcpy(new, str, len);
 }
 
+bool name_outfile_correct(const char* name) {
+	uint32_t cmp = 0;
+	size_t i = 0;
+	size_t pos;
+
+	while (cmp < 2 && name[i] != '\0') {
+		if (name[i] == '.') {
+			cmp += 1;
+			pos = i;
+		}
+		i++;
+	}
+
+	return (cmp == 1 && !strcmp(&name[pos], ".jpg"));
+}
+
+bool is_digit(const char c) {
+	return c >= '0' && c <= '9';
+}
+
+bool verifier_sample(const char* sample) {
+	return strlen(sample) == 11 &&
+			is_digit(sample[0]) &&
+			sample[1] == 'x' &&
+			is_digit(sample[2]) &&
+			sample[3] == ',' &&
+			is_digit(sample[4]) &&
+			sample[5] == 'x' &&
+			is_digit(sample[6]) &&
+			sample[7] == ',' &&
+			is_digit(sample[8]) &&
+			sample[9] == 'x' &&
+			is_digit(sample[10]);
+}
+
+bool verifier_facteurs(uint8_t facteurs[]) {
+	bool est_correct = true;
+	size_t i = 0;
+	while (est_correct && i < NOMBRE_FACTEURS) {
+		est_correct = est_correct && facteurs[i] >= 1 && facteurs[i] <= 4;
+		i += 1;
+	}
+	est_correct = est_correct && (facteurs[H1] * facteurs[V1] + facteurs[H2] * facteurs[V2] + facteurs[H3] * facteurs[V3] <= 10);
+	est_correct = est_correct && (facteurs[H1] % facteurs[H2] == 0 && facteurs[H1] % facteurs[H3] == 0 && facteurs[V1] % facteurs[V2] == 0 && facteurs[V1] % facteurs[V3] == 0);
+
+	return est_correct;
+}
+
 int main(int argc, char *argv[]) {
-    arguments args = {0};
-    // specify argument defaults
+	/*Traitement des arguments*/
+	arguments args = {0};
     args.sample = "";
-    args.outfile = "-";  // default to stdout
+    args.outfile = "output.jpg";
 
     error_t error = argp_parse(&argp, argc, argv, 0, 0, &args);
     if (error != 0) exit(EXIT_FAILURE);
     printf("input file: %s\noutput file: %s\nsample: %s\n", args.inputfile, args.outfile, args.sample);
 
+	/*Vérification args.outfile*/
+	if (!name_outfile_correct(args.outfile)) {
+		printf("Nom de fichier de sortie incorrect\n");
+		exit(EXIT_FAILURE);
+	}
+
+    /*Vérification de sample si RGB*/
+    if (!strcmp(index(args.inputfile, '.'), ".ppm") && !strcmp(args.sample, "")) {
+		printf("Image au format RGB sans facteurs d'échantillonage... Sortie...\n");
+		exit(EXIT_FAILURE);
+    }
+	else if (!verifier_sample(args.sample)) {
+		printf("Format des facteurs d'échantillonage incorrects\n");
+		exit(EXIT_FAILURE);
+	}
+
+    /*Stockage sample*/
     const char *separators = "x,";
     char *sample_copy = strdup(args.sample);
     char *strToken = strtok(sample_copy, separators);
-    while (strToken != NULL) {
-        printf("%s\n", strToken);
+    uint8_t facteurs[NOMBRE_FACTEURS];
+    for (size_t i = 0; i < NOMBRE_FACTEURS; i++) {
+        facteurs[i] = (uint8_t)atoi(strToken);
         strToken = strtok(NULL, separators);
     }
+
+	if (!verifier_facteurs(facteurs)) {
+		printf("Valeurs des facteurs d'échantillonage incorrects\n");
+		exit(EXIT_FAILURE);
+	}
+
     free(sample_copy);
+
+	for (size_t i = 0; i < NOMBRE_FACTEURS; i++) {
+		printf("facteurs = %d\n", facteurs[i]);
+	}
+
+
 
     return EXIT_SUCCESS;
 }
