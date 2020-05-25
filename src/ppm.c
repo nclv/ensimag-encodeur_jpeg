@@ -262,7 +262,8 @@ static void parse_RGB(FILE* fichier, image_ppm* image, MCUs* mcu, uint32_t large
             if (erreur != 1) exit(EXIT_FAILURE);
             erreur = fread(&b, sizeof(uint8_t), 1, fichier);
             if (erreur != 1) exit(EXIT_FAILURE);
-            // conversion(mcu, i, j, r, g, b);
+
+            /* Conversion RGB -> YCbCr */
             mcu->Y[i][j] = (uint8_t)(0.299 * r + 0.587 * g + 0.114 * b);
             mcu->Cb[i][j] = (uint8_t)(-0.1687 * r - 0.3313 * g + 0.5000 * b + 128);
             mcu->Cr[i][j] = (uint8_t)(0.5000 * r - 0.4187 * g - 0.0813 * b + 128);
