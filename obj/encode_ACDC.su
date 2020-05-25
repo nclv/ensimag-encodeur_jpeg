@@ -1,0 +1,3 @@
+encode_ACDC.c:7:16:get_magnitude	16	static
+encode_ACDC.c:18:6:encode_DC_freq	48	static
+encode_ACDC.c:30:6:encoder_AC_freq	48	static

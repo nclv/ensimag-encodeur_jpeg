@@ -1,0 +1,3 @@
+ppm2jpeg.c:19:16:parse_option	64	static
+ppm2jpeg.c:53:7:strdup	48	static
+ppm2jpeg.c:61:5:main	96	static

@@ -31,4 +31,4 @@ obj/%.o: src/%.c
 .PHONY: clean
 
 clean:
-	rm -rf ppm2jpeg $(OBJ_FILES) obj/*.su
+	rm -rf ppm2jpeg $(OBJ_FILES)

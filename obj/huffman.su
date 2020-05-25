@@ -1,0 +1,6 @@
+huffman.c:7:6:afficher_huff_table	80	static
+huffman.c:27:13:huffman_table_build	80	static
+huffman.c:74:10:huffman_table_get_path	16	static
+huffman.c:88:10:huffman_table_get_symbols	16	static
+huffman.c:92:10:huffman_table_get_length_vector	16	static
+huffman.c:96:6:huffman_table_destroy	32	static
