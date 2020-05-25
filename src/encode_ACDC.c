@@ -18,7 +18,7 @@ static uint8_t get_magnitude(int16_t freq) {
 void encode_DC_freq(int8_t difference_DC) {
     /* On code la différence entre valeurs DC de deux blocs consécutifs */
     uint8_t classe_magnitude = get_magnitude(difference_DC);
-    uint16_t indice = abs(difference_DC);
+    uint16_t indice = (uint16_t)abs(difference_DC);
     if (difference_DC < 0) {
         indice = (uint16_t)((1 << classe_magnitude) - indice);
     }
@@ -42,7 +42,7 @@ void encoder_AC_freq(int8_t freq_AC, uint8_t nb_zeros_enchaines) {
         printf("coef : %i\n", freq_AC);
         /* même algo de classe | indice que pour l'encodage DC */
         uint8_t classe_magnitude = get_magnitude(freq_AC);
-        uint16_t indice = abs(freq_AC);
+        uint16_t indice = (uint16_t)abs(freq_AC);
         if (freq_AC < 0) {
             indice = (uint16_t)((1 << classe_magnitude) - indice);  // complémentaire
         }
