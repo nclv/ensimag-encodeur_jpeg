@@ -31,12 +31,13 @@ void process_Y(uint8_t** Y, uint8_t h1, uint8_t v1, uint8_t** data_unit) {
 
 void process_chroma(uint8_t** chroma, uint8_t h1, uint8_t v1, uint8_t h_chroma, uint8_t v_chroma, uint8_t** data_unit) {
     /* Traitement des blocs Cb / Cr avec échantillonnage horizontal */
-    printf("%d \n", v1);
-    printf("%d %d\n", h_chroma, v_chroma);
+    // printf("%d \n", v1);
+    // printf("%d %d\n", h_chroma, v_chroma);
     float remainder = 0;
+    uint8_t chroma_value = 0;
     uint8_t h_div = (h1 / h_chroma);
     uint8_t v_div = (v1 / v_chroma);
-    printf("%d %d\n", h_div, v_div);
+    // printf("%d %d\n", h_div, v_div);
     /* On boucle dans l'ordre des DU à traiter */
     for (size_t v = 0; v < v_chroma; v++) {
         for (size_t h = 0; h < h_chroma; h++) {
@@ -46,8 +47,7 @@ void process_chroma(uint8_t** chroma, uint8_t h1, uint8_t v1, uint8_t h_chroma, 
                 for (size_t j = 0; j < 8; j++) {
                     for (size_t k = 0; k < h_div; k++) {
                         for (size_t l = 0; l < v_div; l++) {
-                            // printf("%ld, ", 4 * j + k);
-                            uint8_t chroma_value = chroma[v_div * i + l + 8 * v][h_div * j + k + 8 * h];
+                            chroma_value = chroma[v_div * i + l + 8 * v][h_div * j + k + 8 * h];
                             data_unit[i][j] = (uint8_t)(data_unit[i][j] + chroma_value / (h_div * v_div));
                             remainder += (float)(chroma_value % (h_div * v_div));
                         }
