@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define DEFAULT_BUFFER_SIZE 1  // valeur à modifier, 1 pour les tests
+#define DEFAULT_BUFFER_SIZE 512  // valeur à modifier, 1 pour les tests
 
 bitstream *bitstream_create(const char *filename) {
     bitstream *stream = malloc(sizeof *stream);
@@ -40,11 +40,12 @@ void bitstream_display(bitstream *stream) {
 }
 
 void bitstream_flush(bitstream *stream) {
-    FILE *file = fopen(stream->filename, "wb");
+    FILE *file = fopen(stream->filename, "ab");
     size_t length = stream->last_written_bit_offset;
+    printf("Taille du buffer: %ld\n", length);
     for (size_t i = 0; i < length; i++) {
         printf("Ecriture du bit %d dans le fichier jpeg\n", stream->buffer[i]);
-        fwrite(stream->buffer[i], 1, 1, file);
+        fwrite(&stream->buffer[i], 1, 1, file);
         stream->buffer[i] = 0;
         stream->last_written_bit_offset--;
     }
@@ -64,19 +65,28 @@ void bitstream_write_bits(bitstream *stream, uint32_t value, uint8_t nb_bits, bo
         bitstream_flush(stream);
     }
 
+    printf("Pas de dépassement du buffer\n");
+
     uint32_t mask = 1U << (nb_bits - 1);
 
+    printf("Nombre de bits: %d\n", nb_bits);
     size_t current_bit_offset = stream->last_written_bit_offset;
+    printf("Before %ld\n", current_bit_offset);
     for (size_t i = 0; i < nb_bits; i++) {
         stream->buffer[current_bit_offset + i] = (value & mask) ? 1 : 0;
         value <<= 1;
-        stream->last_written_bit_offset += 1;
+        current_bit_offset += 1;
     }
+    stream->last_written_bit_offset += nb_bits;
+    printf("After %ld\n", stream->last_written_bit_offset);
     /* On écrit 0x00 dans le fichier */
     if (is_marker) {
-        printf("Ecriture d'un marqueur");
+        printf("Ecriture d'un marqueur\n");
         bitstream_flush(stream);
-        fwrite("\x00", 1, 1, stream->filename);
+
+        FILE *file = fopen(stream->filename, "ab");
+        fwrite("\x00", 1, 1, file);
+        fclose(file);
     }
 }
 

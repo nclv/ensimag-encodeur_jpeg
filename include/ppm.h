@@ -5,27 +5,11 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include "jpeg_writer.h"
+
 #define TAILLE_DATA_UNIT 8
 #define TAILLE_PPM 2
 #define NIVEAUX_GRIS "P5"
-
-/* Type énuméré représentant les composantes de couleur YCbCr. */
-enum color_component {
-    Y,
-    Cb,
-    Cr,
-    NB_COLOR_COMPONENTS
-};
-
-/*
-    Type énuméré représentant la direction des facteurs d'échantillonnage (H
-    pour horizontal, V pour vertical).
-*/
-enum direction {
-    H,
-    V,
-    NB_DIRECTIONS
-};
 
 /*Définition d'une image au format PPM/PGM*/
 typedef struct image_ppm {

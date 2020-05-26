@@ -310,12 +310,15 @@ int main(int argc, char *argv[]) {
     huff_table *Y_ac_table = jpeg_get_huffman_table(jpg, AC, Y);
 
     int16_t difference_DC = 0;
+
     /*
         Il faut distinguer ici:
             si l'image est RGB ou Grayscale
             si l'image est RGB avec des facteurs d'échantillonnages quelconques
             ou RGB avec des facteurs d'échantillonnages donnant des mcus de taille 8x8
     */
+
+    int16_t data_unit_freq[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT] = {0};
     for (size_t i = 0; i < image->nb_MCUs; i++) {
         printf("Traitement du mcu %ld\n", i + 1);
         recuperer_MCUs(fichier, image, mcu);
@@ -329,22 +332,26 @@ int main(int argc, char *argv[]) {
 
         /* Image Grayscale */
         // on encode directement mcu->Y
-        int16_t data_unit_freq[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT];
         offset(mcu->Y);
+        afficher_traitement_dynamique(mcu->Y, "Offset ");
         dct(mcu->Y, data_unit_freq);
+        afficher_traitement_statique(data_unit_freq, "DCT ");
         zigzag_inplace(data_unit_freq);
+        afficher_traitement_statique(data_unit_freq, "Zig-zag ");
         quantifier(data_unit_freq, quantification_table_Y);
+        afficher_traitement_statique(data_unit_freq, "Quantification ");
         ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC);
+
+        printf("End of %ld Data Unit", i);
         difference_DC = data_unit_freq[0][0];
 
         /* Image RGB sans facteurs (1x1 1x1 1x1) */
         // on encode directement mcu->Y, mcu->Cb et mcu->Cr
-
     }
 
     /* Après écriture du footer, hexdump -C ne renvoie plus les paramètres du header */
     // printf("Ecriture du footer\n");
-    jpeg_write_footer(jpg);
+    // jpeg_write_footer(jpg);
 
     printf("Destruction de la structure jpeg\n");
     jpeg_destroy(jpg);
