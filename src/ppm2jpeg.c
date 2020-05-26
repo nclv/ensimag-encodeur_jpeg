@@ -335,7 +335,13 @@ int main(int argc, char *argv[]) {
         offset(mcu->Y);
         afficher_traitement_dynamique(mcu->Y, "Offset ");
         dct(mcu->Y, data_unit_freq);
-        afficher_traitement_statique(data_unit_freq, "DCT ");
+        printf("DCT: \n");
+        for (size_t k = 0; k < TAILLE_DATA_UNIT; k++) {
+            for (size_t j = 0; j < TAILLE_DATA_UNIT; j++) {
+                printf("%04hhx ", data_unit_freq[k][j]);
+            }
+            printf("\n");
+        }
         zigzag_inplace(data_unit_freq);
         afficher_traitement_statique(data_unit_freq, "Zig-zag ");
         quantifier(data_unit_freq, quantification_table_Y);
