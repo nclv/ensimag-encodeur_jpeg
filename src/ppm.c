@@ -72,9 +72,9 @@ static void allocate_MCUs_grayscale(MCUs* bloc) {
     }
 }
 
-static void allocate_MCUs_RGB(MCUs* bloc, uint8_t facteurs[NOMBRE_FACTEURS]) {
-    bloc->largeur = (uint32_t)facteurs[H1] * TAILLE_BLOC;
-    bloc->hauteur = (uint32_t)facteurs[V1] * TAILLE_BLOC;
+static void allocate_MCUs_RGB(MCUs* bloc, uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS]) {
+    bloc->largeur = (uint32_t)sampling_factors[Y][H] * TAILLE_BLOC;
+    bloc->hauteur = (uint32_t)sampling_factors[Y][V] * TAILLE_BLOC;
     /*Sous-échantillonage simple*/
     // if (facteurs[H2] == 1 && facteurs[V2] == 1) {
     //     bloc->comp_Cb = NULL;
@@ -134,12 +134,12 @@ static uint32_t recuperer_hauteur(MCUs* mcu, uint32_t hauteur) {
     return nb_mcu_verticale * mcu->hauteur;
 }
 
-MCUs* initialiser_MCUs(image_ppm* image, uint8_t facteurs[NOMBRE_FACTEURS]) {
+MCUs* initialiser_MCUs(image_ppm* image, uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS]) {
     /*Initialisation des blocs*/
     MCUs* mcu = malloc(sizeof(MCUs));
     if (mcu == NULL) exit(EXIT_FAILURE);
 
-    is_grayscale_format(image->format) ? allocate_MCUs_grayscale(mcu) : allocate_MCUs_RGB(mcu, facteurs);
+    is_grayscale_format(image->format) ? allocate_MCUs_grayscale(mcu) : allocate_MCUs_RGB(mcu, sampling_factors);
 
     /*Attribution des paramètres*/
     mcu->numero_ligne = 0;

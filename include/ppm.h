@@ -8,13 +8,24 @@
 #define TAILLE_BLOC 8
 #define TAILLE_PPM 2
 #define NIVEAUX_GRIS "P5"
-#define NOMBRE_FACTEURS 6
-#define H1 0
-#define V1 1
-#define H2 2
-#define V2 3
-#define H3 4
-#define V3 5
+
+/* Type énuméré représentant les composantes de couleur YCbCr. */
+enum color_component {
+    Y,
+    Cb,
+    Cr,
+    NB_COLOR_COMPONENTS
+};
+
+/*
+    Type énuméré représentant la direction des facteurs d'échantillonnage (H
+    pour horizontal, V pour vertical).
+*/
+enum direction {
+    H,
+    V,
+    NB_DIRECTIONS
+};
 
 /*Définition d'une image au format PPM/PGM*/
 typedef struct image_ppm {
@@ -65,7 +76,7 @@ extern image_ppm* parse_entete(FILE* fichier);
  * Initialise les MCUs en fonction de l'échantillonage
  * et des dimensions de l'image
  */
-extern MCUs* initialiser_MCUs(image_ppm* image, uint8_t facteurs[NOMBRE_FACTEURS]);
+extern MCUs* initialiser_MCUs(image_ppm* image, uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS]);
 
 
 /* type: FILE*

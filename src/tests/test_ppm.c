@@ -13,14 +13,14 @@ void afficher_data_unit(int16_t** data_unit) {
     }
 }
 
-void process_Y(int16_t** Y, uint8_t h1, uint8_t v1, int16_t** data_unit) {
+void process_Y(int16_t** Y_mcu, uint8_t h1, uint8_t v1, int16_t** data_unit) {
     /* Traitement des blocs Y */
     printf("%d %d\n", v1, h1);
     for (size_t v = 0; v < v1; v++) {
         for (size_t h = 0; h < h1; h++) {
             for (size_t i = 0; i < 8; i++) {
                 for (size_t j = 0; j < 8; j++) {
-                    data_unit[i][j] = Y[i + 8 * v][j + 8 * h];
+                    data_unit[i][j] = Y_mcu[i + 8 * v][j + 8 * h];
                 }
             }
             /* Encodage de data_unit */
@@ -29,7 +29,7 @@ void process_Y(int16_t** Y, uint8_t h1, uint8_t v1, int16_t** data_unit) {
     }
 }
 
-void process_chroma(int16_t** chroma, uint8_t h1, uint8_t v1, uint8_t h_chroma, uint8_t v_chroma, int16_t** data_unit) {
+void process_chroma(int16_t** chroma_mcu, uint8_t h1, uint8_t v1, uint8_t h_chroma, uint8_t v_chroma, int16_t** data_unit) {
     /* Traitement des blocs Cb / Cr avec échantillonnage horizontal */
     // printf("%d \n", v1);
     // printf("%d %d\n", h_chroma, v_chroma);
@@ -47,7 +47,7 @@ void process_chroma(int16_t** chroma, uint8_t h1, uint8_t v1, uint8_t h_chroma, 
                 for (size_t j = 0; j < 8; j++) {
                     for (size_t k = 0; k < h_div; k++) {
                         for (size_t l = 0; l < v_div; l++) {
-                            chroma_value = (uint8_t)chroma[v_div * i + l + 8 * v][h_div * j + k + 8 * h];
+                            chroma_value = (uint8_t)chroma_mcu[v_div * i + l + 8 * v][h_div * j + k + 8 * h];
                             data_unit[i][j] = (uint8_t)(data_unit[i][j] + chroma_value / (h_div * v_div));
                             remainder += (float)(chroma_value % (h_div * v_div));
                         }
@@ -69,10 +69,10 @@ void process_chroma(int16_t** chroma, uint8_t h1, uint8_t v1, uint8_t h_chroma, 
     }
 }
 
-void process_data_units(MCUs* mcu, uint8_t facteurs[NOMBRE_FACTEURS], int16_t** data_unit) {
-    process_Y(mcu->Y, facteurs[H1], facteurs[V1], data_unit);
-    // process_chroma(mcu->Cb, facteurs[H1], facteurs[V1], facteurs[H2], facteurs[V2], data_unit);
-    // process_chroma(mcu->Cr, facteurs[H1], facteurs[V1], facteurs[H3], facteurs[V3], data_unit);
+void process_data_units(MCUs* mcu, uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS], int16_t** data_unit) {
+    process_Y(mcu->Y, sampling_factors[Y][H], sampling_factors[Y][V], data_unit);
+    // process_chroma(mcu->Cb, sampling_factors[Y][H], sampling_factors[Y][V], sampling_factors[Cb][H], sampling_factors[Cb][V], data_unit);
+    // process_chroma(mcu->Cr, sampling_factors[Y][H], sampling_factors[Y][V], sampling_factors[Cr][H], sampling_factors[Cr][V], data_unit);
 }
 
 int main(int argc, char** argv) {
@@ -81,13 +81,13 @@ int main(int argc, char** argv) {
         exit(EXIT_FAILURE);
     }
 
-    uint8_t facteurs[NOMBRE_FACTEURS];
-    facteurs[H1] = (uint8_t)atoi(argv[2]);
-    facteurs[H2] = (uint8_t)atoi(argv[3]);
-    facteurs[H3] = (uint8_t)atoi(argv[4]);
-    facteurs[V1] = (uint8_t)atoi(argv[5]);
-    facteurs[V2] = (uint8_t)atoi(argv[6]);
-    facteurs[V3] = (uint8_t)atoi(argv[7]);
+    uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS];
+    sampling_factors[Y][H] = (uint8_t)atoi(argv[2]);
+    sampling_factors[Cb][H] = (uint8_t)atoi(argv[3]);
+    sampling_factors[Cr][H] = (uint8_t)atoi(argv[4]);
+    sampling_factors[Y][V] = (uint8_t)atoi(argv[5]);
+    sampling_factors[Cb][V] = (uint8_t)atoi(argv[6]);
+    sampling_factors[Cb][V] = (uint8_t)atoi(argv[7]);
 
     /*Ouverture du fichier*/
     FILE* fichier = ouvrir_fichier(argv[1]);
@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
     /*Parsing en-tête*/
     image_ppm* image = parse_entete(fichier);
 
-    MCUs* mcu = initialiser_MCUs(image, facteurs);
+    MCUs* mcu = initialiser_MCUs(image, sampling_factors);
 
     printf("Largeur image : %d\n", image->largeur);
     printf("Hauteur image : %d\n", image->hauteur);
@@ -121,7 +121,7 @@ int main(int argc, char** argv) {
         printf("Traitement du mcu %ld\n", i + 1);
         recuperer_MCUs(fichier, image, mcu);
         afficher_MCUs(image->format, mcu);
-        process_data_units(mcu, facteurs, data_unit);
+        process_data_units(mcu, sampling_factors, data_unit);
     }
 
     /* Libération d'un bloc 8x8 */
