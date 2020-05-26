@@ -5,19 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-FILE* ouvrir_fichier(char* nom_fichier) {
-    /*Ouverture du fichier*/
-    FILE* fichier = fopen(nom_fichier, "r");
-    if (fichier == NULL) exit(EXIT_FAILURE);
-
-    return fichier;
-}
-
-void fermer_fichier(FILE* fichier) {
-    /*Fermeture du fichier*/
-    fclose(fichier);
-}
-
 image_ppm* parse_entete(FILE* fichier) {
     /*Initialisation de l'image*/
     image_ppm* image = malloc(sizeof(image_ppm));

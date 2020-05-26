@@ -52,18 +52,6 @@ typedef struct MCUs {
     int16_t** Cr;
 } MCUs;
 
-/* type: char*
- * rtype: FILE*
- * Ouvre le fichier PPM/PGM
- */
-extern FILE* ouvrir_fichier(char* nom_fichier);
-
-/* type: FILE*
- * rtype: void
- * Ferme le fichier PPM/PGM
- */
-extern void fermer_fichier(FILE* fichier);
-
 /* type: FILE*
  * rtype: image_ppm*
  * Parse l'en-tête  du fichier PPM/PGM

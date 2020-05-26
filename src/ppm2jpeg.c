@@ -139,6 +139,10 @@ int main(int argc, char *argv[]) {
     error_t error = argp_parse(&argparser, argc, argv, 0, 0, &args);
     if (error != 0) exit(EXIT_FAILURE);
 
+    /*
+        Tout ce qui suit peut être mis dans une fonction de traitement des arguments.
+    */
+
     verifier_syntaxe(args);
 
     /* Ecriture du nom de fichier de sortie */
@@ -155,7 +159,7 @@ int main(int argc, char *argv[]) {
     }
 
     /* Default sampling-factors */
-    uint8_t facteurs[NB_COLOR_COMPONENTS][NB_DIRECTIONS] = {{1, 1}, {1, 1}, {1, 1}};
+    uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS] = {{1, 1}, {1, 1}, {1, 1}};
     /* Stockage des sampling-factors */
     if (strlen(args.sample) != 0) {
         const char *separators = "x,";
@@ -164,7 +168,7 @@ int main(int argc, char *argv[]) {
         char *endPtr = NULL;
         for (size_t cc = Y; cc < NB_COLOR_COMPONENTS; cc++) {
             for (size_t dir = H; dir < NB_DIRECTIONS; dir++) {
-                facteurs[cc][dir] = (uint8_t)strtol(strToken, &endPtr, 10);
+                sampling_factors[cc][dir] = (uint8_t)strtol(strToken, &endPtr, 10);
                 if (strToken == endPtr) exit(EXIT_FAILURE);
                 strToken = strtok(NULL, separators);
             }
@@ -175,12 +179,51 @@ int main(int argc, char *argv[]) {
     printf("input file: %s\noutput file: %s\n", args.inputfile, outfile);
     for (size_t cc = Y; cc < NB_COLOR_COMPONENTS; cc++) {
         for (size_t dir = H; dir < NB_DIRECTIONS; dir++) {
-            printf("%d ", facteurs[cc][dir]);
+            printf("%d ", sampling_factors[cc][dir]);
         }
     }
     printf("\n");
 
     free(outfile);
 
+    /*
+        Compression du fichier d'entrée
+    */
+
+    /* Ouverture du fichier */
+    FILE* fichier = fopen(args.inputfile, "r");
+    if (fichier == NULL) exit(EXIT_FAILURE);
+
+    /*Parsing en-tête*/
+    image_ppm* image = parse_entete(fichier);
+
+    MCUs* mcu = initialiser_MCUs(image, sampling_factors);
+
+    /* Allocation d'une Data Unit 8x8 */
+    int16_t** data_unit = calloc(8, sizeof *data_unit);
+    if (data_unit == NULL) exit(EXIT_FAILURE);
+    for (size_t i = 0; i < 8; i++) {
+        data_unit[i] = calloc(8, sizeof *data_unit[i]);
+        if (data_unit[i] == NULL) exit(EXIT_FAILURE);
+    }
+
+    /* Traitement des MCUs */
+    for (size_t i = 0; i < image->nb_MCUs; i++) {
+        printf("Traitement du mcu %ld\n", i + 1);
+        recuperer_MCUs(fichier, image, mcu);
+        afficher_MCUs(image->format, mcu);
+        process_data_units(mcu, sampling_factors, data_unit);
+    }
+
+    /* Libération d'un bloc 8x8 */
+    for (size_t i = 0; i < 8; i++) {
+        free(data_unit[i]);
+    }
+    free(data_unit);
+
+    /*Fermeture du fichier*/
+    fclose(args.inputfile);
+
+    
     return EXIT_SUCCESS;
 }

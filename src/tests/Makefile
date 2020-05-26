@@ -31,12 +31,13 @@ OBJS = $(SRC)ppm.o test_ppm.o\
 	$(SRC)jpeg_writer.o test_jpeg_writer.o\
 	$(SRC)file.o test_file.o\
 	$(SRC)huffman.o test_huffman.o \
+	$(SRC)downsampling.o
 
 OBJS_PROF = ../../obj_prof/htables_prof.o
 
 all: $(TARGET)
 
-test_ppm: $(SRC)ppm.o test_ppm.o
+test_ppm: $(SRC)ppm.o $(SRC)downsampling.o test_ppm.o
 	$(info )
 	$(info Compilation de test_ppm)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
