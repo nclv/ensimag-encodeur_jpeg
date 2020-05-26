@@ -7,6 +7,7 @@
 #include <string.h>
 #include <strings.h>
 
+#include "downsampling.h"
 #include "ppm.h"
 #include "utils.h"
 
@@ -191,16 +192,16 @@ int main(int argc, char *argv[]) {
     */
 
     /* Ouverture du fichier */
-    FILE* fichier = fopen(args.inputfile, "r");
+    FILE *fichier = fopen(args.inputfile, "r");
     if (fichier == NULL) exit(EXIT_FAILURE);
 
     /*Parsing en-tête*/
-    image_ppm* image = parse_entete(fichier);
+    image_ppm *image = parse_entete(fichier);
 
-    MCUs* mcu = initialiser_MCUs(image, sampling_factors);
+    MCUs *mcu = initialiser_MCUs(image, sampling_factors);
 
     /* Allocation d'une Data Unit 8x8 */
-    int16_t** data_unit = calloc(8, sizeof *data_unit);
+    int16_t **data_unit = calloc(8, sizeof *data_unit);
     if (data_unit == NULL) exit(EXIT_FAILURE);
     for (size_t i = 0; i < 8; i++) {
         data_unit[i] = calloc(8, sizeof *data_unit[i]);
@@ -208,11 +209,28 @@ int main(int argc, char *argv[]) {
     }
 
     /* Traitement des MCUs */
+
+    /* 
+        Il faut distinguer ici:  
+            si l'image est RGB ou Grayscale
+            si l'image est RGB avec des facteurs d'échantillonnages quelconques 
+            ou RGB avec des facteurs d'échantillonnages donnant des mcus de taille 8x8
+    */
     for (size_t i = 0; i < image->nb_MCUs; i++) {
         printf("Traitement du mcu %ld\n", i + 1);
         recuperer_MCUs(fichier, image, mcu);
         afficher_MCUs(image->format, mcu);
-        process_data_units(mcu, sampling_factors, data_unit);
+        
+        /* Image RGB avec facteurs */
+        // process_Y(mcu->Y, sampling_factors[Y][H], sampling_factors[Y][V], data_unit);
+        // process_chroma(mcu->Cb, sampling_factors[Y][H], sampling_factors[Y][V], sampling_factors[Cb][H], sampling_factors[Cb][V], data_unit);
+        // process_chroma(mcu->Cr, sampling_factors[Y][H], sampling_factors[Y][V], sampling_factors[Cr][H], sampling_factors[Cr][V], data_unit);
+
+        /* Image Grayscale */
+        // on encode directement mcu->Y
+
+        /* Image RGB sans facteurs (1x1 1x1 1x1) */
+        // on encode directement mcu->Y, mcu->Cb et mcu->Cr
     }
 
     /* Libération d'un bloc 8x8 */
@@ -222,8 +240,7 @@ int main(int argc, char *argv[]) {
     free(data_unit);
 
     /*Fermeture du fichier*/
-    fclose(args.inputfile);
+    fclose(fichier);
 
-    
     return EXIT_SUCCESS;
 }
