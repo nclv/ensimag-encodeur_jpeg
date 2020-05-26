@@ -338,7 +338,7 @@ int main(int argc, char *argv[]) {
         printf("DCT: \n");
         for (size_t k = 0; k < TAILLE_DATA_UNIT; k++) {
             for (size_t j = 0; j < TAILLE_DATA_UNIT; j++) {
-                printf("%04hhx ", data_unit_freq[k][j]);
+                printf("%04x ", data_unit_freq[k][j]);
             }
             printf("\n");
         }

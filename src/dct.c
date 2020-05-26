@@ -55,14 +55,14 @@ void dct(int16_t **input, int16_t output[8][8]) {
 
     /* opérations sur les lignes */
     for (size_t i = 0; i < 8; i++) {
-        a0 = (int32_t)(input[0][i]);
-        a1 = (int32_t)(input[1][i]);
-        a2 = (int32_t)(input[2][i]);
-        a3 = (int32_t)(input[3][i]);
-        a4 = (int32_t)(input[4][i]);
-        a5 = (int32_t)(input[5][i]);
-        a6 = (int32_t)(input[6][i]);
-        a7 = (int32_t)(input[7][i]);
+        a0 = (int32_t)(input[i][0]);
+        a1 = (int32_t)(input[i][1]);
+        a2 = (int32_t)(input[i][2]);
+        a3 = (int32_t)(input[i][3]);
+        a4 = (int32_t)(input[i][4]);
+        a5 = (int32_t)(input[i][5]);
+        a6 = (int32_t)(input[i][6]);
+        a7 = (int32_t)(input[i][7]);
 
         /* Etape 1: correspond aux b
         on remplace :
