@@ -4,12 +4,6 @@
 #include "ppm.h"
 #include "downsampling.h"
 
-void process_data_units(MCUs* mcu, uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS], int16_t** data_unit) {
-    // process_Y(mcu->Y, sampling_factors[Y][H], sampling_factors[Y][V], data_unit);
-    process_chroma(mcu->Cb, sampling_factors[Y][H], sampling_factors[Y][V], sampling_factors[Cb][H], sampling_factors[Cb][V], data_unit);
-    // process_chroma(mcu->Cr, sampling_factors[Y][H], sampling_factors[Y][V], sampling_factors[Cr][H], sampling_factors[Cr][V], data_unit);
-}
-
 int main(int argc, char** argv) {
     if (argc != 8) {
         fprintf(stderr, "ERREUR: /.%s <Nom_Fichier> <h1> <h2> <h3> <v1> <v2> <v3>\n", argv[0]);
@@ -57,7 +51,9 @@ int main(int argc, char** argv) {
         printf("Traitement du mcu %ld\n", i + 1);
         recuperer_MCUs(fichier, image, mcu);
         afficher_MCUs(image->format, mcu);
-        process_data_units(mcu, sampling_factors, data_unit);
+        // process_Y(mcu->Y, sampling_factors[Y][H], sampling_factors[Y][V], data_unit);
+        process_chroma(mcu->Cb, sampling_factors[Y][H], sampling_factors[Y][V], sampling_factors[Cb][H], sampling_factors[Cb][V], data_unit);
+        // process_chroma(mcu->Cr, sampling_factors[Y][H], sampling_factors[Y][V], sampling_factors[Cr][H], sampling_factors[Cr][V], data_unit);
     }
 
     /* Libération d'un bloc 8x8 */
