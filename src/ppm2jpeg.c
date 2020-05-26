@@ -9,7 +9,11 @@
 
 #include "downsampling.h"
 #include "ppm.h"
+#include "dct.h"
+#include "zigzag.h"
+#include "quantification.h"
 #include "utils.h"
+#include "qtables.h"
 
 /*Parsing des options*/
 static error_t parse_option(int key, char *arg, struct argp_state *state) {
@@ -96,14 +100,14 @@ void verifier_syntaxe(arguments args) {
     //     printf("ERREUR: Trop ou pas assez de points dans les noms de fichiers IO\n");
     //     exit(EXIT_FAILURE);
     // }
-    // if (!(check_extension(strchr(args.inputfile, '.'), ".ppm") || check_extension(strchr(args.inputfile, '.'), ".pgm"))) {
-    //     printf("ERREUR: Les fichiers d'entrée ne sont pas reconnus\n");
-    //     exit(EXIT_FAILURE);
-    // }
-    // if (strlen(args.outfile) != 0 && !check_extension(strchr(args.outfile, '.'), ".jpg")) {
-    //     printf("ERREUR: Le fichier de sortie n'est pas reconnu\n");
-    //     exit(EXIT_FAILURE);
-    // }
+    if (!(check_extension(strrchr(args.inputfile, '.'), ".ppm") || check_extension(strrchr(args.inputfile, '.'), ".pgm"))) {
+         printf("ERREUR: Les fichiers d'entrée ne sont pas reconnus\n");
+         exit(EXIT_FAILURE);
+     }
+    if (strlen(args.outfile) != 0 && !check_extension(strrchr(args.outfile, '.'), ".jpg")) {
+         printf("ERREUR: Le fichier de sortie n'est pas reconnu\n");
+         exit(EXIT_FAILURE);
+     }
     // if (check_extension(strchr(args.inputfile, '.'), ".ppm") && !strcmp(args.sample, "")) {
     //     printf("ERREUR: Les facteurs d'échantillonage ne sont pas spécifiés.\n");
     //     exit(EXIT_FAILURE);
@@ -112,6 +116,39 @@ void verifier_syntaxe(arguments args) {
         printf("ERREUR: Le format des facteurs d'échantillonage est incorrect\n");
         exit(EXIT_FAILURE);
     }
+}
+
+void afficher_traitement_dynamique(int16_t** input, const char* chaine) {
+  printf("%s\n", chaine);
+  for (size_t i = 0; i < TAILLE_DATA_UNIT; i++) {
+		for (size_t j = 0; i < TAILLE_DATA_UNIT; j++) {
+			printf("%d ", input[i][j]);
+		}
+		printf("\n");
+	}
+}
+
+void afficher_traitement_statique(int16_t input[8][8], const char* chaine) { //Merci les [8][8] <3
+  printf("%s\n", chaine);
+  for (size_t i = 0; i < TAILLE_DATA_UNIT; i++) {
+		for (size_t j = 0; i < TAILLE_DATA_UNIT; j++) {
+			printf("%d ", input[i][j]);
+		}
+		printf("\n");
+	}
+}
+
+void encode(int16_t** input, bool choix_YCbCr) {
+	int16_t output[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT];
+  afficher_traitement_dynamique(input, "0)Affichage avant traitement");
+	offset(input);
+  afficher_traitement_dynamique(input, "1)Affichage offset");
+	dct(input, output);
+  afficher_traitement_statique(output, "2)Affichage dct");
+	zigzag_inplace(output);
+  afficher_traitement_statique(output, "3)Affichage zig-zag");
+	quantifier(output, (choix_YCbCr) ? quantification_table_Y : quantification_table_CbCr);
+  afficher_traitement_statique(output, "4)Affichage quantification");
 }
 
 /*Programme principal*/
@@ -210,17 +247,17 @@ int main(int argc, char *argv[]) {
 
     /* Traitement des MCUs */
 
-    /* 
-        Il faut distinguer ici:  
+    /*
+        Il faut distinguer ici:
             si l'image est RGB ou Grayscale
-            si l'image est RGB avec des facteurs d'échantillonnages quelconques 
+            si l'image est RGB avec des facteurs d'échantillonnages quelconques
             ou RGB avec des facteurs d'échantillonnages donnant des mcus de taille 8x8
     */
     for (size_t i = 0; i < image->nb_MCUs; i++) {
         printf("Traitement du mcu %ld\n", i + 1);
         recuperer_MCUs(fichier, image, mcu);
         afficher_MCUs(image->format, mcu);
-        
+
         /* Image RGB avec facteurs */
         // process_Y(mcu->Y, sampling_factors[Y][H], sampling_factors[Y][V], data_unit);
         // process_chroma(mcu->Cb, sampling_factors[Y][H], sampling_factors[Y][V], sampling_factors[Cb][H], sampling_factors[Cb][V], data_unit);
