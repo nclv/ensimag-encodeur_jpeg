@@ -37,7 +37,7 @@ static error_t parse_option(int key, char *arg, struct argp_state *state) {
 /*Vérifie que le nom du fichier IO est correct
  *C'est à dire un seul point et une extension donné
  *Renvoie true si le nombre de points est == 1*/
-bool nb_points(const char *name) {
+bool check_one_dot(const char *name) {
     uint32_t cmp = 0;
     size_t i = 0;
 
@@ -49,8 +49,9 @@ bool nb_points(const char *name) {
     return (cmp == 1);
 }
 
-bool extension(const char *name, const char *extension) {
-    return !strcmp(name, extension);
+/* Vérifie l'extension de filename */
+bool check_extension(const char *filename, const char *extension) {
+    return !strcmp(filename, extension);
 }
 
 /*Renvoie True si le caractère c est un digit*/
@@ -89,34 +90,35 @@ bool verifier_facteurs(uint8_t facteurs[]) {
 }
 
 void verifier_syntaxe(arguments args) {
-    if (!(nb_points(args.inputfile) && nb_points(args.outfile))) {
-        printf("ERREUR: Trop ou pas assez de points dans les noms de fichiers IO\n");
-        exit(EXIT_FAILURE);
-    }
-    if (!(extension(strchr(args.inputfile, '.'), ".ppm") || extension(strchr(args.inputfile, '.'), ".pgm"))) {
-        printf("ERREUR: Les fichiers d'entrée ne sont pas reconnus\n");
-        exit(EXIT_FAILURE);
-    }
-    if (!extension(strchr(args.outfile, '.'), ".jpg")) {
-        printf("ERREUR: Le fichier de sortie n'est pas reconnu\n");
-        exit(EXIT_FAILURE);
-    }
-    // if (extension(strchr(args.inputfile, '.'), ".ppm") && !strcmp(args.sample, "")) {
+    // if (!(check_one_dot(args.inputfile)) || (strlen(args.outfile) != 0 && !(check_one_dot(args.outfile)))) {
+    //     printf("ERREUR: Trop ou pas assez de points dans les noms de fichiers IO\n");
+    //     exit(EXIT_FAILURE);
+    // }
+    // if (!(check_extension(strchr(args.inputfile, '.'), ".ppm") || check_extension(strchr(args.inputfile, '.'), ".pgm"))) {
+    //     printf("ERREUR: Les fichiers d'entrée ne sont pas reconnus\n");
+    //     exit(EXIT_FAILURE);
+    // }
+    // if (strlen(args.outfile) != 0 && !check_extension(strchr(args.outfile, '.'), ".jpg")) {
+    //     printf("ERREUR: Le fichier de sortie n'est pas reconnu\n");
+    //     exit(EXIT_FAILURE);
+    // }
+    // if (check_extension(strchr(args.inputfile, '.'), ".ppm") && !strcmp(args.sample, "")) {
     //     printf("ERREUR: Les facteurs d'échantillonage ne sont pas spécifiés.\n");
     //     exit(EXIT_FAILURE);
     // }
-    // if (!verifier_sample(args.sample)) {
-    //     printf("ERREUR: Le format des facteurs d'échantillonage est incorrect\n");
-    //     exit(EXIT_FAILURE);
-    // }
+    if (strlen(args.sample) != 0 && !verifier_sample(args.sample)) {
+        printf("ERREUR: Le format des facteurs d'échantillonage est incorrect\n");
+        exit(EXIT_FAILURE);
+    }
 }
 
 /*Programme principal*/
 int main(int argc, char *argv[]) {
-    /*Traitement des arguments*/
+    /* Traitement des arguments */
     arguments args = {0};
+    // Nécessaire, on test que les strings sont vides
     args.sample = "";
-    args.outfile = "output.jpg";
+    args.outfile = "";
 
     /* Documentation */
     char doc[] =
@@ -138,25 +140,42 @@ int main(int argc, char *argv[]) {
 
     verifier_syntaxe(args);
 
+    /* Ecriture du nom de fichier de sortie */
+    char *outfile;
+    if (strlen(args.outfile) == 0) {
+        outfile = malloc(strlen(args.inputfile) + 1 + 5);
+        if (outfile == NULL) exit(EXIT_FAILURE);
+        strcpy(outfile, args.inputfile);
+        strip_ext(outfile);
+        strcat(outfile, ".jpg");
+    } else {
+        outfile = malloc(strlen(args.outfile) + 1);
+        strcpy(outfile, args.outfile);
+    }
+
+    /* Default sampling-factors */
+    uint8_t facteurs[NOMBRE_FACTEURS] = {1, 1, 1, 1, 1, 1};
     /* Stockage des sampling-factors */
     if (strlen(args.sample) != 0) {
         const char *separators = "x,";
         char *sample_copy = strdup(args.sample);
         char *strToken = strtok(sample_copy, separators);
         char *endPtr = NULL;
-        uint8_t facteurs[NOMBRE_FACTEURS];
         for (size_t i = 0; i < NOMBRE_FACTEURS; i++) {
-            printf("%s, ", strToken);
             facteurs[i] = (uint8_t)strtol(strToken, &endPtr, 10);
             if (strToken == endPtr) exit(EXIT_FAILURE);
             strToken = strtok(NULL, separators);
         }
-        printf("%p\n", facteurs);
-
         free(sample_copy);
     }
 
-    printf("input file: %s\noutput file: %s\nsample: %s\n", args.inputfile, args.outfile, args.sample);
+    printf("input file: %s\noutput file: %s\n", args.inputfile, outfile);
+    for (size_t i = 0; i < NOMBRE_FACTEURS; i++) {
+        printf("%d ", facteurs[i]);
+    }
+    printf("\n");
+
+    free(outfile);
 
     return EXIT_SUCCESS;
 }

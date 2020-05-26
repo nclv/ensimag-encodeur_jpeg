@@ -3,11 +3,15 @@
 #include <stddef.h>
 #include <stdint.h>
 
-void offset(int8_t input[8][8]) {
-    /* Offset du tableau d'entrée pour améliorer le codage par magnitude */
+/* 
+    Offset du tableau d'entrée pour améliorer le codage par magnitude 
+    On passe théoriquement du type uint8_t à int8_t.
+    On ne refais pas d'allocation.
+*/
+void offset(int16_t **input) {
     for (size_t i = 0; i < 8; i++) {
         for (size_t j = 0; j < 8; j++) {
-            input[i][j] = (int8_t)(input[i][j] - 128);
+            input[i][j] = (int16_t)(input[i][j] - 128);
         }
     }
 }
@@ -35,7 +39,7 @@ void offset(int8_t input[8][8]) {
     The output array of DCT coefficients contains integers;
     these can range from -1024 to 1023.
 */
-void dct(int8_t input[8][8], int16_t output[8][8]) {
+void dct(int16_t **input, int16_t **output) {
     int32_t tmp[8][8];
 
     /* Approximations entières des valeurs des cosinus */

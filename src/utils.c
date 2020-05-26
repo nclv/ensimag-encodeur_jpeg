@@ -10,3 +10,15 @@ char *strdup(const char *str) {
         return NULL;
     return (char *)memcpy(new, str, len);
 }
+
+void strip_ext(char *filename) {
+    char *end = filename + strlen(filename);
+
+    while (end > filename && *end != '.' && *end != '\\' && *end != '/') {
+        --end;
+    }
+    if ((end > filename && *end == '.') &&
+        (*(end - 1) != '\\' && *(end - 1) != '/')) {
+        *end = '\0';
+    }
+}

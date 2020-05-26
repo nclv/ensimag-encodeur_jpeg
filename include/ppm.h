@@ -36,9 +36,9 @@ typedef struct MCUs {
     uint32_t nb_blocs_Y;
     uint32_t nb_blocs_Cb;
     uint32_t nb_blocs_Cr;
-    uint8_t** Y;
-    uint8_t** Cb;
-    uint8_t** Cr;
+    int16_t** Y;
+    int16_t** Cb;
+    int16_t** Cr;
 } MCUs;
 
 /* type: char*
