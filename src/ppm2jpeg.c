@@ -6,6 +6,8 @@
 #include <stdint.h>
 
 #include "ppm.h"
+#include "ppm2jpeg.h"
+#include "utils.h"
 
 /*Documentation*/
 char doc[] = "Application qui convertit une image PPM en une image au format JPEG.\n\n \
@@ -16,13 +18,6 @@ static struct argp_option options[] = {
     {"outfile", 'o', "sortie.jpg", 0, "Output to sortie.jpg instead of standard output.", 0},
     {"sample", 's', "hxv", 0, "Définie les facteurs d'échantillonnage hvx=h1xv1,h2xv2,h3xv3 des trois composantes de couleur.", 0},
     {0}};
-
-/*Structure des arguments*/
-typedef struct arguments {
-    const char *inputfile;
-    const char *outfile;
-    const char *sample;
-} arguments;
 
 /*Parsing des options*/
 static error_t parse_option(int key, char *arg, struct argp_state *state) {
@@ -46,14 +41,6 @@ static error_t parse_option(int key, char *arg, struct argp_state *state) {
     }
 
     return 0;
-}
-
-char *strdup(const char *str) {
-    size_t len = strlen(str) + 1;
-    void *new = malloc(len);
-    if (new == NULL)
-        return NULL;
-    return (char *)memcpy(new, str, len);
 }
 
 /*Vérifie que le nom du fichier IO est correct
