@@ -76,15 +76,16 @@ bool verifier_sample(const char *sample) {
 }
 
 /*Vérifie les spécifications de la norme JPEG*/
-bool verifier_facteurs(uint8_t facteurs[]) {
+bool verifier_facteurs(uint8_t facteurs[NB_COLOR_COMPONENTS][NB_DIRECTIONS]) {
     bool est_correct = true;
-    size_t i = 0;
-    while (est_correct && i < NOMBRE_FACTEURS) {
-        est_correct = est_correct && facteurs[i] >= 1 && facteurs[i] <= 4;
-        i += 1;
+    for (size_t cc = Y; cc < NB_COLOR_COMPONENTS; cc++) {
+        for (size_t dir = H; dir < NB_DIRECTIONS; dir++) {
+            est_correct = est_correct && facteurs[cc][dir] >= 1 && facteurs[cc][dir] <= 4;
+        }
     }
-    est_correct = est_correct && (facteurs[H1] * facteurs[V1] + facteurs[H2] * facteurs[V2] + facteurs[H3] * facteurs[V3] <= 10);
-    est_correct = est_correct && (facteurs[H1] % facteurs[H2] == 0 && facteurs[H1] % facteurs[H3] == 0 && facteurs[V1] % facteurs[V2] == 0 && facteurs[V1] % facteurs[V3] == 0);
+
+    est_correct = est_correct && (facteurs[Y][H] * facteurs[H][V] + facteurs[Cb][H] * facteurs[Cb][V] + facteurs[Cr][H] * facteurs[Cr][V] <= 10);
+    est_correct = est_correct && (facteurs[Y][H] % facteurs[Cb][H] == 0 && facteurs[Y][H] % facteurs[Cr][H] == 0 && facteurs[H][V] % facteurs[Cb][V] == 0 && facteurs[H][V] % facteurs[Cr][V] == 0);
 
     return est_correct;
 }
@@ -154,24 +155,28 @@ int main(int argc, char *argv[]) {
     }
 
     /* Default sampling-factors */
-    uint8_t facteurs[NOMBRE_FACTEURS] = {1, 1, 1, 1, 1, 1};
+    uint8_t facteurs[NB_COLOR_COMPONENTS][NB_DIRECTIONS] = {{1, 1}, {1, 1}, {1, 1}};
     /* Stockage des sampling-factors */
     if (strlen(args.sample) != 0) {
         const char *separators = "x,";
         char *sample_copy = strdup(args.sample);
         char *strToken = strtok(sample_copy, separators);
         char *endPtr = NULL;
-        for (size_t i = 0; i < NOMBRE_FACTEURS; i++) {
-            facteurs[i] = (uint8_t)strtol(strToken, &endPtr, 10);
-            if (strToken == endPtr) exit(EXIT_FAILURE);
-            strToken = strtok(NULL, separators);
+        for (size_t cc = Y; cc < NB_COLOR_COMPONENTS; cc++) {
+            for (size_t dir = H; dir < NB_DIRECTIONS; dir++) {
+                facteurs[cc][dir] = (uint8_t)strtol(strToken, &endPtr, 10);
+                if (strToken == endPtr) exit(EXIT_FAILURE);
+                strToken = strtok(NULL, separators);
+            }
         }
         free(sample_copy);
     }
 
     printf("input file: %s\noutput file: %s\n", args.inputfile, outfile);
-    for (size_t i = 0; i < NOMBRE_FACTEURS; i++) {
-        printf("%d ", facteurs[i]);
+    for (size_t cc = Y; cc < NB_COLOR_COMPONENTS; cc++) {
+        for (size_t dir = H; dir < NB_DIRECTIONS; dir++) {
+            printf("%d ", facteurs[cc][dir]);
+        }
     }
     printf("\n");
 

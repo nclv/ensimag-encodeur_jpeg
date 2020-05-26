@@ -4,5 +4,5 @@ ppm2jpeg.c:53:6:check_extension	32	static
 ppm2jpeg.c:58:6:is_digit	16	static
 ppm2jpeg.c:63:6:verifier_sample	32	static
 ppm2jpeg.c:79:6:verifier_facteurs	16	static
-ppm2jpeg.c:92:6:verifier_syntaxe	16	static
-ppm2jpeg.c:116:5:main	384	dynamic,bounded
+ppm2jpeg.c:93:6:verifier_syntaxe	16	static
+ppm2jpeg.c:117:5:main	400	dynamic,bounded

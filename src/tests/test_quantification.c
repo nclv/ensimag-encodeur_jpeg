@@ -14,35 +14,21 @@ int main(void) {
                                         {49, 64, 78, 87, 103, 121, 120, 101},
                                         {72, 92, 95, 98, 112, 100, 103, 99}};
 
-    /* Dynamic 2D array initialisation */
-    int16_t **freq_matrix = malloc(8 * sizeof *freq_matrix);
-    if (freq_matrix == NULL) exit(EXIT_FAILURE);
-    for (size_t i = 0; i < 8; i++) {
-        freq_matrix[i] = malloc(8 * sizeof *freq_matrix[i]);
-        if (freq_matrix[i] == NULL) exit(EXIT_FAILURE);
-        freq_matrix[i] = static_freq_matrix[i];
-    }
-
-    quantifier(freq_matrix, quantification_table_Y);
+    quantifier(static_freq_matrix, quantification_table_Y);
     printf("Quantification de Y\n");
     for (size_t i = 0; i < 8; i++) {
         for (size_t j = 0; j < 8; j++) {
-            printf("%i | ", freq_matrix[i][j]);
+            printf("%i | ", static_freq_matrix[i][j]);
         }
         printf("\n");
     }
 
-    quantifier(freq_matrix, quantification_table_CbCr);
+    quantifier(static_freq_matrix, quantification_table_CbCr);
     printf("Quantification de Cb ou Cr\n");
     for (size_t i = 0; i < 8; i++) {
         for (size_t j = 0; j < 8; j++) {
-            printf("%i | ", freq_matrix[i][j]);
+            printf("%i | ", static_freq_matrix[i][j]);
         }
         printf("\n");
     }
-
-    for (size_t i = 0; i < 8; i++) {
-        free(freq_matrix[i]);
-    }
-    free(freq_matrix);
 }
