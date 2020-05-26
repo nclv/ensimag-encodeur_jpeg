@@ -300,8 +300,8 @@ static void afficher_MCU_grayscale(MCUs* mcu) {
 static void afficher_MCU_RGB(MCUs* mcu) {
     for (size_t i = 0; i < mcu->hauteur; i++) {
         for (size_t j = 0; j < mcu->largeur; j++) {
-            // printf("%02hhX ", mcu->Y[i][j]);
-            printf("%02hhX ", mcu->Cb[i][j]);
+            printf("%02hhX ", mcu->Y[i][j]);
+            // printf("%02hhX ", mcu->Cb[i][j]);
             // printf("%02hhX ", mcu->Cr[i][j]);
         }
         printf("\n");

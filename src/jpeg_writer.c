@@ -14,6 +14,7 @@ jpeg *jpeg_create(void) {
 
     jpg->jpeg_filename = NULL;
     jpg->input_filename = NULL;
+    jpg->stream = NULL;
 
     jpg->image_height = 256;
     jpg->image_width = 512;
@@ -30,11 +31,12 @@ void jpeg_destroy(jpeg *jpg) {
     if (jpg->ht_Y_AC != NULL) huffman_table_destroy(jpg->ht_Y_AC);
     if (jpg->ht_CbCr_DC != NULL) huffman_table_destroy(jpg->ht_CbCr_DC);
     if (jpg->ht_CbCr_AC != NULL) huffman_table_destroy(jpg->ht_CbCr_AC);
+    bitstream_destroy(jpg->stream);
     free(jpg);
 }
 
 bitstream *jpeg_get_bitstream(jpeg *jpg) {
-    return bitstream_create(jpg->jpeg_filename);
+    return jpg->stream;
 }
 
 static void jpeg_write_dht_section(FILE *file, huff_table *ht, const char *HT_TYPE) {
@@ -247,6 +249,7 @@ static void jpeg_write_header_RGB(jpeg *jpg) {
 }
 
 void jpeg_write_header(jpeg *jpg) {
+    bitstream_create(jpg->jpeg_filename);
     (jpg->nb_components == 1) ? jpeg_write_header_grayscale(jpg) : jpeg_write_header_RGB(jpg);
 }
 

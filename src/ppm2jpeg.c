@@ -9,6 +9,9 @@
 
 #include "dct.h"
 #include "downsampling.h"
+#include "encode_ACDC.h"
+#include "htables.h"
+#include "jpeg_writer.h"
 #include "ppm.h"
 #include "qtables.h"
 #include "quantification.h"
@@ -121,8 +124,8 @@ void verifier_syntaxe(arguments args) {
 void afficher_traitement_dynamique(int16_t **input, const char *chaine) {
     printf("%s\n", chaine);
     for (size_t i = 0; i < TAILLE_DATA_UNIT; i++) {
-        for (size_t j = 0; i < TAILLE_DATA_UNIT; j++) {
-            printf("%d ", input[i][j]);
+        for (size_t j = 0; j < TAILLE_DATA_UNIT; j++) {
+            printf("%02hhX ", input[i][j]);
         }
         printf("\n");
     }
@@ -131,7 +134,7 @@ void afficher_traitement_dynamique(int16_t **input, const char *chaine) {
 void afficher_traitement_statique(int16_t input[8][8], const char *chaine) {  //Merci les [8][8] <3
     printf("%s\n", chaine);
     for (size_t i = 0; i < TAILLE_DATA_UNIT; i++) {
-        for (size_t j = 0; i < TAILLE_DATA_UNIT; j++) {
+        for (size_t j = 0; j < TAILLE_DATA_UNIT; j++) {
             printf("%d ", input[i][j]);
         }
         printf("\n");
@@ -222,18 +225,73 @@ int main(int argc, char *argv[]) {
     }
     printf("\n");
 
-    free(outfile);
+    /*
+        Création du fichier de sortie
+    */
+
+    jpeg *jpg = jpeg_create();
+
+    jpeg_set_jpeg_filename(jpg, outfile);
+    jpeg_set_ppm_filename(jpg, args.inputfile);
+
+    printf("Ecriture des sampling-factors\n");
+    for (size_t cc = Y; cc < NB_COLOR_COMPONENTS; cc++) {
+        for (size_t dir = H; dir < NB_DIRECTIONS; dir++) {
+            jpeg_set_sampling_factor(jpg, cc, dir, sampling_factors[cc][dir]);
+        }
+    }
+
+    jpeg_set_quantization_table(jpg, Y, quantification_table_Y);
+    // jpeg_set_quantization_table(jpg, Cb, quantification_table_CbCr);
+
+    printf("Construction des tables de Huffman\n");
+    huff_table *htable_Y_DC = huffman_table_build(htables_nb_symb_per_lengths[DC][Y], htables_symbols[DC][Y], htables_nb_symbols[DC][Y]);
+    if (htable_Y_DC == NULL) {
+        jpeg_destroy(jpg);
+        exit(EXIT_FAILURE);
+    }
+    jpeg_set_huffman_table(jpg, DC, Y, htable_Y_DC);
+
+    huff_table *htable_Y_AC = huffman_table_build(htables_nb_symb_per_lengths[AC][Y], htables_symbols[AC][Y], htables_nb_symbols[AC][Y]);
+    if (htable_Y_AC == NULL) {
+        jpeg_destroy(jpg);
+        exit(EXIT_FAILURE);
+    }
+    jpeg_set_huffman_table(jpg, AC, Y, htable_Y_AC);
+
+    // huff_table *htable_CbCr_DC = huffman_table_build(htables_nb_symb_per_lengths[DC][Cb], htables_symbols[DC][Cb], htables_nb_symbols[DC][Cb]);
+    // if (htable_CbCr_DC == NULL) {
+    //     jpeg_destroy(jpg);
+    //     exit(EXIT_FAILURE);
+    // }
+    // jpeg_set_huffman_table(jpg, DC, Cb, htable_CbCr_DC);
+
+    // huff_table *htable_CbCr_AC = huffman_table_build(htables_nb_symb_per_lengths[AC][Cb], htables_symbols[AC][Cb], htables_nb_symbols[AC][Cb]);
+    // if (htable_CbCr_AC == NULL) {
+    //     jpeg_destroy(jpg);
+    //     exit(EXIT_FAILURE);
+    // }
+    // jpeg_set_huffman_table(jpg, AC, Cb, htable_CbCr_AC);
 
     /*
         Compression du fichier d'entrée
     */
 
-    /* Ouverture du fichier */
+    /* Ouverture du fichier d'entrée */
     FILE *fichier = fopen(args.inputfile, "r");
     if (fichier == NULL) exit(EXIT_FAILURE);
 
     /*Parsing en-tête*/
     image_ppm *image = parse_entete(fichier);
+
+    jpeg_set_nb_components(jpg, 1);
+    // jpeg_set_nb_components(jpg, 3);
+
+    jpeg_set_image_width(jpg, image->largeur);
+    jpeg_set_image_height(jpg, image->hauteur);
+
+    printf("Ecriture du header\n");
+    jpeg_write_header(jpg);  // et création du bitstream
 
     MCUs *mcu = initialiser_MCUs(image, sampling_factors);
 
@@ -247,6 +305,11 @@ int main(int argc, char *argv[]) {
 
     /* Traitement des MCUs */
 
+    bitstream *stream = jpeg_get_bitstream(jpg);
+    huff_table *Y_dc_table = jpeg_get_huffman_table(jpg, DC, Y);
+    huff_table *Y_ac_table = jpeg_get_huffman_table(jpg, AC, Y);
+
+    int16_t difference_DC = 0;
     /*
         Il faut distinguer ici:
             si l'image est RGB ou Grayscale
@@ -260,15 +323,31 @@ int main(int argc, char *argv[]) {
 
         /* Image RGB avec facteurs */
         // process_Y(mcu->Y, sampling_factors[Y][H], sampling_factors[Y][V], data_unit);
+
         // process_chroma(mcu->Cb, sampling_factors[Y][H], sampling_factors[Y][V], sampling_factors[Cb][H], sampling_factors[Cb][V], data_unit);
         // process_chroma(mcu->Cr, sampling_factors[Y][H], sampling_factors[Y][V], sampling_factors[Cr][H], sampling_factors[Cr][V], data_unit);
 
         /* Image Grayscale */
         // on encode directement mcu->Y
+        int16_t data_unit_freq[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT];
+        offset(mcu->Y);
+        dct(mcu->Y, data_unit_freq);
+        zigzag_inplace(data_unit_freq);
+        quantifier(data_unit_freq, quantification_table_Y);
+        ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC);
+        difference_DC = data_unit_freq[0][0];
 
         /* Image RGB sans facteurs (1x1 1x1 1x1) */
         // on encode directement mcu->Y, mcu->Cb et mcu->Cr
+
     }
+
+    /* Après écriture du footer, hexdump -C ne renvoie plus les paramètres du header */
+    // printf("Ecriture du footer\n");
+    jpeg_write_footer(jpg);
+
+    printf("Destruction de la structure jpeg\n");
+    jpeg_destroy(jpg);
 
     /* Libération d'un bloc 8x8 */
     for (size_t i = 0; i < 8; i++) {
@@ -276,7 +355,9 @@ int main(int argc, char *argv[]) {
     }
     free(data_unit);
 
-    /*Fermeture du fichier*/
+    free(outfile);
+
+    /*Fermeture du fichier d'entrée */
     fclose(fichier);
 
     return EXIT_SUCCESS;
