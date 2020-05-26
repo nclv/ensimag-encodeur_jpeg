@@ -70,8 +70,8 @@ void process_chroma(int16_t** chroma_mcu, uint8_t h1, uint8_t v1, uint8_t h_chro
 }
 
 void process_data_units(MCUs* mcu, uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS], int16_t** data_unit) {
-    process_Y(mcu->Y, sampling_factors[Y][H], sampling_factors[Y][V], data_unit);
-    // process_chroma(mcu->Cb, sampling_factors[Y][H], sampling_factors[Y][V], sampling_factors[Cb][H], sampling_factors[Cb][V], data_unit);
+    // process_Y(mcu->Y, sampling_factors[Y][H], sampling_factors[Y][V], data_unit);
+    process_chroma(mcu->Cb, sampling_factors[Y][H], sampling_factors[Y][V], sampling_factors[Cb][H], sampling_factors[Cb][V], data_unit);
     // process_chroma(mcu->Cr, sampling_factors[Y][H], sampling_factors[Y][V], sampling_factors[Cr][H], sampling_factors[Cr][V], data_unit);
 }
 

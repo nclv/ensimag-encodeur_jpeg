@@ -52,8 +52,8 @@ static bool is_grayscale_format(char format[]) {
 }
 
 static void allocate_MCUs_grayscale(MCUs* bloc) {
-    bloc->largeur = TAILLE_BLOC;
-    bloc->hauteur = TAILLE_BLOC;
+    bloc->largeur = TAILLE_DATA_UNIT;
+    bloc->hauteur = TAILLE_DATA_UNIT;
 
     bloc->Cb = NULL;
     bloc->Cr = NULL;
@@ -73,19 +73,8 @@ static void allocate_MCUs_grayscale(MCUs* bloc) {
 }
 
 static void allocate_MCUs_RGB(MCUs* bloc, uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS]) {
-    bloc->largeur = (uint32_t)sampling_factors[Y][H] * TAILLE_BLOC;
-    bloc->hauteur = (uint32_t)sampling_factors[Y][V] * TAILLE_BLOC;
-    /*Sous-échantillonage simple*/
-    // if (facteurs[H2] == 1 && facteurs[V2] == 1) {
-    //     bloc->comp_Cb = NULL;
-    // }
-    // if (facteurs[H3] == 1 && facteurs[V3] == 1) {
-    //     bloc->comp_Cr = NULL;
-    // }
-    // /*1x1, 1x1, 1x1*/
-    // if (bloc->largeur == TAILLE_BLOC && bloc->hauteur == TAILLE_BLOC) {
-    //     bloc->comp_Y = NULL;
-    // }
+    bloc->largeur = (uint32_t)sampling_factors[Y][H] * TAILLE_DATA_UNIT;
+    bloc->hauteur = (uint32_t)sampling_factors[Y][V] * TAILLE_DATA_UNIT;
 
     /*Allocations Y, Cb, Cr*/
     bloc->Y = malloc(bloc->hauteur * sizeof(uint8_t*));

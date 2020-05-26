@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define TAILLE_BLOC 8
+#define TAILLE_DATA_UNIT 8
 #define TAILLE_PPM 2
 #define NIVEAUX_GRIS "P5"
 
