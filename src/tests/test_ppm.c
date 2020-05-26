@@ -3,7 +3,7 @@
 
 #include "ppm.h"
 
-void afficher_data_unit(uint8_t** data_unit) {
+void afficher_data_unit(int16_t** data_unit) {
     printf("Data Unit\n");
     for (size_t i = 0; i < 8; i++) {
         for (size_t j = 0; j < 8; j++) {
@@ -13,7 +13,7 @@ void afficher_data_unit(uint8_t** data_unit) {
     }
 }
 
-void process_Y(uint8_t** Y, uint8_t h1, uint8_t v1, uint8_t** data_unit) {
+void process_Y(int16_t** Y, uint8_t h1, uint8_t v1, int16_t** data_unit) {
     /* Traitement des blocs Y */
     printf("%d %d\n", v1, h1);
     for (size_t v = 0; v < v1; v++) {
@@ -29,7 +29,7 @@ void process_Y(uint8_t** Y, uint8_t h1, uint8_t v1, uint8_t** data_unit) {
     }
 }
 
-void process_chroma(uint8_t** chroma, uint8_t h1, uint8_t v1, uint8_t h_chroma, uint8_t v_chroma, uint8_t** data_unit) {
+void process_chroma(int16_t** chroma, uint8_t h1, uint8_t v1, uint8_t h_chroma, uint8_t v_chroma, int16_t** data_unit) {
     /* Traitement des blocs Cb / Cr avec échantillonnage horizontal */
     // printf("%d \n", v1);
     // printf("%d %d\n", h_chroma, v_chroma);
@@ -47,12 +47,12 @@ void process_chroma(uint8_t** chroma, uint8_t h1, uint8_t v1, uint8_t h_chroma, 
                 for (size_t j = 0; j < 8; j++) {
                     for (size_t k = 0; k < h_div; k++) {
                         for (size_t l = 0; l < v_div; l++) {
-                            chroma_value = chroma[v_div * i + l + 8 * v][h_div * j + k + 8 * h];
+                            chroma_value = (uint8_t)chroma[v_div * i + l + 8 * v][h_div * j + k + 8 * h];
                             data_unit[i][j] = (uint8_t)(data_unit[i][j] + chroma_value / (h_div * v_div));
                             remainder += (float)(chroma_value % (h_div * v_div));
                         }
                     }
-                    data_unit[i][j] = (uint8_t)(data_unit[i][j] + remainder / (float)(h_div * v_div));
+                    data_unit[i][j] = (int16_t)(data_unit[i][j] + remainder / (float)(h_div * v_div));
                     remainder = 0;
                 }
             }
@@ -69,9 +69,9 @@ void process_chroma(uint8_t** chroma, uint8_t h1, uint8_t v1, uint8_t h_chroma, 
     }
 }
 
-void process_data_units(MCUs* mcu, uint8_t facteurs[NOMBRE_FACTEURS], uint8_t** data_unit) {
-    // process_Y(mcu->Y, facteurs[H1], facteurs[V1], data_unit);
-    process_chroma(mcu->Cb, facteurs[H1], facteurs[V1], facteurs[H2], facteurs[V2], data_unit);
+void process_data_units(MCUs* mcu, uint8_t facteurs[NOMBRE_FACTEURS], int16_t** data_unit) {
+    process_Y(mcu->Y, facteurs[H1], facteurs[V1], data_unit);
+    // process_chroma(mcu->Cb, facteurs[H1], facteurs[V1], facteurs[H2], facteurs[V2], data_unit);
     // process_chroma(mcu->Cr, facteurs[H1], facteurs[V1], facteurs[H3], facteurs[V3], data_unit);
 }
 
@@ -109,12 +109,14 @@ int main(int argc, char** argv) {
     printf("Hauteur_mcu = %d\n", mcu->hauteur);
 
     /* Allocation d'un bloc 8x8 */
-    uint8_t** data_unit = calloc(8, sizeof *data_unit);
+    int16_t** data_unit = calloc(8, sizeof *data_unit);
+    if (data_unit == NULL) exit(EXIT_FAILURE);
     for (size_t i = 0; i < 8; i++) {
         data_unit[i] = calloc(8, sizeof *data_unit[i]);
+        if (data_unit[i] == NULL) exit(EXIT_FAILURE);
     }
 
-    /*Traitement des MCUs*/
+    /* Traitement des MCUs */
     for (size_t i = 0; i < image->nb_MCUs; i++) {
         printf("Traitement du mcu %ld\n", i + 1);
         recuperer_MCUs(fichier, image, mcu);
