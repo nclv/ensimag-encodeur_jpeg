@@ -65,11 +65,11 @@ void bitstream_write_bits(bitstream *stream, uint32_t value, uint8_t nb_bits, bo
         bitstream_flush(stream);
     }
 
-    printf("Pas de dépassement du buffer\n");
+    // printf("Pas de dépassement du buffer\n");
 
     uint32_t mask = 1U << (nb_bits - 1);
 
-    printf("Nombre de bits: %d\n", nb_bits);
+    printf("Ecriture de %d sur %d bits\n", value, nb_bits);
     size_t current_bit_offset = stream->last_written_bit_offset;
     printf("Before %ld\n", current_bit_offset);
     for (size_t i = 0; i < nb_bits; i++) {

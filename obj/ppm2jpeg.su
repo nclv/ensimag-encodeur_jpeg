@@ -8,4 +8,4 @@ ppm2jpeg.c:101:6:verifier_syntaxe	16	static
 ppm2jpeg.c:124:6:afficher_traitement_dynamique	48	static
 ppm2jpeg.c:134:6:afficher_traitement_statique	48	static
 ppm2jpeg.c:144:6:encode	160	static
-ppm2jpeg.c:158:5:main	704	dynamic,bounded
+ppm2jpeg.c:158:5:main	736	dynamic,bounded

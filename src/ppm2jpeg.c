@@ -343,9 +343,21 @@ int main(int argc, char *argv[]) {
             printf("\n");
         }
         zigzag_inplace(data_unit_freq);
-        afficher_traitement_statique(data_unit_freq, "Zig-zag ");
+        printf("Zig-Zag: \n");
+        for (size_t k = 0; k < TAILLE_DATA_UNIT; k++) {
+            for (size_t j = 0; j < TAILLE_DATA_UNIT; j++) {
+                printf("%04x ", data_unit_freq[k][j]);
+            }
+            printf("\n");
+        }
         quantifier(data_unit_freq, quantification_table_Y);
-        afficher_traitement_statique(data_unit_freq, "Quantification ");
+        printf("Quantification: \n");
+        for (size_t k = 0; k < TAILLE_DATA_UNIT; k++) {
+            for (size_t j = 0; j < TAILLE_DATA_UNIT; j++) {
+                printf("%04x ", data_unit_freq[k][j]);
+            }
+            printf("\n");
+        }
         ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC);
 
         printf("End of %ld Data Unit", i);
