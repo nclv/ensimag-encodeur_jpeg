@@ -39,7 +39,7 @@ void offset(int16_t **input) {
     The output array of DCT coefficients contains integers;
     these can range from -1024 to 1023.
 */
-void dct(int16_t **input, int16_t **output) {
+void dct(int16_t **input, int16_t output[8][8]) {
     int32_t tmp[8][8];
 
     /* Approximations entières des valeurs des cosinus */
