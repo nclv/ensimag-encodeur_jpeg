@@ -3,8 +3,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-/* 
-    Offset du tableau d'entrée pour améliorer le codage par magnitude 
+/*
+    Offset du tableau d'entrée pour améliorer le codage par magnitude
     On passe théoriquement du type uint8_t à int8_t.
     On ne refais pas d'allocation.
 */
@@ -188,5 +188,14 @@ void dct(int16_t **input, int16_t output[8][8]) {
         output[1][j] = (int16_t)((a2 + a5 + 4096) >> 13);
         output[3][j] = (int16_t)(((a3 >> 8) * racine2 + 2048) >> 12);  // redécallage de 17 - 8 + (10 - 7), ajout de 1/2
         output[5][j] = (int16_t)(((a0 >> 8) * racine2 + 2048) >> 12);
+    }
+}
+
+void afficher_dct(int16_t dct[8][8]) {
+    for (uint8_t k = 0; k < 8; k++) {
+        for (uint8_t l = 0; l < 8; l++) {
+            printf("%04X", dct[k][l]);
+        }
+        printf("\n");
     }
 }

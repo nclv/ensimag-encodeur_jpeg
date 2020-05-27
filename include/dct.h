@@ -18,4 +18,10 @@ extern void dct(int16_t **input, int16_t output[8][8]);
  */
 extern void offset(int16_t **input);
 
+/* type: int16_t[8][8]
+ * rtype: void
+ * Affiche le résultat de la dct
+ */
+extern void afficher_dct(int16_t dct[8][8]);
+
 #endif
