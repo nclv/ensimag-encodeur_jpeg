@@ -56,9 +56,6 @@ static void allocate_MCUs_grayscale(MCUs* bloc) {
 
     bloc->Cb = NULL;
     bloc->Cr = NULL;
-    // bloc->comp_Y = NULL;
-    // bloc->comp_Cb = NULL;
-    // bloc->comp_Cr = NULL;
 
     /*Allocation Y*/
     bloc->Y = malloc(bloc->hauteur * sizeof(uint8_t*));
