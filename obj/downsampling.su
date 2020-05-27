@@ -1,3 +1,3 @@
-downsampling.c:5:13:afficher_data_unit	48	static
-downsampling.c:15:6:process_Y	80	static
-downsampling.c:31:6:process_chroma	128	static
+downsampling.c:9:13:afficher_data_unit	48	static
+downsampling.c:19:6:process_Y	80	static
+downsampling.c:35:6:process_chroma	128	static

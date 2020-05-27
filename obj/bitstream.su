@@ -1,5 +1,7 @@
 bitstream.c:9:12:bitstream_create	48	static
-bitstream.c:28:6:bitstream_display	48	static
-bitstream.c:42:6:bitstream_flush	64	static
-bitstream.c:56:6:bitstream_write_bits	80	static
-bitstream.c:94:6:bitstream_destroy	32	static
+bitstream.c:32:6:bitstream_display	48	static
+bitstream.c:51:6:bitstream_flush	64	static
+bitstream.c:68:13:bitstream_write_byte	32	static
+bitstream.c:84:13:bitstream_write_bit	16	static
+bitstream.c:90:6:bitstream_write_bits	80	static
+bitstream.c:125:6:bitstream_destroy	32	static

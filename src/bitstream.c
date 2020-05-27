@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define DEFAULT_BUFFER_SIZE 1  // valeur à modifier, 1 pour les tests
+#define DEFAULT_BUFFER_SIZE 512  // valeur à modifier, 1 pour les tests
 
 bitstream *bitstream_create(const char *filename) {
     bitstream *stream = malloc(sizeof *stream);
@@ -66,7 +66,7 @@ void bitstream_flush(bitstream *stream) {
 
 /* Ecriture dans bytes_buffer lorsque bits_buffer contient 8 bits*/
 static void bitstream_write_byte(bitstream *stream) {
-    printf("\nEcriture d'un byte\n");
+    // printf("\nEcriture d'un byte\n");
     /* Dépassement de la capacité du buffer, pas d'erreur visible sauf sur valgrind */
     if (stream->last_written_byte_offset >= stream->bytes_buffer_size) {
         printf("Dépassement de la capacité du buffer\n");
@@ -90,7 +90,7 @@ static void bitstream_write_bit(bitstream *stream, unsigned char bit) {
 void bitstream_write_bits(bitstream *stream, uint32_t value, uint8_t nb_bits, bool is_marker) {
     assert(0 < nb_bits && nb_bits <= 32);
 
-    printf("Marqueur: %i\n", is_marker);
+    printf("Marqueur: %i, writing %i over %i bits \n", is_marker, value, nb_bits);
     /* Un marqueur de section JPEG est toujours aligné dans le flux sur un multiple d'un octet */
     if (is_marker) {
         printf("Ecriture d'un marqueur (EOI)\n");
@@ -105,7 +105,7 @@ void bitstream_write_bits(bitstream *stream, uint32_t value, uint8_t nb_bits, bo
     uint32_t mask = 1U << (nb_bits - 1);
     for (size_t i = 0; i < nb_bits; i++) {
         unsigned char bit = (value & mask) ? 1 : 0;
-        printf("%d ", bit);
+        // printf("%d ", bit);
         bitstream_write_bit(stream, bit);
 
         // 8 bits dans bits_buffer, on écrit un byte dans bytes_buffer

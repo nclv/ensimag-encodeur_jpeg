@@ -59,8 +59,10 @@ static void encoder_AC_freq(bitstream *stream, huff_table *ac_table, int16_t fre
     uint8_t classe_magnitude = get_magnitude(freq_AC);
     uint16_t indice = (uint16_t)abs(freq_AC);
     if (freq_AC < 0) {
-        indice = (uint16_t)((1 << classe_magnitude) - indice);
+        indice = (uint16_t)~indice; // complément à deux
+        // indice = (uint16_t)((1 << classe_magnitude) - indice - 1);
     }
+    printf("Magnitude: %d, index: %d\n", classe_magnitude, indice);
     /*
         On doit coder le nombre de coefficients nuls puis la classe de magnitude
         On écrit un octet.
@@ -68,6 +70,7 @@ static void encoder_AC_freq(bitstream *stream, huff_table *ac_table, int16_t fre
         Le deuxième masquage est sécuritaire.
     */
     int value = ((zeros_count << 4) & 0xf0) | (classe_magnitude & 0x0f);
+    printf("RLE %02x \n", value);
     uint8_t nb_bits_zeros_magnitude = 0;
     uint32_t code_magnitude = huffman_table_get_path(ac_table, (uint8_t)value, &nb_bits_zeros_magnitude);
     bitstream_write_bits(stream, code_magnitude, nb_bits_zeros_magnitude, false);
@@ -104,6 +107,7 @@ void ecrire_coeffs(bitstream *stream, int16_t data_unit[8][8], huff_table *dc_ta
             if (i == 0 && j == 0) {
                 printf("Encodage DC\n");
                 encode_DC_freq(stream, dc_table, difference_DC);
+                printf("Encodage AC\n");
                 continue;
             }
             if (data_unit[i][j] == 0) {
@@ -117,6 +121,7 @@ void ecrire_coeffs(bitstream *stream, int16_t data_unit[8][8], huff_table *dc_ta
                     zeros_count = 0;
                 }
             } else {
+                printf("Valeur %d ", data_unit[i][j]);
                 encoder_AC_freq(stream, ac_table, data_unit[i][j], zeros_count);
                 zeros_count = 0;
             }

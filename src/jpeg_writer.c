@@ -254,11 +254,10 @@ void jpeg_write_header(jpeg *jpg) {
 }
 
 void jpeg_write_footer(jpeg *jpg) {
-    FILE *file = fopen(jpg->jpeg_filename, "wb");
+    FILE *file = fopen(jpg->jpeg_filename, "ab");
 
-    const unsigned char EOI[2] = {0xff, 0xd9};
-
-    fwrite(EOI, sizeof EOI, 1, file);
+    bitstream_write_bits(jpg->stream, 0xffd9, 16, true);
+    bitstream_flush(jpg->stream);
 
     fclose(file);
 }

@@ -367,9 +367,8 @@ int main(int argc, char *argv[]) {
         // on encode directement mcu->Y, mcu->Cb et mcu->Cr
     }
 
-    /* Après écriture du footer, hexdump -C ne renvoie plus les paramètres du header */
     // printf("Ecriture du footer\n");
-    // jpeg_write_footer(jpg);
+    jpeg_write_footer(jpg);
 
     printf("Destruction de la structure jpeg\n");
     jpeg_destroy(jpg);
