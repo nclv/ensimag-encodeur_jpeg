@@ -1,5 +1,6 @@
 #include "ppm.h"
 
+#include <inttypes.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -312,27 +313,28 @@ void recuperer_MCUs(FILE* fichier, image_ppm* image, MCUs* mcu) {
     }
 }
 
-static void afficher_MCU_grayscale(MCUs* mcu) {
+static void afficher_MCU_grayscale(const MCUs* mcu) {
     for (size_t i = 0; i < mcu->hauteur; i++) {
         for (size_t j = 0; j < mcu->largeur; j++) {
-            printf("%02hhX ", mcu->Y[i][j]);
+            printf("%02" PRIx16 " ", (uint16_t)mcu->Y[i][j]);
         }
         printf("\n");
     }
 }
 
-static void afficher_MCU_RGB(MCUs* mcu) {
+static void afficher_MCU_RGB(const MCUs* mcu) {
     for (size_t i = 0; i < mcu->hauteur; i++) {
         for (size_t j = 0; j < mcu->largeur; j++) {
-            printf("%02hhX ", mcu->Y[i][j]);
-            // printf("%02hhX ", mcu->Cb[i][j]);
-            // printf("%02hhX ", mcu->Cr[i][j]);
+            printf("%02" PRIx16 " ", (uint16_t)mcu->Y[i][j]);
+            printf("%02" PRIx16 " ", (uint16_t)mcu->Cb[i][j]);
+            printf("%02" PRIx16 " ", (uint16_t)mcu->Cr[i][j]);
         }
         printf("\n");
     }
 }
 
-void afficher_MCUs(char format[TAILLE_PPM], MCUs* mcu) {
+void afficher_MCUs(char format[TAILLE_PPM], const MCUs* mcu) {
+    printf("\nAffichage du MCU: \n");
     if (is_grayscale_format(format)) {
         afficher_MCU_grayscale(mcu);
     } else {

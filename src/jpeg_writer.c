@@ -16,8 +16,8 @@ jpeg *jpeg_create(void) {
     jpg->input_filename = NULL;
     jpg->stream = NULL;
 
-    jpg->image_height = 256;
-    jpg->image_width = 512;
+    jpg->image_height = 0;
+    jpg->image_width = 0;
     jpg->nb_components = 0;
 
     jpg->Y_quantization_table = NULL;

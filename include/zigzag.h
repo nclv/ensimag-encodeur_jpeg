@@ -20,5 +20,5 @@ extern void zigzag_inplace(int16_t matrice[8][8]);
  * rtype : void
  * Affichage de la matrice zigzag
  */
-extern void afficher_zigzag(int16_t zigzag[8][8]);
+extern void afficher_zigzag(const int16_t zigzag[8][8]);
 #endif

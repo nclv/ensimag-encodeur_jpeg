@@ -16,6 +16,6 @@ extern void quantifier(int16_t matrice_frequentiel_zigzag[8][8], uint8_t quantif
  * rtype: void
  * Affiche la matrice quantifiee
 */
-extern void afficher_matrice_quantifiee(int16_t matrice_quantifiee[8][8]);
+extern void afficher_matrice_quantifiee(const int16_t matrice_quantifiee[8][8]);
 
 #endif /* _QUANTIFICATION_H_ */

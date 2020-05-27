@@ -320,7 +320,7 @@ int main(int argc, char *argv[]) {
 
     int16_t data_unit_freq[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT] = {0};
     for (size_t i = 0; i < image->nb_MCUs; i++) {
-        printf("Traitement du mcu %ld\n", i + 1);
+        printf("\nTraitement du mcu %ld\n", i);
         recuperer_MCUs(fichier, image, mcu);
         afficher_MCUs(image->format, mcu);
 
@@ -333,36 +333,19 @@ int main(int argc, char *argv[]) {
         /* Image Grayscale */
         // on encode directement mcu->Y
         offset(mcu->Y);
-        afficher_traitement_dynamique(mcu->Y, "Offset ");
         dct(mcu->Y, data_unit_freq);
-        printf("DCT: \n");
-        for (size_t k = 0; k < TAILLE_DATA_UNIT; k++) {
-            for (size_t j = 0; j < TAILLE_DATA_UNIT; j++) {
-                printf("%04x ", data_unit_freq[k][j]);
-            }
-            printf("\n");
-        }
+        afficher_dct(data_unit_freq);
+
         zigzag_inplace(data_unit_freq);
-        printf("Zig-Zag: \n");
-        for (size_t k = 0; k < TAILLE_DATA_UNIT; k++) {
-            for (size_t j = 0; j < TAILLE_DATA_UNIT; j++) {
-                printf("%04x ", data_unit_freq[k][j]);
-            }
-            printf("\n");
-        }
+        afficher_zigzag(data_unit_freq);
+
         quantifier(data_unit_freq, quantification_table_Y);
-        int16_t next_DC_coeff = data_unit_freq[0][0];
-        printf("Quantification: \n");
-        for (size_t k = 0; k < TAILLE_DATA_UNIT; k++) {
-            for (size_t j = 0; j < TAILLE_DATA_UNIT; j++) {
-                printf("%04x ", data_unit_freq[k][j]);
-            }
-            printf("\n");
-        }
+        afficher_matrice_quantifiee(data_unit_freq);
+
         ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC);
 
-        printf("End of %ld Data Unit", i);
-        difference_DC = next_DC_coeff;
+        printf("\nEnd of %ld Data Unit\n", i);
+        difference_DC = data_unit_freq[0][0];
 
         /* Image RGB sans facteurs (1x1 1x1 1x1) */
         // on encode directement mcu->Y, mcu->Cb et mcu->Cr

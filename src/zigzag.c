@@ -1,21 +1,22 @@
 #include "zigzag.h"
 
+#include <inttypes.h>
 #include <stdint.h>
-#include <string.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 void zigzag_inplace(int16_t matrice[8][8]) {
     /*Table des indices zig-zag*/
     static uint8_t indices_zigzag[64] = {
-      0, 1, 8, 16, 9, 2, 3, 10,
-      17, 24, 32, 25, 18, 11, 4, 5,
-      12, 19, 26, 33, 40, 48, 41, 34,
-      27, 20, 13, 6, 7, 14, 21, 28,
-      35, 42, 49, 56, 57, 50, 43, 36,
-      29, 22, 15, 23, 30, 37, 44, 51,
-      58, 59, 52, 45, 38, 31, 39, 46,
-      53, 60, 61, 54, 47, 55, 62, 63};
+        0, 1, 8, 16, 9, 2, 3, 10,
+        17, 24, 32, 25, 18, 11, 4, 5,
+        12, 19, 26, 33, 40, 48, 41, 34,
+        27, 20, 13, 6, 7, 14, 21, 28,
+        35, 42, 49, 56, 57, 50, 43, 36,
+        29, 22, 15, 23, 30, 37, 44, 51,
+        58, 59, 52, 45, 38, 31, 39, 46,
+        53, 60, 61, 54, 47, 55, 62, 63};
 
     /* Allocation plus complexe avec une matrice */
     int16_t tmp[64];
@@ -119,11 +120,12 @@ void zigzag(int16_t matrice[8][8], int16_t tableau[64]) {
     tableau[63] = matrice[7][7];
 }
 
-void afficher_zigzag(int16_t zigzag[8][8]) {
-  for (uint8_t k = 0; k < 8; k++) {
-      for (uint8_t l = 0; l < 8; l++) {
-          printf("%04X", zigzag[k][l]);
-      }
-      printf("\n");
-  }
+void afficher_zigzag(const int16_t zigzag[8][8]) {
+    printf("\nZig-Zag: \n");
+    for (uint8_t k = 0; k < 8; k++) {
+        for (uint8_t l = 0; l < 8; l++) {
+            printf("%04" PRIx16 " ", (uint16_t)zigzag[k][l]);
+        }
+        printf("\n");
+    }
 }

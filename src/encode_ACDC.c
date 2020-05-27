@@ -74,7 +74,7 @@ static void encoder_AC_freq(bitstream *stream, huff_table *ac_table, int16_t fre
     bitstream_write_bits(stream, indice, classe_magnitude, false);
 }
 
-void ecrire_coeffs(bitstream *stream, int16_t data_unit[8][8], huff_table *dc_table, huff_table *ac_table, int16_t difference_DC) {
+void ecrire_coeffs(bitstream *stream, const int16_t data_unit[8][8], huff_table *dc_table, huff_table *ac_table, int16_t difference_DC) {
     uint8_t zeros_count = 0;
     difference_DC = (int16_t)(data_unit[0][0] - difference_DC);
 

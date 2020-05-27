@@ -1,5 +1,6 @@
 #include "dct.h"
 
+#include <inttypes.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -45,12 +46,12 @@ void dct(int16_t **input, int16_t output[8][8]) {
 
     /* Approximations entières des valeurs des cosinus */
     static const int16_t cos1 = 1004, /* cos(pi/16) << 10 */
-        cos7 = 200,               /* cos(7pi/16) << 10 */
-        cos3 = 851,               /* cos(3pi/16) << 10 */
-        cos5 = 569,               /* cos(5pi/16) << 10 */
-        racine2cos6 = 554,        /* sqrt(2)*cos(6pi/16) << 10 */
-        racine2cos2 = 1337,       /* sqrt(2)*cos(2pi/16) << 10 */
-        racine2 = 181;            /* sqrt(2) << 7 */
+        cos7 = 200,                   /* cos(7pi/16) << 10 */
+        cos3 = 851,                   /* cos(3pi/16) << 10 */
+        cos5 = 569,                   /* cos(5pi/16) << 10 */
+        racine2cos6 = 554,            /* sqrt(2)*cos(6pi/16) << 10 */
+        racine2cos2 = 1337,           /* sqrt(2)*cos(2pi/16) << 10 */
+        racine2 = 181;                /* sqrt(2) << 7 */
 
     int32_t a0, a1, a2, a3, a4, a5, a6, a7, a8;
 
@@ -192,10 +193,11 @@ void dct(int16_t **input, int16_t output[8][8]) {
     }
 }
 
-void afficher_dct(int16_t dct[8][8]) {
+void afficher_dct(const int16_t dct[8][8]) {
+    printf("\nDCT: \n");
     for (uint8_t k = 0; k < 8; k++) {
         for (uint8_t l = 0; l < 8; l++) {
-            printf("%04X", dct[k][l]);
+            printf("%04" PRIx16 " ", (uint16_t)dct[k][l]);
         }
         printf("\n");
     }

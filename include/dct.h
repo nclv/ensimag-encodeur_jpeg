@@ -22,6 +22,6 @@ extern void offset(int16_t **input);
  * rtype: void
  * Affiche le résultat de la dct
  */
-extern void afficher_dct(int16_t dct[8][8]);
+extern void afficher_dct(const int16_t dct[8][8]);
 
 #endif

@@ -1,5 +1,6 @@
 #include "quantification.h"
 
+#include <inttypes.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -14,11 +15,12 @@ void quantifier(int16_t matrice_frequentiel_zigzag[8][8], uint8_t quantification
     }
 }
 
-void afficher_matrice_quantifiee(int16_t matrice_quantifiee[8][8]) {
-  for (uint8_t k = 0; k < 8; k++) {
-      for (uint8_t l = 0; l < 8; l++) {
-          printf("%04X", matrice_quantifiee[k][l]);
-      }
-      printf("\n");
-  }
+void afficher_matrice_quantifiee(const int16_t matrice_quantifiee[8][8]) {
+    printf("\nQuantification: \n");
+    for (uint8_t k = 0; k < 8; k++) {
+        for (uint8_t l = 0; l < 8; l++) {
+            printf("%04" PRIx16 " ", (uint16_t)matrice_quantifiee[k][l]);
+        }
+        printf("\n");
+    }
 }
