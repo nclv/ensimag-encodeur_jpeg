@@ -126,7 +126,7 @@ void ecrire_coeffs(bitstream *stream, int16_t data_unit[8][8], huff_table *dc_ta
             }
         }
     }
-    // Write EOB
+    // Write EOB only if we are not on the last coefficient
     writeEOB: ;
     if (!(last_non_zero_col == 7 && last_non_zero_line == 7)) {
         uint8_t nb_bits_EOB = 0;
