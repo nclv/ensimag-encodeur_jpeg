@@ -4,95 +4,127 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define DEFAULT_BUFFER_SIZE 512  // valeur à modifier, 1 pour les tests
+#define DEFAULT_BUFFER_SIZE 1  // valeur à modifier, 1 pour les tests
 
 bitstream *bitstream_create(const char *filename) {
     bitstream *stream = malloc(sizeof *stream);
     if (stream == NULL) return NULL;
 
-    stream->buffer_size = DEFAULT_BUFFER_SIZE;
-    stream->buffer = malloc((sizeof(unsigned char *) + 1) * DEFAULT_BUFFER_SIZE);
-    /* printf("%ld", sizeof stream->buffer); */
+    stream->bytes_buffer_size = DEFAULT_BUFFER_SIZE;
+    stream->bytes_buffer = malloc((sizeof(unsigned char *) + 1) * DEFAULT_BUFFER_SIZE);
+    /* printf("%ld", sizeof stream->bytes_buffer); */
     /* Renvoie 8 * DEFAULT_BUFFER_SIZE */
-    if (stream->buffer == NULL) {
+    if (stream->bytes_buffer == NULL) {
         free(stream);
         return NULL;
     }
+    stream->last_written_byte_offset = 0;
+
+    stream->bits_buffer_size = 8;
+    stream->bits_buffer = 0;
+    stream->last_written_bit_offset = 0;
 
     stream->filename = filename;
-    stream->last_written_bit_offset = 0;
 
     return stream;
 }
 
 void bitstream_display(bitstream *stream) {
     assert(stream != NULL);
+    printf("\nDébut de l'affichage\n");
 
-    printf("Filename: %s\n", stream->filename);
-    printf("Buffer size: %ld\n", stream->buffer_size * 8);
+    // printf("Filename: %s\n", stream->filename);
+
+    printf("Bits buffer size: %ld\n", stream->bits_buffer_size);
     printf("Nombre de bits dans le buffer: %ld\n", stream->last_written_bit_offset);
+    // printf("Bits buffer: %02x\n", stream->bits_buffer);
 
-    /* Affichage du buffer */
-    for (uint32_t i = 0; i < stream->last_written_bit_offset; i++) {
-        printf("%d", stream->buffer[i]);
+    printf("Bytes buffer size: %ld\n", stream->bytes_buffer_size);
+    printf("Nombre de bytes dans le buffer: %ld\n", stream->last_written_byte_offset);
+    printf("Bytes buffer: \n");
+    for (uint32_t i = 0; i < stream->last_written_byte_offset; i++) {
+        printf("%02x ", stream->bytes_buffer[i]);
     }
     printf("\n");
 }
 
 void bitstream_flush(bitstream *stream) {
     FILE *file = fopen(stream->filename, "ab");
-    size_t length = stream->last_written_bit_offset;
-    printf("Taille du buffer: %ld\n", length);
+
+    size_t length = stream->last_written_byte_offset;
+    // printf("Taille du buffer: %ld\n", length);
+    // fwrite(stream->bytes_buffer, 4, length, file);
     for (size_t i = 0; i < length; i++) {
-        printf("Ecriture du bit %d dans le fichier jpeg\n", stream->buffer[i]);
-        fwrite(&stream->buffer[i], 1, 1, file);
-        stream->buffer[i] = 0;
-        stream->last_written_bit_offset--;
+        printf("Ecriture du byte %d dans le fichier jpeg\n", stream->bytes_buffer[i]);
+        fwrite(&stream->bytes_buffer[i], 1, 1, file);
+        stream->bytes_buffer[i] = 0;
+        stream->last_written_byte_offset--;
     }
+
     fclose(file);
+}
+
+/* Ecriture dans bytes_buffer lorsque bits_buffer contient 8 bits*/
+static void bitstream_write_byte(bitstream *stream) {
+    printf("\nEcriture d'un byte\n");
+    /* Dépassement de la capacité du buffer, pas d'erreur visible sauf sur valgrind */
+    if (stream->last_written_byte_offset >= stream->bytes_buffer_size) {
+        printf("Dépassement de la capacité du buffer\n");
+        // bitstream_display(stream);
+        bitstream_flush(stream);
+    }
+
+    stream->bytes_buffer[stream->last_written_byte_offset] = stream->bits_buffer;
+    stream->last_written_byte_offset++;
+
+    stream->last_written_bit_offset = 0;
+}
+
+/* Ecriture de bit dans bits_buffer */
+static void bitstream_write_bit(bitstream * stream, unsigned char bit) {
+    stream->bits_buffer = (unsigned char)(stream->bits_buffer << 1);
+    stream->bits_buffer = (unsigned char)(stream->bits_buffer | bit);
+    stream->last_written_bit_offset++;
 }
 
 void bitstream_write_bits(bitstream *stream, uint32_t value, uint8_t nb_bits, bool is_marker) {
     assert(0 < nb_bits && nb_bits <= 32);
 
     printf("Marqueur: %i\n", is_marker);
-
-    /* Dépassement de la capacité du buffer, pas d'erreur visible sauf sur valgrind */
-    /* Un marqueur de section JPEG est toujours aligné dans le flux sur un multiple d'un octet*/
-    if (DEFAULT_BUFFER_SIZE * 8 - stream->last_written_bit_offset < nb_bits) {
-        printf("Dépassement de la capacité du buffer\n");
-        bitstream_display(stream);
+    /* Un marqueur de section JPEG est toujours aligné dans le flux sur un multiple d'un octet */
+    if (is_marker) {
+        printf("Ecriture d'un marqueur (EOI)\n");
         bitstream_flush(stream);
+        // On complète bits_buffer et on écrit le byte
+        size_t padding = (stream->bits_buffer_size - stream->last_written_bit_offset);
+        stream->bits_buffer = (unsigned char)(stream->bits_buffer << padding);
+        stream->last_written_bit_offset = stream->last_written_bit_offset + padding;
+        bitstream_write_byte(stream);
     }
-
-    // printf("Pas de dépassement du buffer\n");
 
     uint32_t mask = 1U << (nb_bits - 1);
-
-    printf("Ecriture de %d sur %d bits\n", value, nb_bits);
-    size_t current_bit_offset = stream->last_written_bit_offset;
-    printf("Before %ld\n", current_bit_offset);
     for (size_t i = 0; i < nb_bits; i++) {
-        stream->buffer[current_bit_offset + i] = (value & mask) ? 1 : 0;
-        value <<= 1;
-        current_bit_offset += 1;
-    }
-    stream->last_written_bit_offset += nb_bits;
-    printf("After %ld\n", stream->last_written_bit_offset);
-    /* On écrit 0x00 dans le fichier */
-    if (is_marker) {
-        printf("Ecriture d'un marqueur\n");
-        bitstream_flush(stream);
+        unsigned char bit = (value & mask) ? 1 : 0;
+        printf("%d ", bit);
+        bitstream_write_bit(stream, bit);
 
-        FILE *file = fopen(stream->filename, "ab");
-        fwrite("\x00", 1, 1, file);
-        fclose(file);
+        // 8 bits dans bits_buffer, on écrit un byte dans bytes_buffer
+        if (stream->last_written_bit_offset == stream->bits_buffer_size) {
+            bitstream_write_byte(stream);
+            if (stream->bits_buffer == 0xff && !(is_marker)) {
+                printf("Ecriture du stuffing byte 0x00 dans bytes_buffer\n");
+                stream->bits_buffer = 0;
+                bitstream_write_byte(stream);
+            }
+        }
+
+        value <<= 1;
     }
 }
 
 void bitstream_destroy(bitstream *stream) {
     if (stream != NULL) {
-        free(stream->buffer);
+        free(stream->bytes_buffer);
         free(stream);
     }
 }

@@ -243,7 +243,7 @@ static void jpeg_write_header_RGB(jpeg *jpg) {
     fwrite("\x63", 1, 1, file);  // Dernier indice de la sélection spectrale
     fwrite("\x00", 1, 1, file);  // Approximation successive
 
-    /* Fin du header, écriture des coefficients */
+    /* Fin du header, on passe à l'écriture des coefficients */
 
     fclose(file);
 }

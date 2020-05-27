@@ -13,10 +13,16 @@
     jpeg_write_header et jpeg_desc_destroy du module jpeg_writer.
 */
 typedef struct bitstream {
-    const char *filename;  /* Ecriture effective lorsque le buffer est rempli */
-    unsigned char *buffer; /* Données à écrire */
-    size_t buffer_size;
-    size_t last_written_bit_offset; /* Position du dernier bit écrit dans le bitstream */
+    const char *filename;        /* Ecriture effective lorsque le buffer est rempli */
+
+    unsigned char *bytes_buffer; /* Données à écrire */
+    size_t bytes_buffer_size;
+    size_t last_written_byte_offset; /* Position du dernier byte écrit */
+
+    unsigned char bits_buffer;
+    size_t bits_buffer_size; /* nombre de bits écrits dans bits_buffer */
+    size_t last_written_bit_offset; /* Position du dernier bit écrit */
+
 } bitstream;
 
 /* 

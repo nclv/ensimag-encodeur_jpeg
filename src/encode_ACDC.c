@@ -95,7 +95,7 @@ void ecrire_coeffs(bitstream *stream, int16_t data_unit[8][8], huff_table *dc_ta
                     uint8_t nb_bits_ZRL = 0;
                     uint32_t code_ZRL = huffman_table_get_path(ac_table, 0xf0, &nb_bits_ZRL);
                     // ou 240 en décimal
-                    bitstream_write_bits(stream, code_ZRL, nb_bits_ZRL, true);
+                    bitstream_write_bits(stream, code_ZRL, nb_bits_ZRL, false);
                     zeros_count = 0;
                 }
             } else {
@@ -111,7 +111,7 @@ void ecrire_coeffs(bitstream *stream, int16_t data_unit[8][8], huff_table *dc_ta
     writeEOB: ;
     uint8_t nb_bits_EOB = 0;
     uint32_t code_EOB = huffman_table_get_path(ac_table, 0x00, &nb_bits_EOB);
-    bitstream_write_bits(stream, code_EOB, nb_bits_EOB, true);
+    bitstream_write_bits(stream, code_EOB, nb_bits_EOB, false);
 }
 
 /*
