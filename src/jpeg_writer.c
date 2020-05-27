@@ -39,6 +39,12 @@ bitstream *jpeg_get_bitstream(jpeg *jpg) {
     return jpg->stream;
 }
 
+/* type : FILE*
+ * type : huff_table*
+ * type : const char*
+ * rtype : void
+ * Section de définition de la (ou les) table(s) de Huffman.
+ */
 static void jpeg_write_dht_section(FILE *file, huff_table *ht, const char *HT_TYPE) {
     const unsigned char DHT[2] = {0xff, 0xc4};
     fwrite(DHT, sizeof DHT, 1, file);
@@ -63,6 +69,10 @@ static void jpeg_write_dht_section(FILE *file, huff_table *ht, const char *HT_TY
     }
 }
 
+/* type : jpeg*
+ * rtype : void
+ * Ecriture de l'en-tête jpeg pour les images en niveau de gris.
+ */
 static void jpeg_write_header_grayscale(jpeg *jpg) {
     FILE *file = fopen(jpg->jpeg_filename, "wb");
 
@@ -142,6 +152,10 @@ static void jpeg_write_header_grayscale(jpeg *jpg) {
     fclose(file);
 }
 
+/* type : jpeg*
+ * rtype : void
+ * Ecriture de l'en-tête jpeg pour les images en couleur.
+ */
 static void jpeg_write_header_RGB(jpeg *jpg) {
     FILE *file = fopen(jpg->jpeg_filename, "wb");
 
