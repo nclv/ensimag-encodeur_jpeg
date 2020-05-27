@@ -51,15 +51,16 @@ void bitstream_display(bitstream *stream) {
 void bitstream_flush(bitstream *stream) {
     FILE *file = fopen(stream->filename, "ab");
 
-    size_t length = stream->last_written_byte_offset;
+    // size_t length = stream->last_written_byte_offset;
     // printf("Taille du buffer: %ld\n", length);
-    // fwrite(stream->bytes_buffer, 4, length, file);
-    for (size_t i = 0; i < length; i++) {
-        printf("Ecriture du byte %d dans le fichier jpeg\n", stream->bytes_buffer[i]);
-        fwrite(&stream->bytes_buffer[i], 1, 1, file);
-        stream->bytes_buffer[i] = 0;
-        stream->last_written_byte_offset--;
-    }
+    fwrite(stream->bytes_buffer, sizeof(stream->bytes_buffer[0]), stream->last_written_byte_offset, file);
+    stream->last_written_byte_offset = 0;
+    // for (size_t i = 0; i < length; i++) {
+    //     printf("Ecriture du byte %d dans le fichier jpeg\n", stream->bytes_buffer[i]);
+    //     // fwrite(&stream->bytes_buffer[i], 1, 1, file);
+    //     stream->bytes_buffer[i] = 0;
+    //     stream->last_written_byte_offset--;
+    // }
 
     fclose(file);
 }
