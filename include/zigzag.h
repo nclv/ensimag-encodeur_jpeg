@@ -16,4 +16,9 @@ extern void zigzag(int16_t matrice[8][8], int16_t tableau[64]);
  */
 extern void zigzag_inplace(int16_t matrice[8][8]);
 
+/* type : int16_t[8][8]
+ * rtype : void
+ * Affichage de la matrice zigzag
+ */
+extern void afficher_zigzag(int16_t zigzag[8][8]);
 #endif

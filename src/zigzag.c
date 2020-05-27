@@ -117,3 +117,12 @@ void zigzag(int16_t matrice[8][8], int16_t tableau[64]) {
 
     tableau[63] = matrice[7][7];
 }
+
+void afficher_zigzag(int16_t zigzag[8][8]) {
+  for (uint8_t k = 0; k < 8; k++) {
+      for (uint8_t l = 0; l < 8; l++) {
+          printf("%04X", zigzag[k][l]);
+      }
+      printf("\n");
+  }
+}
