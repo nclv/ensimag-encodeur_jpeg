@@ -59,14 +59,16 @@ static void jpeg_write_dht_section(FILE *file, huff_table *ht, const char *HT_TY
     fwrite(HT_TYPE, 1, 1, file);
 
     uint8_t *nb_symb_per_lengths = huffman_table_get_length_vector(ht);
-    for (size_t i = 0; i < 16; i++) {
-        fwrite(&nb_symb_per_lengths[i], 1, 1, file);
-    }
+    fwrite(nb_symb_per_lengths, sizeof(nb_symb_per_lengths[0]), 16, file);
+    // for (size_t i = 0; i < 16; i++) {
+    //     fwrite(&nb_symb_per_lengths[i], 1, 1, file);
+    // }
 
     uint8_t *symbols = huffman_table_get_symbols(ht);
-    for (size_t i = 0; i < ht->nb_symbols; i++) {
-        fwrite(&symbols[i], 1, 1, file);
-    }
+    fwrite(symbols, sizeof(symbols[0]), ht->nb_symbols, file);
+    // for (size_t i = 0; i < ht->nb_symbols; i++) {
+    //     fwrite(&symbols[i], 1, 1, file);
+    // }
 }
 
 /* type : jpeg*
@@ -105,10 +107,11 @@ static void jpeg_write_header_grayscale(jpeg *jpg) {
     fwrite(DQT, sizeof DQT, 1, file);
     fwrite("\x00\x43", 2, 1, file);  // longueur de la section sur 2 octets
     fwrite("\x00", 1, 1, file);      // precision and quantization table index
-    for (size_t i = 0; i < 64; i++) {
-        /* Les tables de quantification sont déja stockées au format zig-zag */
-        fwrite(&jpg->Y_quantization_table[i], 1, 1, file);
-    }
+    fwrite(jpg->Y_quantization_table, sizeof(jpg->Y_quantization_table[0]), 64, file);
+    // for (size_t i = 0; i < 64; i++) {
+    //     /* Les tables de quantification sont déja stockées au format zig-zag */
+    //     fwrite(&jpg->Y_quantization_table[i], 1, 1, file);
+    // }
     // fwrite(jpg->Y_quantization_table, sizeof jpg->Y_quantization_table, 8, file);
     // fwrite(jpg->Y_quantization_table, sizeof(uint8_t), 64, file);
 
@@ -192,10 +195,11 @@ static void jpeg_write_header_RGB(jpeg *jpg) {
     fwrite(DQT, sizeof DQT, 1, file);
     fwrite("\x00\x43", 2, 1, file);  // longueur de la section sur 2 octets
     fwrite("\x00", 1, 1, file);      // precision and quantization table index
-    for (size_t i = 0; i < 64; i++) {
-        /* Les tables de quantification sont déja stockées au format zig-zag */
-        fwrite(&jpg->Y_quantization_table[i], 1, 1, file);
-    }
+    fwrite(jpg->Y_quantization_table, sizeof(jpg->Y_quantization_table[0]), 64, file);
+    // for (size_t i = 0; i < 64; i++) {
+    //     /* Les tables de quantification sont déja stockées au format zig-zag */
+    //     fwrite(&jpg->Y_quantization_table[i], 1, 1, file);
+    // }
     // fwrite(jpg->Y_quantization_table, sizeof jpg->Y_quantization_table, 8, file);
     // fwrite(jpg->Y_quantization_table, sizeof(uint8_t), 64, file);
 
@@ -203,10 +207,11 @@ static void jpeg_write_header_RGB(jpeg *jpg) {
     fwrite(DQT, sizeof DQT, 1, file);
     fwrite("\x00\x43", 2, 1, file);  // longueur de la section sur 2 octets
     fwrite("\x01", 1, 1, file);      // precision and quantization table index
-    for (size_t i = 0; i < 64; i++) {
-        /* Les tables de quantification sont déja stockées au format zig-zag */
-        fwrite(&jpg->CbCr_quantization_table[i], 1, 1, file);
-    }
+    fwrite(jpg->CbCr_quantization_table, sizeof(jpg->CbCr_quantization_table[0]), 64, file);
+    // for (size_t i = 0; i < 64; i++) {
+    //     /* Les tables de quantification sont déja stockées au format zig-zag */
+    //     fwrite(&jpg->CbCr_quantization_table[i], 1, 1, file);
+    // }
 
     fwrite(SOF0, sizeof SOF0, 1, file);
     /* Grayscale: 11, RGB: 17*/
@@ -268,12 +273,8 @@ void jpeg_write_header(jpeg *jpg) {
 }
 
 void jpeg_write_footer(jpeg *jpg) {
-    FILE *file = fopen(jpg->jpeg_filename, "ab");
-
     bitstream_write_bits(jpg->stream, 0xffd9, 16, true);
     bitstream_flush(jpg->stream);
-
-    fclose(file);
 }
 
 /* Setters and getters */
