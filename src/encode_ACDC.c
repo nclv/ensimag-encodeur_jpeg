@@ -65,11 +65,12 @@ static void encoder_AC_freq(bitstream *stream, huff_table *ac_table, int16_t fre
         Bitshifts the input 4 bits to the left, then masks by the lower 4 bits.
         Le deuxième masquage est sécuritaire.
     */
-    int value = ((zeros_count << 4) & 0xf0) | (classe_magnitude & 0x0f);
-    printf("RLE %02x \n", value);
+    printf("%d ", zeros_count);
+    uint8_t value = (uint8_t)(((zeros_count << 4) & 0xf0) | (classe_magnitude & 0x0f));
+    printf("RLE %d \n", value);
     uint8_t nb_bits_zeros_magnitude = 0;
-    uint32_t code_magnitude = huffman_table_get_path(ac_table, (uint8_t)value, &nb_bits_zeros_magnitude);
-    bitstream_write_bits(stream, code_magnitude, nb_bits_zeros_magnitude, false);
+    uint32_t code_RLE = huffman_table_get_path(ac_table, value, &nb_bits_zeros_magnitude);
+    bitstream_write_bits(stream, code_RLE, nb_bits_zeros_magnitude, false);
     bitstream_write_bits(stream, indice, classe_magnitude, false);
 }
 
@@ -111,6 +112,7 @@ void ecrire_coeffs(bitstream *stream, int16_t data_unit[8][8], huff_table *dc_ta
                     uint8_t nb_bits_ZRL = 0;
                     uint32_t code_ZRL = huffman_table_get_path(ac_table, 0xf0, &nb_bits_ZRL);
                     // ou 240 en décimal
+                    printf("Code ZRL: %d\n", code_ZRL);
                     bitstream_write_bits(stream, code_ZRL, nb_bits_ZRL, false);
                     zeros_count = 0;
                 }

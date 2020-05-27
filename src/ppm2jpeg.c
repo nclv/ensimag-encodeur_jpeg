@@ -351,6 +351,7 @@ int main(int argc, char *argv[]) {
             printf("\n");
         }
         quantifier(data_unit_freq, quantification_table_Y);
+        int16_t next_DC_coeff = data_unit_freq[0][0];
         printf("Quantification: \n");
         for (size_t k = 0; k < TAILLE_DATA_UNIT; k++) {
             for (size_t j = 0; j < TAILLE_DATA_UNIT; j++) {
@@ -361,7 +362,7 @@ int main(int argc, char *argv[]) {
         ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC);
 
         printf("End of %ld Data Unit", i);
-        difference_DC = data_unit_freq[0][0];
+        difference_DC = next_DC_coeff;
 
         /* Image RGB sans facteurs (1x1 1x1 1x1) */
         // on encode directement mcu->Y, mcu->Cb et mcu->Cr

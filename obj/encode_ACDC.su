@@ -1,4 +1,4 @@
 encode_ACDC.c:15:16:get_magnitude	16	static
 encode_ACDC.c:32:13:encode_DC_freq	64	static
 encode_ACDC.c:55:13:encoder_AC_freq	64	static
-encode_ACDC.c:76:6:ecrire_coeffs	112	static
+encode_ACDC.c:77:6:ecrire_coeffs	112	static
