@@ -5,6 +5,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*
+ * type: FILE*
+ * rtype: image_ppm*
+ * Réalise le parsing du fichier passé en paramètre pour en
+ * extraire une image ppm
+ */
 image_ppm* parse_entete(FILE* fichier) {
     /*Initialisation de l'image*/
     image_ppm* image = malloc(sizeof(image_ppm));
@@ -29,7 +35,7 @@ image_ppm* parse_entete(FILE* fichier) {
     return image;
 }
 
-/* type: char
+/* type: char[]
  * rtype: bool
  * Choisit le mode de remplissage P5 ou P6
  */
@@ -38,6 +44,11 @@ static bool is_grayscale_format(char format[]) {
     return !strcmp(format, NIVEAUX_GRIS);
 }
 
+/* type: MCUs*
+ * rtype: void
+ * Alloue l'espace nécessaire pour une image en
+ * niveaux de gris seulement
+ */
 static void allocate_MCUs_grayscale(MCUs* bloc) {
     bloc->largeur = TAILLE_DATA_UNIT;
     bloc->hauteur = TAILLE_DATA_UNIT;
@@ -59,6 +70,11 @@ static void allocate_MCUs_grayscale(MCUs* bloc) {
     }
 }
 
+/* type: MCUs*
+ * rtype: void
+ * Alloue l'espace nécessaire pour une image en
+ * couleurs RGB
+ */
 static void allocate_MCUs_RGB(MCUs* bloc, uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS]) {
     bloc->largeur = (uint32_t)sampling_factors[Y][H] * TAILLE_DATA_UNIT;
     bloc->hauteur = (uint32_t)sampling_factors[Y][V] * TAILLE_DATA_UNIT;
@@ -110,6 +126,10 @@ static uint32_t recuperer_hauteur(MCUs* mcu, uint32_t hauteur) {
     return nb_mcu_verticale * mcu->hauteur;
 }
 
+/* type: image_ppm*, uint8_t
+ * rtype: MCUs*
+ * Initialise les MCUs et les attributs de l'image
+ */
 MCUs* initialiser_MCUs(image_ppm* image, uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS]) {
     /*Initialisation des blocs*/
     MCUs* mcu = malloc(sizeof(MCUs));
@@ -253,6 +273,10 @@ static void parse_RGB(FILE* fichier, image_ppm* image, MCUs* mcu, uint32_t large
     fseek(fichier, -(long)(mcu->numero_ligne * image->largeur * mcu->hauteur * 3 + mcu->numero_colonne * mcu->largeur * 3), SEEK_CUR);
 }
 
+/* type: FILE*, image_ppm*, MCUs*
+ * rtype: void
+ * Récupère les MCU et les formate
+ */
 void recuperer_MCUs(FILE* fichier, image_ppm* image, MCUs* mcu) {
     uint32_t largeur, hauteur;
 
