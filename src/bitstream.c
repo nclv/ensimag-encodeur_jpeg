@@ -4,16 +4,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define DEFAULT_BUFFER_SIZE 2048  // valeur à modifier, 1 pour les tests
-
 bitstream *bitstream_create(const char *filename) {
     bitstream *stream = malloc(sizeof *stream);
     if (stream == NULL) return NULL;
 
     stream->bytes_buffer_size = DEFAULT_BUFFER_SIZE;
-    stream->bytes_buffer = malloc((sizeof(unsigned char *) + 1) * DEFAULT_BUFFER_SIZE);
-    /* printf("%ld", sizeof stream->bytes_buffer); */
-    /* Renvoie 8 * DEFAULT_BUFFER_SIZE */
+    /* On choisit d'allouer sur le stack, moins rapide mais plus efficace en mémoire */
+    // stream->bytes_buffer = malloc((sizeof(unsigned char *) + 1) * DEFAULT_BUFFER_SIZE);
     if (stream->bytes_buffer == NULL) {
         free(stream);
         return NULL;
@@ -24,7 +21,11 @@ bitstream *bitstream_create(const char *filename) {
     stream->bits_buffer = 0;
     stream->last_written_bit_offset = 0;
 
-    stream->filename = filename;
+    stream->file = fopen(filename, "ab");
+    if (stream->file == NULL) {
+        perror("Error opening file: ");
+        return NULL;
+    }
 
     return stream;
 }
@@ -49,20 +50,8 @@ void bitstream_display(bitstream *stream) {
 }
 
 void bitstream_flush(bitstream *stream) {
-    FILE *file = fopen(stream->filename, "ab");
-
-    // size_t length = stream->last_written_byte_offset;
-    // printf("Taille du buffer: %ld\n", length);
-    fwrite(stream->bytes_buffer, sizeof(stream->bytes_buffer[0]), stream->last_written_byte_offset, file);
+    fwrite(stream->bytes_buffer, sizeof(stream->bytes_buffer[0]), stream->last_written_byte_offset, stream->file);
     stream->last_written_byte_offset = 0;
-    // for (size_t i = 0; i < length; i++) {
-    //     printf("Ecriture du byte %d dans le fichier jpeg\n", stream->bytes_buffer[i]);
-    //     // fwrite(&stream->bytes_buffer[i], 1, 1, file);
-    //     stream->bytes_buffer[i] = 0;
-    //     stream->last_written_byte_offset--;
-    // }
-
-    fclose(file);
 }
 
 /* Ecriture dans bytes_buffer lorsque bits_buffer contient 8 bits*/
@@ -125,7 +114,8 @@ void bitstream_write_bits(bitstream *stream, uint32_t value, uint8_t nb_bits, bo
 
 void bitstream_destroy(bitstream *stream) {
     if (stream != NULL) {
-        free(stream->bytes_buffer);
+        // free(stream->bytes_buffer);
+        fclose(stream->file);
         free(stream);
     }
 }

@@ -4,6 +4,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
+
+#define DEFAULT_BUFFER_SIZE 2048  // valeur à modifier, 1 pour les tests
 
 /*
  * Type opaque représentant le flux d'octets à écrire dans le fichier JPEG de
@@ -12,9 +15,9 @@
  * jpeg_write_header et jpeg_desc_destroy du module jpeg_writer.
  */
 typedef struct bitstream {
-    const char *filename; /* Ecriture effective lorsque le buffer est rempli */
+    FILE *file; /* Ecriture effective lorsque le buffer est rempli */
 
-    unsigned char *bytes_buffer; /* Données à écrire */
+    unsigned char bytes_buffer[DEFAULT_BUFFER_SIZE]; /* Données à écrire */
     size_t bytes_buffer_size;
     size_t last_written_byte_offset; /* Position du dernier byte écrit */
 
