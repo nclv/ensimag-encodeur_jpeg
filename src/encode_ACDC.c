@@ -128,9 +128,11 @@ void ecrire_coeffs(bitstream *stream, int16_t data_unit[8][8], huff_table *dc_ta
     }
     // Write EOB
     writeEOB: ;
-    uint8_t nb_bits_EOB = 0;
-    uint32_t code_EOB = huffman_table_get_path(ac_table, 0x00, &nb_bits_EOB);
-    bitstream_write_bits(stream, code_EOB, nb_bits_EOB, false);
+    if (!(last_non_zero_col == 7 && last_non_zero_line == 7)) {
+        uint8_t nb_bits_EOB = 0;
+        uint32_t code_EOB = huffman_table_get_path(ac_table, 0x00, &nb_bits_EOB);
+        bitstream_write_bits(stream, code_EOB, nb_bits_EOB, false);
+    }
 }
 
 /*

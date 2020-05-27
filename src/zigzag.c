@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 void zigzag_inplace(int16_t matrice[8][8]) {
     /*Table des indices zig-zag*/

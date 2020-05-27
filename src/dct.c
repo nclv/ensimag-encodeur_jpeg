@@ -2,6 +2,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 
 /*
     Offset du tableau d'entrée pour améliorer le codage par magnitude

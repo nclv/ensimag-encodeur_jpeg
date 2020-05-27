@@ -1,2 +1,3 @@
-zigzag.c:7:6:zigzag_inplace	80	static
-zigzag.c:40:6:zigzag	16	static
+zigzag.c:8:6:zigzag_inplace	80	static
+zigzag.c:41:6:zigzag	16	static
+zigzag.c:122:6:afficher_zigzag	48	static

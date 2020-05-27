@@ -2,6 +2,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 
 void quantifier(int16_t matrice_frequentiel_zigzag[8][8], uint8_t quantification_table[64]) {
     size_t inc = 0;
