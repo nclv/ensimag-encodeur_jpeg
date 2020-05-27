@@ -7,6 +7,11 @@
 #include "bitstream.h"
 #include "huffman.h"
 
+/* type: int16_t
+ * rtype: uint8_t
+ * Calcule la classe de magnitude correpondant
+ * à la valeur freq et la renvoie
+ */
 static uint8_t get_magnitude(int16_t freq) {
     /* On passe en positif*/
     freq = (int16_t)(freq > 0 ? freq : -freq);
@@ -18,6 +23,12 @@ static uint8_t get_magnitude(int16_t freq) {
     return classe;
 }
 
+/* type: bitstream*, huff_table*, int16_t
+ * rtype: void
+ * Calcule l'indice de la valeur passé en paramètre
+ * et sa classe de magnitude, les encode et écrit dans
+ * le bitstream
+ */
 static void encode_DC_freq(bitstream *stream, huff_table *dc_table, int16_t difference_DC) {
     /* On code la différence entre valeurs DC de deux blocs consécutifs */
     uint8_t classe_magnitude = get_magnitude(difference_DC);
@@ -28,23 +39,30 @@ static void encode_DC_freq(bitstream *stream, huff_table *dc_table, int16_t diff
 
     uint8_t nb_bits_magnitude = 0;
     uint32_t code_magnitude = huffman_table_get_path(dc_table, classe_magnitude, &nb_bits_magnitude);
-    
+
     printf("classe : %i\nindice : %i\n", classe_magnitude, indice);
     printf("code: %d, nombre de bits: %d\n", code_magnitude, nb_bits_magnitude);
-    
+
     printf("Ecriture dans le Bitstream\n");
     bitstream_write_bits(stream, code_magnitude, nb_bits_magnitude, false);
     bitstream_write_bits(stream, indice, classe_magnitude, false);
 }
 
+/* type: bitstream*, huff_table*, int16_t, uint8_t
+ * rtype: void
+ * Calcule l'indice de la valeur passé en paramètre
+ * et sa classe de magnitude ainsi que le nombre de
+ * ZRL et de 0 à encoder, les encode et écrit dans
+ * le bitstream
+ */
 static void encoder_AC_freq(bitstream *stream, huff_table *ac_table, int16_t freq_AC, uint8_t zeros_count) {
     uint8_t classe_magnitude = get_magnitude(freq_AC);
     uint16_t indice = (uint16_t)abs(freq_AC);
     if (freq_AC < 0) {
         indice = (uint16_t)((1 << classe_magnitude) - indice);
     }
-    /* 
-        On doit coder le nombre de coefficients nuls puis la classe de magnitude 
+    /*
+        On doit coder le nombre de coefficients nuls puis la classe de magnitude
         On écrit un octet.
         Bitshifts the input 4 bits to the left, then masks by the lower 4 bits.
         Le deuxième masquage est sécuritaire.

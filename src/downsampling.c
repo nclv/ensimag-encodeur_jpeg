@@ -2,6 +2,10 @@
 #include <stdint.h>
 #include <stdio.h>
 
+/* type: int16_t**
+ * rtype: void
+ * Affiche une data unit de taille 8x8 en hexa
+ */
 static void afficher_data_unit(int16_t** data_unit) {
     printf("Data Unit\n");
     for (size_t i = 0; i < 8; i++) {
