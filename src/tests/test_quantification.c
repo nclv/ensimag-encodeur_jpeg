@@ -15,20 +15,10 @@ int main(void) {
                                         {72, 92, 95, 98, 112, 100, 103, 99}};
 
     quantifier(static_freq_matrix, quantification_table_Y);
-    printf("Quantification de Y\n");
-    for (size_t i = 0; i < 8; i++) {
-        for (size_t j = 0; j < 8; j++) {
-            printf("%i | ", static_freq_matrix[i][j]);
-        }
-        printf("\n");
-    }
+    printf("\nQuantification de Y\n");
+    afficher_matrice_quantifiee(static_freq_matrix);
 
     quantifier(static_freq_matrix, quantification_table_CbCr);
-    printf("Quantification de Cb ou Cr\n");
-    for (size_t i = 0; i < 8; i++) {
-        for (size_t j = 0; j < 8; j++) {
-            printf("%i | ", static_freq_matrix[i][j]);
-        }
-        printf("\n");
-    }
+    printf("\nQuantification de Cb ou Cr\n");
+    afficher_matrice_quantifiee(static_freq_matrix);
 }

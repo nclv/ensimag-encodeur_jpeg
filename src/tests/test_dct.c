@@ -21,7 +21,7 @@ int main(void) {
         spatial_matrix[i] = static_spatial_matrix[i];
     }
 
-    printf("Matrice dans le domaine spatial\n");
+    printf("\nMatrice dans le domaine spatial\n");
     for (uint8_t x = 0; x < 8; x++) {
         for (uint8_t y = 0; y < 8; y++) {
             printf("%d\t", spatial_matrix[y][x]);
@@ -32,7 +32,7 @@ int main(void) {
     int16_t dct_buf[8][8] = {0};
     dct(spatial_matrix, dct_buf);
 
-    printf("Matrice dans le domaine fréquentiel\n");
+    printf("\nMatrice dans le domaine fréquentiel\n");
     for (uint8_t x = 0; x < 8; x++) {
         for (uint8_t y = 0; y < 8; y++) {
             printf("%d\t", dct_buf[y][x]);
@@ -42,7 +42,7 @@ int main(void) {
 
     offset(spatial_matrix);
 
-    printf("Matrice dans le domaine spatial\n");
+    printf("\nMatrice dans le domaine spatial\n");
     for (uint8_t x = 0; x < 8; x++) {
         for (uint8_t y = 0; y < 8; y++) {
             printf("%d\t", spatial_matrix[y][x]);
@@ -52,7 +52,7 @@ int main(void) {
 
     dct(spatial_matrix, dct_buf);
 
-    printf("Matrice dans le domaine fréquentiel\n");
+    printf("\nMatrice dans le domaine fréquentiel\n");
     for (uint8_t x = 0; x < 8; x++) {
         for (uint8_t y = 0; y < 8; y++) {
             printf("%d\t", dct_buf[y][x]);

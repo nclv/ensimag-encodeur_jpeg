@@ -22,14 +22,13 @@ LDFLAGS = -Wl,--gc-sections -Wl,--print-gc-sections
 # typing 'make' will invoke the first target entry in the file 
 
 TARGET = test_ppm test_bitstream test_dct test_zigzag test_quantification\
-	test_jpeg_writer test_file test_huffman
+	test_jpeg_writer test_huffman
 OBJS = $(SRC)ppm.o test_ppm.o\
 	$(SRC)bitstream.o test_bitstream.o\
 	$(SRC)dct.o test_dct.o\
 	$(SRC)zigzag.o test_zigzag.o\
 	$(SRC)quantification.o test_quantification.o\
 	$(SRC)jpeg_writer.o test_jpeg_writer.o\
-	$(SRC)file.o test_file.o\
 	$(SRC)huffman.o test_huffman.o \
 	$(SRC)downsampling.o
 
