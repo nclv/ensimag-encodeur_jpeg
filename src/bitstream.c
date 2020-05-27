@@ -81,7 +81,7 @@ static void bitstream_write_byte(bitstream *stream) {
 }
 
 /* Ecriture de bit dans bits_buffer */
-static void bitstream_write_bit(bitstream * stream, unsigned char bit) {
+static void bitstream_write_bit(bitstream *stream, unsigned char bit) {
     stream->bits_buffer = (unsigned char)(stream->bits_buffer << 1);
     stream->bits_buffer = (unsigned char)(stream->bits_buffer | bit);
     stream->last_written_bit_offset++;
