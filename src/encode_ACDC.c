@@ -34,16 +34,13 @@ static void encode_DC_freq(bitstream *stream, huff_table *dc_table, int16_t diff
     uint8_t classe_magnitude = get_magnitude(difference_DC);
     uint16_t indice = (uint16_t)abs(difference_DC);
     if (difference_DC < 0) {
-        indice = (uint16_t)((1 << classe_magnitude) - indice);
+        indice = (uint16_t)((1 << classe_magnitude) - indice - 1);
     }
+    printf("Magnitude: %d, index: %d\n", classe_magnitude, indice);
 
     uint8_t nb_bits_magnitude = 0;
     uint32_t code_magnitude = huffman_table_get_path(dc_table, classe_magnitude, &nb_bits_magnitude);
 
-    printf("classe : %i\nindice : %i\n", classe_magnitude, indice);
-    printf("code: %d, nombre de bits: %d\n", code_magnitude, nb_bits_magnitude);
-
-    printf("Ecriture dans le Bitstream\n");
     bitstream_write_bits(stream, code_magnitude, nb_bits_magnitude, false);
     bitstream_write_bits(stream, indice, classe_magnitude, false);
 }
@@ -59,8 +56,7 @@ static void encoder_AC_freq(bitstream *stream, huff_table *ac_table, int16_t fre
     uint8_t classe_magnitude = get_magnitude(freq_AC);
     uint16_t indice = (uint16_t)abs(freq_AC);
     if (freq_AC < 0) {
-        indice = (uint16_t)~indice; // complément à deux
-        // indice = (uint16_t)((1 << classe_magnitude) - indice - 1);
+        indice = (uint16_t)((1 << classe_magnitude) - indice - 1);
     }
     printf("Magnitude: %d, index: %d\n", classe_magnitude, indice);
     /*
@@ -103,6 +99,7 @@ void ecrire_coeffs(bitstream *stream, int16_t data_unit[8][8], huff_table *dc_ta
         for (size_t j = 0; j < 8; j++) {
             if (i == 0 && j == 0) {
                 printf("Encodage DC\n");
+                printf("Valeur %d ", difference_DC);
                 encode_DC_freq(stream, dc_table, difference_DC);
                 printf("Encodage AC\n");
                 continue;

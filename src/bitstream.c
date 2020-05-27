@@ -88,7 +88,7 @@ static void bitstream_write_bit(bitstream *stream, unsigned char bit) {
 }
 
 void bitstream_write_bits(bitstream *stream, uint32_t value, uint8_t nb_bits, bool is_marker) {
-    assert(0 < nb_bits && nb_bits <= 32);
+    assert(nb_bits < 32);  // au plus 32 bits
 
     printf("Marqueur: %i, writing %i over %i bits \n", is_marker, value, nb_bits);
     /* Un marqueur de section JPEG est toujours aligné dans le flux sur un multiple d'un octet */
