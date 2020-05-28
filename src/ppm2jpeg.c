@@ -8,7 +8,6 @@
 #include <strings.h>
 
 #include "dct.h"
-// #include "downsampling.h"
 #include "encode_ACDC.h"
 #include "htables.h"
 #include "jpeg_writer.h"
@@ -17,6 +16,8 @@
 #include "quantification.h"
 #include "utils.h"
 #include "zigzag.h"
+
+// #pragma pack(1)
 
 /*Parsing des options*/
 static error_t parse_option(int key, char *arg, struct argp_state *state) {
@@ -439,21 +440,6 @@ int main(int argc, char *argv[]) {
         } else {
             /* Image RGB avec facteurs */
             /* Traitement des blocs Y */
-            // printf("%d %d\n", sampling_factors[Y][V], sampling_factors[Y][H]);
-            // for (size_t v = 0; v < sampling_factors[Y][V]; v++) {
-            //     for (size_t h = 0; h < sampling_factors[Y][H]; h++) {
-            //         printf("%ld %ld\n", h, v);
-            //         for (size_t i = 0; i < 8; i++) {
-            //             for (size_t j = 0; j < 8; j++) {
-            //                 data_unit[i][j] = mcu->Y[i + 8 * v][j + 8 * h];
-            //             }
-            //         }
-            //         /* Encodage de data_unit */
-            //         encode_data_unit(data_unit, data_unit_freq, quantification_table_Y);
-            //         ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC_Y);
-            //         difference_DC_Y = data_unit_freq[0][0];
-            //     }
-            // }
 
             difference_DC_Y = process_Y(mcu->Y, sampling_factors[Y][H], sampling_factors[Y][V],
                                         data_unit, data_unit_freq,

@@ -11,10 +11,10 @@ bitstream *bitstream_create(const char *filename) {
     stream->bytes_buffer_size = DEFAULT_BUFFER_SIZE;
     /* On choisit d'allouer sur le stack, moins rapide mais plus efficace en mémoire */
     // stream->bytes_buffer = malloc((sizeof(unsigned char *) + 1) * DEFAULT_BUFFER_SIZE);
-    if (stream->bytes_buffer == NULL) {
-        free(stream);
-        return NULL;
-    }
+    // if (stream->bytes_buffer == NULL) {
+    //     free(stream);
+    //     return NULL;
+    // }
     stream->last_written_byte_offset = 0;
 
     stream->bits_buffer_size = 8;
