@@ -397,28 +397,13 @@ int main(int argc, char *argv[]) {
         if (nb_components == 3) {
             // encode_data_unit(mcu->Y, data_unit_freq);
             // ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC);
-            /* Mise à zéro de data_unit */
-            for (size_t k = 0; k < 8; k++) {
-                for (size_t j = 0; j < 8; j++) {
-                    data_unit_freq[k][j] = 0;
-                }
-            }
             encode_data_unit(mcu->Cb, data_unit_freq, quantification_table_CbCr);
             ecrire_coeffs(stream, data_unit_freq, CbCr_dc_table, CbCr_ac_table, difference_DC_Cb);
             difference_DC_Cb = data_unit_freq[0][0];
-            for (size_t k = 0; k < 8; k++) {
-                for (size_t j = 0; j < 8; j++) {
-                    data_unit_freq[k][j] = 0;
-                }
-            }
+
             encode_data_unit(mcu->Cr, data_unit_freq, quantification_table_CbCr);
             ecrire_coeffs(stream, data_unit_freq, CbCr_dc_table, CbCr_ac_table, difference_DC_Cr);
             difference_DC_Cr = data_unit_freq[0][0];
-            for (size_t k = 0; k < 8; k++) {
-                for (size_t j = 0; j < 8; j++) {
-                    data_unit_freq[k][j] = 0;
-                }
-            }
         }
 
         printf("\nEnd of %ld Data Unit\n", i);

@@ -12,4 +12,4 @@ ppm2jpeg.c:157:13:afficher_options	64	static
 ppm2jpeg.c:167:13:jpeg_set_tables_Y	48	static
 ppm2jpeg.c:187:13:jpeg_set_tables_CbCr	48	static
 ppm2jpeg.c:207:13:jpeg_set_sampling_factors	48	static
-ppm2jpeg.c:236:5:main	720	dynamic,bounded
+ppm2jpeg.c:236:5:main	672	dynamic,bounded
