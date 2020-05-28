@@ -42,9 +42,7 @@ static error_t parse_option(int key, char *arg, struct argp_state *state) {
     return 0;
 }
 
-static void afficher_options(const arguments *args, const char *outfile,
-                             const uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS],
-                             bool no_downsampling) {
+static void afficher_options(const arguments *args, const char *outfile, const uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS], bool no_downsampling) {
     printf("input file: %s\noutput file: %s\n", args->inputfile, outfile);
     printf("No downsampling: ");
     printf(no_downsampling ? "true\n" : "false\n");
@@ -148,28 +146,28 @@ static void encode_data_unit(int16_t **data_unit, int16_t data_unit_freq[TAILLE_
     afficher_matrice_quantifiee(data_unit_freq);
 }
 
-static int16_t process_Y(int16_t **Y_mcu, uint8_t hy, uint8_t vy,
-                         int16_t **data_unit, int16_t data_unit_freq[8][8],
-                         huff_table *Y_dc_table, huff_table *Y_ac_table,
-                         bitstream *stream, int16_t difference_DC_Y) {
-    /* Traitement des blocs Y */
-    printf("%d %d\n", hy, vy);
-    for (size_t v = 0; v < vy; v++) {
-        for (size_t h = 0; h < hy; h++) {
-            for (size_t i = 0; i < 8; i++) {
-                for (size_t j = 0; j < 8; j++) {
-                    printf("Ohooh, \n");
-                    data_unit[i][j] = Y_mcu[i + 8 * v][j + 8 * h];
-                }
-            }
-            /* Encodage de data_unit */
-            encode_data_unit(data_unit, data_unit_freq, quantification_table_Y);
-            ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC_Y);
-            difference_DC_Y = data_unit_freq[0][0];
-        }
-    }
-    return difference_DC_Y;
-}
+// static int16_t process_Y(int16_t **Y_mcu, uint8_t hy, uint8_t vy,
+//                          int16_t **data_unit, int16_t data_unit_freq[8][8],
+//                          huff_table *Y_dc_table, huff_table *Y_ac_table,
+//                          bitstream *stream, int16_t difference_DC_Y) {
+//     /* Traitement des blocs Y */
+//     printf("%d %d\n", hy, vy);
+//     for (size_t v = 0; v < vy; v++) {
+//         for (size_t h = 0; h < hy; h++) {
+//             for (size_t i = 0; i < 8; i++) {
+//                 for (size_t j = 0; j < 8; j++) {
+//                     printf("Ohooh, \n");
+//                     data_unit[i][j] = Y_mcu[i + 8 * v][j + 8 * h];
+//                 }
+//             }
+//             /* Encodage de data_unit */
+//             encode_data_unit(data_unit, data_unit_freq, quantification_table_Y);
+//             ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC_Y);
+//             difference_DC_Y = data_unit_freq[0][0];
+//         }
+//     }
+//     return difference_DC_Y;
+// }
 
 static int16_t process_chroma(int16_t **chroma_mcu, uint8_t hy, uint8_t vy,
                               uint8_t h_chroma, uint8_t v_chroma,
@@ -329,7 +327,7 @@ int main(int argc, char *argv[]) {
             for (size_t dir = H; dir < NB_DIRECTIONS; dir++) {
                 sampling_factors[cc][dir] = (uint8_t)strtol(strToken, &endPtr, 10);
                 if (strToken == endPtr) exit(EXIT_FAILURE);
-                if (sampling_factors[cc][dir] != 1) no_downsampling &= false;
+                // if (sampling_factors[cc][dir] != 1) no_downsampling &= false;
                 strToken = strtok(NULL, separators);
             }
         }
@@ -378,13 +376,15 @@ int main(int argc, char *argv[]) {
 
     bitstream *stream = jpeg_get_bitstream(jpg);
     huff_table *Y_dc_table = jpeg_get_huffman_table(jpg, DC, Y);
+    if (Y_dc_table == NULL) exit(EXIT_FAILURE);
     huff_table *Y_ac_table = jpeg_get_huffman_table(jpg, AC, Y);
-    huff_table *CbCr_dc_table = NULL;
-    huff_table *CbCr_ac_table = NULL;
-    if (nb_components == 3) {
-        CbCr_dc_table = jpeg_get_huffman_table(jpg, DC, Cb);
-        CbCr_ac_table = jpeg_get_huffman_table(jpg, AC, Cb);
-    }
+    if (Y_ac_table == NULL) exit(EXIT_FAILURE);
+    // if (nb_components == 3) {
+    huff_table *CbCr_dc_table = jpeg_get_huffman_table(jpg, DC, Cb);
+    if (CbCr_dc_table == NULL) exit(EXIT_FAILURE);
+    huff_table *CbCr_ac_table = jpeg_get_huffman_table(jpg, AC, Cb);
+    if (CbCr_ac_table == NULL) exit(EXIT_FAILURE);
+    //}
 
     int16_t difference_DC_Y = 0;
     int16_t difference_DC_Cb = 0;
@@ -392,10 +392,10 @@ int main(int argc, char *argv[]) {
 
     /* Allocation d'une Data Unit 8x8 */
     int16_t **data_unit = malloc(8 * sizeof(*data_unit));
-    // if (data_unit == NULL) exit(EXIT_FAILURE);
+    if (data_unit == NULL) exit(EXIT_FAILURE);
     for (size_t i = 0; i < 8; i++) {
         data_unit[i] = malloc(8 * sizeof(data_unit[i]));
-        // if (data_unit[i] == NULL) exit(EXIT_FAILURE);
+        if (data_unit[i] == NULL) exit(EXIT_FAILURE);
     }
     int16_t data_unit_freq[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT] = {0};
 
@@ -405,24 +405,25 @@ int main(int argc, char *argv[]) {
             si l'image est RGB avec des facteurs d'échantillonnages quelconques
             ou RGB avec des facteurs d'échantillonnages donnant des mcus de taille 8x8
     */
-    for (size_t i = 0; i < image->nb_MCUs; i++) {
-        printf("\nTraitement du mcu %ld\n", i);
+    for (size_t m = 0; m < image->nb_MCUs; m++) {
+        printf("\nTraitement du mcu %ld\n", m);
         for (size_t k = 0; k < 8; k++) {
             for (size_t j = 0; j < 8; j++) {
                 printf("%d, ", data_unit[k][j]);
-                data_unit[k][j] = 0;
+                data_unit_freq[k][j] = 0;
             }
             printf("\n");
         }
         recuperer_MCUs(fichier, image, mcu);
-        for (size_t k = 0; k < 8; k++) {
-            for (size_t j = 0; j < 8; j++) {
+        for (int k = 0; k < 8; k++) {
+            for (int j = 0; j < 8; j++) {
+                printf("%d %d", k, j);
                 printf("%d, ", data_unit[k][j]);
-                data_unit[k][j] = 0;
+                data_unit_freq[k][j] = 0;
             }
             printf("\n");
         }
-        // afficher_MCUs(nb_components, mcu);
+        afficher_MCUs(nb_components, mcu);
 
         // if (no_downsampling) {
         //     printf("No Downsampling");
@@ -453,10 +454,22 @@ int main(int argc, char *argv[]) {
                 data_unit[k][j] = 0;
             }
         }
-        difference_DC_Y = process_Y(mcu->Y, sampling_factors[Y][H], sampling_factors[Y][V],
-                                    data_unit, data_unit_freq,
-                                    Y_dc_table, Y_ac_table,
-                                    stream, difference_DC_Y);
+        /* Traitement des blocs Y */
+        for (size_t v = 0; v < sampling_factors[Y][V]; v++) {
+            for (size_t h = 0; h < sampling_factors[Y][H]; h++) {
+                for (size_t i = 0; i < 8; i++) {
+                    for (size_t j = 0; j < 8; j++) {
+                        printf("Ohooh, \n");
+                        data_unit[i][j] = mcu->Y[i + 8 * v][j + 8 * h];
+                    }
+                }
+                /* Encodage de data_unit */
+                encode_data_unit(data_unit, data_unit_freq, quantification_table_Y);
+                ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC_Y);
+                difference_DC_Y = data_unit_freq[0][0];
+            }
+        }
+        
         for (size_t k = 0; k < 8; k++) {
             for (size_t j = 0; j < 8; j++) {
                 data_unit[k][j] = 0;
@@ -475,7 +488,7 @@ int main(int argc, char *argv[]) {
                                           stream, difference_DC_Cr);
         // }
 
-        printf("\nEnd of %ld MCU\n", i);
+        printf("\nEnd of %ld MCU\n", m);
     }
 
     // printf("Ecriture du footer\n");
