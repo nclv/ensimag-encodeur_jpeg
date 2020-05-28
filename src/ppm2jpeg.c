@@ -261,8 +261,8 @@ static void jpeg_set_tables_CbCr(jpeg *jpg) {
 
 static void jpeg_set_sampling_factors(jpeg *jpg, const uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS]) {
     printf("\nEcriture des sampling-factors\n");
-    for (size_t cc = Y; cc < NB_COLOR_COMPONENTS; cc++) {
-        for (size_t dir = H; dir < NB_DIRECTIONS; dir++) {
+    for (enum color_component cc = Y; cc < NB_COLOR_COMPONENTS; cc++) {
+        for (enum direction dir = H; dir < NB_DIRECTIONS; dir++) {
             jpeg_set_sampling_factor(jpg, cc, dir, sampling_factors[cc][dir]);
         }
     }
@@ -402,7 +402,7 @@ int main(int argc, char *argv[]) {
         data_unit[i] = malloc(8 * sizeof(data_unit[i]));
         if (data_unit[i] == NULL) exit(EXIT_FAILURE);
     }
-    int16_t data_unit_freq[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT] = {0};
+    int16_t data_unit_freq[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT] = {{0}};
 
     /*
         Il faut distinguer ici:
