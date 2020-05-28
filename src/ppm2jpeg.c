@@ -150,13 +150,12 @@ static int16_t process_Y(int16_t **Y_mcu, uint8_t hy, uint8_t vy,
                          int16_t **data_unit, int16_t data_unit_freq[8][8],
                          huff_table *Y_dc_table, huff_table *Y_ac_table,
                          bitstream *stream, int16_t difference_DC_Y) {
-    /* Traitement des blocs Y */
-    printf("%d %d\n", hy, vy);
+    printf("Traitement des blocs Y\n");
+    // printf("%d %d\n", hy, vy);
     for (size_t v = 0; v < vy; v++) {
         for (size_t h = 0; h < hy; h++) {
             for (size_t i = 0; i < 8; i++) {
                 for (size_t j = 0; j < 8; j++) {
-                    printf("Ohooh, \n");
                     data_unit[i][j] = Y_mcu[i + 8 * v][j + 8 * h];
                 }
             }
@@ -174,7 +173,7 @@ static int16_t process_chroma(int16_t **chroma_mcu, uint8_t hy, uint8_t vy,
                               int16_t **data_unit, int16_t data_unit_freq[8][8],
                               huff_table *CbCr_dc_table, huff_table *CbCr_ac_table,
                               bitstream *stream, int16_t difference_DC_chroma) {
-    /* Traitement des blocs Cb / Cr avec échantillonnage horizontal */
+    printf("Traitement des blocs Cb / Cr avec échantillonnage horizontal");
     // printf("vy: %d \n", vy);
     // printf("h_chroma, v_chroma: %d %d\n", h_chroma, v_chroma);
     if (h_chroma == 0 || v_chroma == 0) {
@@ -327,7 +326,7 @@ int main(int argc, char *argv[]) {
             for (size_t dir = H; dir < NB_DIRECTIONS; dir++) {
                 sampling_factors[cc][dir] = (uint8_t)strtol(strToken, &endPtr, 10);
                 if (strToken == endPtr) exit(EXIT_FAILURE);
-                // if (sampling_factors[cc][dir] != 1) no_downsampling &= false;
+                if (sampling_factors[cc][dir] != 1) no_downsampling &= false;
                 strToken = strtok(NULL, separators);
             }
         }
@@ -474,11 +473,25 @@ int main(int argc, char *argv[]) {
                                               CbCr_dc_table, CbCr_ac_table,
                                               stream, difference_DC_Cb);
 
+            /* Mise à zéro de data_unit */
+            for (size_t i = 0; i < 8; i++) {
+                for (size_t j = 0; j < 8; j++) {
+                    data_unit[i][j] = 0;
+                }
+            }
+
             difference_DC_Cr = process_chroma(mcu->Cr, sampling_factors[Y][H], sampling_factors[Y][V],
                                               sampling_factors[Cr][H], sampling_factors[Cr][V],
                                               data_unit, data_unit_freq,
                                               CbCr_dc_table, CbCr_ac_table,
                                               stream, difference_DC_Cr);
+            
+            /* Mise à zéro de data_unit */
+            for (size_t i = 0; i < 8; i++) {
+                for (size_t j = 0; j < 8; j++) {
+                    data_unit[i][j] = 0;
+                }
+            }
         }
 
         printf("\nEnd of %ld MCU\n", m);
