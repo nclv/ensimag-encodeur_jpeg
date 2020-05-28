@@ -42,6 +42,7 @@ enum direction {
  * Nécessaires :
  * filename,
  */
+// #pragma pack(1)
 typedef struct jpeg {
     const char *jpeg_filename;
     const char *input_filename;

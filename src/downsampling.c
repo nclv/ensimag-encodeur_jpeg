@@ -48,7 +48,7 @@ void process_chroma(int16_t** chroma_mcu, uint8_t hy, uint8_t vy,
         exit(EXIT_FAILURE);
     }
     float remainder = 0;
-    uint8_t chroma_value = 0;
+    uint8_t chroma_value;
     uint8_t h_div = (hy / h_chroma);
     uint8_t v_div = (vy / v_chroma);
     // printf("%d %d\n", h_div, v_div);

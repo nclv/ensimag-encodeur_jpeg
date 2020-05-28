@@ -112,7 +112,7 @@ void ecrire_coeffs(bitstream *stream, const int16_t data_unit[8][8], huff_table 
                     uint8_t nb_bits_ZRL = 0;
                     uint32_t code_ZRL = huffman_table_get_path(ac_table, 0xf0, &nb_bits_ZRL);
                     // ou 240 en décimal
-                    printf("Code ZRL: %d\n", code_ZRL);
+                    printf("Code ZRL: %u\n", code_ZRL);
                     bitstream_write_bits(stream, code_ZRL, nb_bits_ZRL, false);
                     zeros_count = 0;
                 }

@@ -14,6 +14,7 @@
  * La création et la fermeture du bitstream est faite dans les fonctions
  * jpeg_write_header et jpeg_desc_destroy du module jpeg_writer.
  */
+#pragma pack(1)
 typedef struct bitstream {
     FILE *file; /* Ecriture effective lorsque le buffer est rempli */
 

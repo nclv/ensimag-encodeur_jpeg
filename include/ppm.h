@@ -10,6 +10,7 @@
 #define TAILLE_DATA_UNIT 8
 
 /*Définition d'une image au format PPM/PGM*/
+// #pragma pack(1)
 typedef struct image_ppm {
     uint32_t largeur;
     uint32_t hauteur;
@@ -21,6 +22,7 @@ typedef struct image_ppm {
 } image_ppm;
 
 /*Définition des MCUs*/
+// #pragma pack(1)
 typedef struct MCUs {
     uint32_t largeur;
     uint32_t hauteur;

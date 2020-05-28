@@ -33,7 +33,7 @@ huff_table *huffman_table_build(uint8_t *nb_symb_per_lengths, uint8_t *symbols, 
     ht->nb_symbols = nb_symbols;
 
     /* Initialisation des tailles. */
-    ht->lengths = malloc(nb_symbols * sizeof ht->lengths);
+    ht->lengths = malloc(nb_symbols * sizeof *ht->lengths);
     if (ht->lengths == NULL) {
         free(ht);
         return NULL;
@@ -52,7 +52,7 @@ huff_table *huffman_table_build(uint8_t *nb_symb_per_lengths, uint8_t *symbols, 
     }
 
     /* Initialisation des codes. */
-    ht->codes = calloc(nb_symbols, sizeof ht->codes);
+    ht->codes = calloc(nb_symbols, sizeof *ht->codes);
     if (ht->codes == NULL) {
         free(ht->lengths);
         free(ht);

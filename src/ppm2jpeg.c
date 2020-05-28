@@ -17,8 +17,6 @@
 #include "utils.h"
 #include "zigzag.h"
 
-// #pragma pack(1)
-
 /*Parsing des options*/
 static error_t parse_option(int key, char *arg, struct argp_state *state) {
     arguments *args = state->input;

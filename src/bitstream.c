@@ -24,6 +24,7 @@ bitstream *bitstream_create(const char *filename) {
     stream->file = fopen(filename, "ab");
     if (stream->file == NULL) {
         perror("Error opening file: ");
+        free(stream);
         return NULL;
     }
 
@@ -36,12 +37,12 @@ void bitstream_display(bitstream *stream) {
 
     // printf("Filename: %s\n", stream->filename);
 
-    printf("Bits buffer size: %ld\n", stream->bits_buffer_size);
-    printf("Nombre de bits dans le buffer: %ld\n", stream->last_written_bit_offset);
+    printf("Bits buffer size: %zu\n", stream->bits_buffer_size);
+    printf("Nombre de bits dans le buffer: %zu\n", stream->last_written_bit_offset);
     // printf("Bits buffer: %02x\n", stream->bits_buffer);
 
-    printf("Bytes buffer size: %ld\n", stream->bytes_buffer_size);
-    printf("Nombre de bytes dans le buffer: %ld\n", stream->last_written_byte_offset);
+    printf("Bytes buffer size: %zu\n", stream->bytes_buffer_size);
+    printf("Nombre de bytes dans le buffer: %zu\n", stream->last_written_byte_offset);
     printf("Bytes buffer: \n");
     for (uint32_t i = 0; i < stream->last_written_byte_offset; i++) {
         printf("%02x ", stream->bytes_buffer[i]);
@@ -80,7 +81,7 @@ static void bitstream_write_bit(bitstream *stream, unsigned char bit) {
 void bitstream_write_bits(bitstream *stream, uint32_t value, uint8_t nb_bits, bool is_marker) {
     assert(nb_bits < 32);  // au plus 32 bits
 
-    printf("Marqueur: %i, writing %i over %i bits \n", is_marker, value, nb_bits);
+    printf("Marqueur: %i, writing %u over %i bits \n", is_marker, value, nb_bits);
     /* Un marqueur de section JPEG est toujours aligné dans le flux sur un multiple d'un octet */
     if (is_marker) {
         printf("Ecriture d'un marqueur (EOI)\n");

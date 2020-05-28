@@ -1,2 +1,2 @@
-utils.c:6:7:strdup	48	static
+utils.c:6:7:strdup	64	static
 utils.c:14:6:strip_ext	48	static
