@@ -473,25 +473,11 @@ int main(int argc, char *argv[]) {
                                               CbCr_dc_table, CbCr_ac_table,
                                               stream, difference_DC_Cb);
 
-            /* Mise à zéro de data_unit */
-            for (size_t i = 0; i < 8; i++) {
-                for (size_t j = 0; j < 8; j++) {
-                    data_unit[i][j] = 0;
-                }
-            }
-
             difference_DC_Cr = process_chroma(mcu->Cr, sampling_factors[Y][H], sampling_factors[Y][V],
                                               sampling_factors[Cr][H], sampling_factors[Cr][V],
                                               data_unit, data_unit_freq,
                                               CbCr_dc_table, CbCr_ac_table,
                                               stream, difference_DC_Cr);
-            
-            /* Mise à zéro de data_unit */
-            for (size_t i = 0; i < 8; i++) {
-                for (size_t j = 0; j < 8; j++) {
-                    data_unit[i][j] = 0;
-                }
-            }
         }
 
         printf("\nEnd of %ld MCU\n", m);
