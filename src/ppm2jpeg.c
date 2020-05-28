@@ -141,17 +141,68 @@ void afficher_traitement_statique(int16_t input[8][8], const char *chaine) {  //
     }
 }
 
-void encode(int16_t **input, bool choix_YCbCr) {
-    int16_t output[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT];
-    afficher_traitement_dynamique(input, "0)Affichage avant traitement");
-    offset(input);
-    afficher_traitement_dynamique(input, "1)Affichage offset");
-    dct(input, output);
-    afficher_traitement_statique(output, "2)Affichage dct");
-    zigzag_inplace(output);
-    afficher_traitement_statique(output, "3)Affichage zig-zag");
-    quantifier(output, (choix_YCbCr) ? quantification_table_Y : quantification_table_CbCr);
-    afficher_traitement_statique(output, "4)Affichage quantification");
+// static void encode_data_unit(int16_t **input, bool choix_YCbCr) {
+//     int16_t output[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT];
+    
+// }
+
+static void afficher_options(const arguments *args, const char *outfile, const uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS]) {
+    printf("input file: %s\noutput file: %s\n", args->inputfile, outfile);
+    for (size_t cc = Y; cc < NB_COLOR_COMPONENTS; cc++) {
+        for (size_t dir = H; dir < NB_DIRECTIONS; dir++) {
+            printf("%d ", sampling_factors[cc][dir]);
+        }
+    }
+    printf("\n");
+}
+
+static void jpeg_set_tables_Y(jpeg *jpg){
+    printf("\nEcriture de la table de quantification de la composante Y\n");
+    jpeg_set_quantization_table(jpg, Y, quantification_table_Y);
+
+    printf("\nConstruction des tables de Huffman de la composante Y\n");
+    huff_table *htable_Y_DC = huffman_table_build(htables_nb_symb_per_lengths[DC][Y], htables_symbols[DC][Y], htables_nb_symbols[DC][Y]);
+    if (htable_Y_DC == NULL) {
+        jpeg_destroy(jpg);
+        exit(EXIT_FAILURE);
+    }
+    jpeg_set_huffman_table(jpg, DC, Y, htable_Y_DC);
+
+    huff_table *htable_Y_AC = huffman_table_build(htables_nb_symb_per_lengths[AC][Y], htables_symbols[AC][Y], htables_nb_symbols[AC][Y]);
+    if (htable_Y_AC == NULL) {
+        jpeg_destroy(jpg);
+        exit(EXIT_FAILURE);
+    }
+    jpeg_set_huffman_table(jpg, AC, Y, htable_Y_AC);
+}
+
+static void jpeg_set_tables_CbCr(jpeg *jpg){
+    printf("\nEcriture de la table de quantification des composantes CbCr Y\n");
+    jpeg_set_quantization_table(jpg, Cb, quantification_table_CbCr);
+
+    printf("\nConstruction des tables de Huffman de la composante CbCr\n");
+    huff_table *htable_CbCr_DC = huffman_table_build(htables_nb_symb_per_lengths[DC][Cb], htables_symbols[DC][Cb], htables_nb_symbols[DC][Cb]);
+    if (htable_CbCr_DC == NULL) {
+        jpeg_destroy(jpg);
+        exit(EXIT_FAILURE);
+    }
+    jpeg_set_huffman_table(jpg, DC, Cb, htable_CbCr_DC);
+
+    huff_table *htable_CbCr_AC = huffman_table_build(htables_nb_symb_per_lengths[AC][Cb], htables_symbols[AC][Cb], htables_nb_symbols[AC][Cb]);
+    if (htable_CbCr_AC == NULL) {
+        jpeg_destroy(jpg);
+        exit(EXIT_FAILURE);
+    }
+    jpeg_set_huffman_table(jpg, AC, Cb, htable_CbCr_AC);
+}
+
+static void jpeg_set_sampling_factors(jpeg *jpg, const uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS]) {
+    printf("\nEcriture des sampling-factors\n");
+    for (size_t cc = Y; cc < NB_COLOR_COMPONENTS; cc++) {
+        for (size_t dir = H; dir < NB_DIRECTIONS; dir++) {
+            jpeg_set_sampling_factor(jpg, cc, dir, sampling_factors[cc][dir]);
+        }
+    }
 }
 
 /*Programme principal*/
@@ -217,16 +268,10 @@ int main(int argc, char *argv[]) {
         free(sample_copy);
     }
 
-    printf("input file: %s\noutput file: %s\n", args.inputfile, outfile);
-    for (size_t cc = Y; cc < NB_COLOR_COMPONENTS; cc++) {
-        for (size_t dir = H; dir < NB_DIRECTIONS; dir++) {
-            printf("%d ", sampling_factors[cc][dir]);
-        }
-    }
-    printf("\n");
+    afficher_options(&args, outfile, sampling_factors);
 
     /*
-        Création du fichier de sortie
+        Création du fichier de sortie et traitement des arguments en ligne de commande
     */
 
     jpeg *jpg = jpeg_create();
@@ -234,44 +279,7 @@ int main(int argc, char *argv[]) {
     jpeg_set_jpeg_filename(jpg, outfile);
     jpeg_set_ppm_filename(jpg, args.inputfile);
 
-    printf("Ecriture des sampling-factors\n");
-    for (size_t cc = Y; cc < NB_COLOR_COMPONENTS; cc++) {
-        for (size_t dir = H; dir < NB_DIRECTIONS; dir++) {
-            jpeg_set_sampling_factor(jpg, cc, dir, sampling_factors[cc][dir]);
-        }
-    }
-
-    jpeg_set_quantization_table(jpg, Y, quantification_table_Y);
-    // jpeg_set_quantization_table(jpg, Cb, quantification_table_CbCr);
-
-    printf("Construction des tables de Huffman\n");
-    huff_table *htable_Y_DC = huffman_table_build(htables_nb_symb_per_lengths[DC][Y], htables_symbols[DC][Y], htables_nb_symbols[DC][Y]);
-    if (htable_Y_DC == NULL) {
-        jpeg_destroy(jpg);
-        exit(EXIT_FAILURE);
-    }
-    jpeg_set_huffman_table(jpg, DC, Y, htable_Y_DC);
-
-    huff_table *htable_Y_AC = huffman_table_build(htables_nb_symb_per_lengths[AC][Y], htables_symbols[AC][Y], htables_nb_symbols[AC][Y]);
-    if (htable_Y_AC == NULL) {
-        jpeg_destroy(jpg);
-        exit(EXIT_FAILURE);
-    }
-    jpeg_set_huffman_table(jpg, AC, Y, htable_Y_AC);
-
-    // huff_table *htable_CbCr_DC = huffman_table_build(htables_nb_symb_per_lengths[DC][Cb], htables_symbols[DC][Cb], htables_nb_symbols[DC][Cb]);
-    // if (htable_CbCr_DC == NULL) {
-    //     jpeg_destroy(jpg);
-    //     exit(EXIT_FAILURE);
-    // }
-    // jpeg_set_huffman_table(jpg, DC, Cb, htable_CbCr_DC);
-
-    // huff_table *htable_CbCr_AC = huffman_table_build(htables_nb_symb_per_lengths[AC][Cb], htables_symbols[AC][Cb], htables_nb_symbols[AC][Cb]);
-    // if (htable_CbCr_AC == NULL) {
-    //     jpeg_destroy(jpg);
-    //     exit(EXIT_FAILURE);
-    // }
-    // jpeg_set_huffman_table(jpg, AC, Cb, htable_CbCr_AC);
+    jpeg_set_sampling_factors(jpg, sampling_factors);
 
     /*
         Compression du fichier d'entrée
@@ -289,6 +297,9 @@ int main(int argc, char *argv[]) {
 
     jpeg_set_image_width(jpg, image->largeur);
     jpeg_set_image_height(jpg, image->hauteur);
+
+    jpeg_set_tables_Y(jpg);
+    if (jpg->nb_components == 3) jpeg_set_tables_CbCr(jpg);
 
     printf("Ecriture du header\n");
     jpeg_write_header(jpg);  // et création du bitstream
@@ -321,8 +332,9 @@ int main(int argc, char *argv[]) {
     int16_t data_unit_freq[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT] = {0};
     for (size_t i = 0; i < image->nb_MCUs; i++) {
         printf("\nTraitement du mcu %ld\n", i);
+
         recuperer_MCUs(fichier, image, mcu);
-        afficher_MCUs(image->format, mcu);
+        afficher_MCUs(image->nb_components, mcu);
 
         /* Image RGB avec facteurs */
         // process_Y(mcu->Y, sampling_factors[Y][H], sampling_factors[Y][V], data_unit);
@@ -345,10 +357,11 @@ int main(int argc, char *argv[]) {
         ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC);
 
         printf("\nEnd of %ld Data Unit\n", i);
-        difference_DC = data_unit_freq[0][0];
 
         /* Image RGB sans facteurs (1x1 1x1 1x1) */
         // on encode directement mcu->Y, mcu->Cb et mcu->Cr
+
+        difference_DC = data_unit_freq[0][0];
     }
 
     // printf("Ecriture du footer\n");

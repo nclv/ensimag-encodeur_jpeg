@@ -1,6 +1,6 @@
-ppm.c:15:12:parse_entete	64	static
-ppm.c:43:13:is_grayscale_format	32	static
-ppm.c:53:13:allocate_MCUs_grayscale	64	static
+ppm.c:13:13:is_grayscale_format	32	static
+ppm.c:24:12:parse_entete	64	static
+ppm.c:56:13:allocate_MCUs_grayscale	64	static
 ppm.c:79:13:allocate_MCUs_RGB	64	static
 ppm.c:99:17:recuperer_largeur	16	static
 ppm.c:117:17:recuperer_hauteur	16	static
@@ -13,3 +13,4 @@ ppm.c:281:6:recuperer_MCUs	64	static
 ppm.c:316:13:afficher_MCU_grayscale	48	static
 ppm.c:325:13:afficher_MCU_RGB	48	static
 ppm.c:336:6:afficher_MCUs	32	static
+ppm.c:345:6:afficher_image	32	static

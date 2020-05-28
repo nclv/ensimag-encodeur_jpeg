@@ -6,6 +6,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* type: char[]
+ * rtype: bool
+ * Choisit le mode de remplissage P5 ou P6
+ */
+static bool is_grayscale_format(const char format[2]) {
+    /*Booléen sur le format*/
+    return !strcmp(format, "P5");
+}
+
 /*
  * type: FILE*
  * rtype: image_ppm*
@@ -18,14 +27,17 @@ image_ppm* parse_entete(FILE* fichier) {
     if (image == NULL) exit(EXIT_FAILURE);
 
     /*Parsing en-tête*/
+    char format_image_ppm[2];
+
     int erreur_entete;
-    erreur_entete = fscanf(fichier, "%2s", image->format);
+    erreur_entete = fscanf(fichier, "%2s", format_image_ppm);
+    image->nb_components = is_grayscale_format(format_image_ppm) ? 1 : 3;
     if (erreur_entete != 1) exit(EXIT_FAILURE);
     erreur_entete = fscanf(fichier, "%d", &image->largeur);
     if (erreur_entete != 1) exit(EXIT_FAILURE);
     erreur_entete = fscanf(fichier, "%d", &image->hauteur);
     if (erreur_entete != 1) exit(EXIT_FAILURE);
-    erreur_entete = fscanf(fichier, "%d", &image->nb_couleurs);
+    erreur_entete = fscanf(fichier, "%d", &image->plage_couleurs);
     if (erreur_entete != 1) exit(EXIT_FAILURE);
 
     /*Parsing \n (de valeur 10)*/
@@ -34,15 +46,6 @@ image_ppm* parse_entete(FILE* fichier) {
     if (erreur_backslash != 1) exit(EXIT_FAILURE);
 
     return image;
-}
-
-/* type: char[]
- * rtype: bool
- * Choisit le mode de remplissage P5 ou P6
- */
-static bool is_grayscale_format(char format[]) {
-    /*Booléen sur le format*/
-    return !strcmp(format, NIVEAUX_GRIS);
 }
 
 /* type: MCUs*
@@ -133,7 +136,7 @@ MCUs* initialiser_MCUs(image_ppm* image, uint8_t sampling_factors[NB_COLOR_COMPO
     MCUs* mcu = malloc(sizeof(MCUs));
     if (mcu == NULL) exit(EXIT_FAILURE);
 
-    is_grayscale_format(image->format) ? allocate_MCUs_grayscale(mcu) : allocate_MCUs_RGB(mcu, sampling_factors);
+    (image->nb_components == 1) ? allocate_MCUs_grayscale(mcu) : allocate_MCUs_RGB(mcu, sampling_factors);
 
     /*Attribution des paramètres*/
     mcu->numero_ligne = 0;
@@ -291,7 +294,7 @@ void recuperer_MCUs(FILE* fichier, image_ppm* image, MCUs* mcu) {
     }
 
     /*Parsing des formats*/
-    if (is_grayscale_format(image->format)) {
+    if (image->nb_components == 1) {
         parse_grayscale(fichier, image, mcu, largeur, hauteur);
         /*On complète le mcu*/
         completer_grayscale(mcu, largeur, hauteur);
@@ -330,11 +333,21 @@ static void afficher_MCU_RGB(const MCUs* mcu) {
     }
 }
 
-void afficher_MCUs(char format[TAILLE_PPM], const MCUs* mcu) {
+void afficher_MCUs(uint8_t nb_components, const MCUs* mcu) {
     printf("\nAffichage du MCU: \n");
-    if (is_grayscale_format(format)) {
+    if (nb_components == 1) {
         afficher_MCU_grayscale(mcu);
     } else {
         afficher_MCU_RGB(mcu);
     }
+}
+
+void afficher_image(const image_ppm *image) {
+    printf("Largeur image : %d\n", image->largeur);
+    printf("Hauteur image : %d\n", image->hauteur);
+    printf("Largeur totale : %d\n", image->largeur_totale);
+    printf("Hauteur totale : %d\n", image->hauteur_totale);
+    printf("Plage de couleurs : %d\n", image->plage_couleurs);
+    printf("Nombre de MCUs : %d\n", image->nb_MCUs);
+    printf("Nombre de composantes : %d\n", image->nb_components);
 }

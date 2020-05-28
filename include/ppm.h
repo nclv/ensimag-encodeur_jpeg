@@ -8,8 +8,6 @@
 #include "jpeg_writer.h"
 
 #define TAILLE_DATA_UNIT 8
-#define TAILLE_PPM 2
-#define NIVEAUX_GRIS "P5"
 
 /*Définition d'une image au format PPM/PGM*/
 typedef struct image_ppm {
@@ -17,9 +15,9 @@ typedef struct image_ppm {
     uint32_t hauteur;
     uint32_t largeur_totale;
     uint32_t hauteur_totale;
-    uint32_t nb_couleurs;
+    uint32_t plage_couleurs;
     uint32_t nb_MCUs;
-    char format[TAILLE_PPM];
+    uint8_t nb_components;
 } image_ppm;
 
 /*Définition des MCUs*/
@@ -64,6 +62,8 @@ extern void recuperer_MCUs(FILE* fichier, image_ppm* image, MCUs* bloc);
  * rtype: void
  * Affiche un MCU en héxadécimal en fonction de P5 ou P6
  */
-extern void afficher_MCUs(char format[TAILLE_PPM], const MCUs* bloc);
+extern void afficher_MCUs(uint8_t nb_components, const MCUs* bloc);
+
+extern void afficher_image(const image_ppm *image);
 
 #endif
