@@ -20,9 +20,9 @@ OBJ_FILES=$(patsubst src/%.c,obj/%.o,$(SRC_FILES))
 # de Huffman génériques sous forme de constantes, n'est pas à ré-implémenter.
 OBJ_PROF_FILES = obj_prof/htables_prof.o
 
-all: ppm2jpeg
+all: bin/ppm2jpeg
 
-ppm2jpeg: $(OBJ_FILES) $(OBJ_PROF_FILES)
+bin/ppm2jpeg: $(OBJ_FILES) $(OBJ_PROF_FILES)
 	$(LD) $(LDFLAGS) $(OBJ_FILES) $(OBJ_PROF_FILES) -o $@
 
 obj/%.o: src/%.c
