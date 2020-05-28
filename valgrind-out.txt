@@ -1,427 +1,116 @@
-==229002== Memcheck, a memory error detector
-==229002== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==229002== Using Valgrind-3.15.0-608cb11914-20190413 and LibVEX; rerun with -h for copyright info
-==229002== Command: ./ppm2jpeg images/complexite.pgm
-==229002== Parent PID: 202092
-==229002== 
---229002-- 
---229002-- Valgrind options:
---229002--    --leak-check=full
---229002--    --show-leak-kinds=all
---229002--    --track-origins=yes
---229002--    --verbose
---229002--    --log-file=valgrind-out.txt
---229002-- Contents of /proc/version:
---229002--   Linux version 5.5.0-1parrot1-amd64 (team@parrotsec.org) (gcc version 9.3.0 (Debian 9.3.0-10)) #1 SMP Parrot 5.5.17-1parrot1 (2020-04-25)
---229002-- 
---229002-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-rdtscp-sse3-ssse3-avx
---229002-- Page sizes: currently 4096, max supported 4096
---229002-- Valgrind library directory: /usr/lib/x86_64-linux-gnu/valgrind
---229002-- Reading syms from /home/n0way/Documents/Projets/encodeur-jpeg/ppm2jpeg
---229002-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-2.30.so
---229002--   Considering /usr/lib/debug/.build-id/8a/980b57d17a1e050e7646f9604e8a96824d3691.debug ..
---229002--   .. build-id is valid
---229002-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/memcheck-amd64-linux
---229002--   Considering /usr/lib/debug/.build-id/80/5d052772dc3c48dbe4654094fcd7ddddfdb87a.debug ..
---229002--   .. build-id is valid
---229002--    object doesn't have a dynamic symbol table
---229002-- Scheduler: using generic scheduler lock implementation.
---229002-- Reading suppressions file: /usr/lib/x86_64-linux-gnu/valgrind/default.supp
-==229002== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-229002-by-n0way-on-???
-==229002== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-229002-by-n0way-on-???
-==229002== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-229002-by-n0way-on-???
-==229002== 
-==229002== TO CONTROL THIS PROCESS USING vgdb (which you probably
-==229002== don't want to do, unless you know exactly what you're doing,
-==229002== or are doing some strange experiment):
-==229002==   /usr/lib/x86_64-linux-gnu/valgrind/../../bin/vgdb --pid=229002 ...command...
-==229002== 
-==229002== TO DEBUG THIS PROCESS USING GDB: start GDB like this
-==229002==   /path/to/gdb ./ppm2jpeg
-==229002== and then give GDB the following command
-==229002==   target remote | /usr/lib/x86_64-linux-gnu/valgrind/../../bin/vgdb --pid=229002
-==229002== --pid is optional if only one valgrind process is running
-==229002== 
---229002-- REDIR: 0x401e5b0 (ld-linux-x86-64.so.2:strlen) redirected to 0x580c9a82 (vgPlain_amd64_linux_REDIR_FOR_strlen)
---229002-- REDIR: 0x401e390 (ld-linux-x86-64.so.2:index) redirected to 0x580c9a9c (vgPlain_amd64_linux_REDIR_FOR_index)
---229002-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_core-amd64-linux.so
---229002--   Considering /usr/lib/debug/.build-id/1f/dbd27e1b18006ce47917636dcc0d35bd6729c5.debug ..
---229002--   .. build-id is valid
---229002-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so
---229002--   Considering /usr/lib/debug/.build-id/0c/9a6e9d3907392310d89e285e3d6edaa3802ec5.debug ..
---229002--   .. build-id is valid
-==229002== WARNING: new redirection conflicts with existing -- ignoring it
---229002--     old: 0x0401e5b0 (strlen              ) R-> (0000.0) 0x580c9a82 vgPlain_amd64_linux_REDIR_FOR_strlen
---229002--     new: 0x0401e5b0 (strlen              ) R-> (2007.0) 0x04839d80 strlen
---229002-- REDIR: 0x401add0 (ld-linux-x86-64.so.2:strcmp) redirected to 0x483ae40 (strcmp)
---229002-- REDIR: 0x401eaf0 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x483e860 (mempcpy)
---229002-- Reading syms from /usr/lib/x86_64-linux-gnu/libc-2.30.so
---229002--   Considering /usr/lib/debug/.build-id/40/f80fd23b36ba3a7e20f63d615dc1aca83f4262.debug ..
---229002--   .. build-id is valid
---229002-- REDIR: 0x48f8710 (libc.so.6:memmove) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f7ad0 (libc.so.6:strncpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f8a30 (libc.so.6:strcasecmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f7420 (libc.so.6:strcat) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f7b30 (libc.so.6:rindex) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f9db0 (libc.so.6:rawmemchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x4911fe0 (libc.so.6:wmemchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x4911ba0 (libc.so.6:wcscmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f8870 (libc.so.6:mempcpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f86a0 (libc.so.6:bcmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f7a70 (libc.so.6:strncmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f74d0 (libc.so.6:strcmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f87d0 (libc.so.6:memset) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x4911b60 (libc.so.6:wcschr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f79d0 (libc.so.6:strnlen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f75a0 (libc.so.6:strcspn) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f8a80 (libc.so.6:strncasecmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f7540 (libc.so.6:strcpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f8bd0 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x49131c0 (libc.so.6:wcsnlen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x4911be0 (libc.so.6:wcscpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f7b70 (libc.so.6:strpbrk) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f7480 (libc.so.6:index) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f7990 (libc.so.6:strlen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48fe160 (libc.so.6:memrchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f8ad0 (libc.so.6:strcasecmp_l) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f8660 (libc.so.6:memchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x4911c80 (libc.so.6:wcslen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f7e10 (libc.so.6:strspn) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f89d0 (libc.so.6:stpncpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f8970 (libc.so.6:stpcpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f9df0 (libc.so.6:strchrnul) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x48f8b20 (libc.so.6:strncasecmp_l) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
---229002-- REDIR: 0x4906de0 (libc.so.6:__strrchr_sse2) redirected to 0x48397d0 (__strrchr_sse2)
---229002-- REDIR: 0x48f3a10 (libc.so.6:malloc) redirected to 0x4836710 (malloc)
---229002-- REDIR: 0x4911320 (libc.so.6:__memset_sse2_unaligned) redirected to 0x483d790 (memset)
---229002-- REDIR: 0x48ff920 (libc.so.6:__strcmp_sse2_unaligned) redirected to 0x483ad00 (strcmp)
---229002-- REDIR: 0x49070d0 (libc.so.6:__strlen_sse2) redirected to 0x4839cc0 (__strlen_sse2)
---229002-- REDIR: 0x48f4050 (libc.so.6:free) redirected to 0x4837940 (free)
---229002-- REDIR: 0x490bff0 (libc.so.6:__strcpy_sse2_unaligned) redirected to 0x4839db0 (strcpy)
---229002-- REDIR: 0x4906bd0 (libc.so.6:__strchrnul_sse2) redirected to 0x483e390 (strchrnul)
---229002-- REDIR: 0x4910ef0 (libc.so.6:__mempcpy_sse2_unaligned) redirected to 0x483e4a0 (mempcpy)
---229002-- REDIR: 0x48f4790 (libc.so.6:calloc) redirected to 0x4838ab0 (calloc)
---229002-- REDIR: 0x48f82b0 (libc.so.6:__GI_strstr) redirected to 0x483eac0 (__strstr_sse2)
---229002-- REDIR: 0x4910f10 (libc.so.6:memcpy@GLIBC_2.2.5) redirected to 0x483afa0 (memcpy@GLIBC_2.2.5)
-==229002== Invalid write of size 2
-==229002==    at 0x10B405: parse_grayscale (ppm.c:229)
-==229002==    by 0x10B91B: recuperer_MCUs (ppm.c:297)
-==229002==    by 0x10A1A7: main (ppm2jpeg.c:324)
-==229002==  Address 0x4a34be8 is 0 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== Invalid read of size 2
-==229002==    at 0x10B9F7: afficher_MCU_grayscale (ppm.c:318)
-==229002==    by 0x10BAFA: afficher_MCUs (ppm.c:337)
-==229002==    by 0x10A1C4: main (ppm2jpeg.c:325)
-==229002==  Address 0x4a34be8 is 0 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== Invalid read of size 2
-==229002==    at 0x10CAB5: offset (dct.c:15)
-==229002==    by 0x10A1D7: main (ppm2jpeg.c:335)
-==229002==  Address 0x4a34be8 is 0 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== Invalid write of size 2
-==229002==    at 0x10CADD: offset (dct.c:15)
-==229002==    by 0x10A1D7: main (ppm2jpeg.c:335)
-==229002==  Address 0x4a34be8 is 0 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== Invalid read of size 2
-==229002==    at 0x1098C0: afficher_traitement_dynamique (ppm2jpeg.c:128)
-==229002==    by 0x10A1F1: main (ppm2jpeg.c:336)
-==229002==  Address 0x4a34be8 is 0 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== Invalid read of size 2
-==229002==    at 0x10CBCB: dct (dct.c:63)
-==229002==    by 0x10A20E: main (ppm2jpeg.c:337)
-==229002==  Address 0x4a34be8 is 0 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== Invalid read of size 2
-==229002==    at 0x10CBEF: dct (dct.c:64)
-==229002==    by 0x10A20E: main (ppm2jpeg.c:337)
-==229002==  Address 0x4a34bea is 2 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== Invalid read of size 2
-==229002==    at 0x10CC13: dct (dct.c:65)
-==229002==    by 0x10A20E: main (ppm2jpeg.c:337)
-==229002==  Address 0x4a34bec is 4 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== Invalid read of size 2
-==229002==    at 0x10CC37: dct (dct.c:66)
-==229002==    by 0x10A20E: main (ppm2jpeg.c:337)
-==229002==  Address 0x4a34bee is 6 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== Invalid write of size 2
-==229002==    at 0x10B073: completer_grayscale (ppm.c:171)
-==229002==    by 0x10B92F: recuperer_MCUs (ppm.c:299)
-==229002==    by 0x10A1A7: main (ppm2jpeg.c:324)
-==229002==  Address 0x4a34be8 is 0 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== 
-==229002== Process terminating with default action of signal 2 (SIGINT)
-==229002==    at 0x4958641: write (write.c:26)
-==229002==    by 0x48E9EE4: _IO_file_write@@GLIBC_2.2.5 (fileops.c:1185)
-==229002==    by 0x48E9275: new_do_write (fileops.c:453)
-==229002==    by 0x48EAF68: _IO_new_do_write (fileops.c:430)
-==229002==    by 0x48EAF68: _IO_do_write@@GLIBC_2.2.5 (fileops.c:427)
-==229002==    by 0x48EA56D: _IO_new_file_xsputn (fileops.c:1248)
-==229002==    by 0x48EA56D: _IO_file_xsputn@@GLIBC_2.2.5 (fileops.c:1201)
-==229002==    by 0x48DF892: _IO_padn (iopadn.c:64)
-==229002==    by 0x48D51DF: __vfprintf_internal (vfprintf-internal.c:1687)
-==229002==    by 0x48C04EA: printf (printf.c:33)
-==229002==    by 0x10A38A: main (ppm2jpeg.c:358)
-==229002== 
-==229002== HEAP SUMMARY:
-==229002==     in use at exit: 5,087 bytes in 31 blocks
-==229002==   total heap usage: 3,002 allocs, 2,971 frees, 6,816,411 bytes allocated
-==229002== 
-==229002== Searching for pointers to 31 not-freed blocks
-==229002== Checked 77,984 bytes
-==229002== 
-==229002== 27 bytes in 1 blocks are still reachable in loss record 1 of 17
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x109B8A: main (ppm2jpeg.c:192)
-==229002== 
-==229002== 28 bytes in 1 blocks are still reachable in loss record 2 of 17
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AAAB: parse_entete (ppm.c:16)
-==229002==    by 0x109FCF: main (ppm2jpeg.c:285)
-==229002== 
-==229002== 40 bytes in 1 blocks are still reachable in loss record 3 of 17
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x1092B3: huffman_table_build (huffman.c:28)
-==229002==    by 0x109ED5: main (ppm2jpeg.c:248)
-==229002== 
-==229002== 40 bytes in 1 blocks are still reachable in loss record 4 of 17
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x1092B3: huffman_table_build (huffman.c:28)
-==229002==    by 0x109F42: main (ppm2jpeg.c:255)
-==229002== 
-==229002== 56 bytes in 1 blocks are still reachable in loss record 5 of 17
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10D32E: bitstream_create (bitstream.c:10)
-==229002==    by 0x10C7F7: jpeg_write_header (jpeg_writer.c:266)
-==229002==    by 0x10A03A: main (ppm2jpeg.c:294)
-==229002== 
-==229002== 56 bytes in 1 blocks are still reachable in loss record 6 of 17
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AE97: initialiser_MCUs (ppm.c:135)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== 64 bytes in 1 blocks are still reachable in loss record 7 of 17
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC35: allocate_MCUs_grayscale (ppm.c:63)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== 64 bytes in 1 blocks are still reachable in loss record 8 of 17
-==229002==    at 0x4838B65: calloc (vg_replace_malloc.c:762)
-==229002==    by 0x10A069: main (ppm2jpeg.c:299)
-==229002== 
-==229002== 64 bytes in 8 blocks are still reachable in loss record 9 of 17
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== 96 bytes in 1 blocks are still reachable in loss record 10 of 17
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10BB1D: jpeg_create (jpeg_writer.c:7)
-==229002==    by 0x109DDF: main (ppm2jpeg.c:232)
-==229002== 
-==229002== 96 bytes in 1 blocks are still reachable in loss record 11 of 17
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x1092FA: huffman_table_build (huffman.c:36)
-==229002==    by 0x109ED5: main (ppm2jpeg.c:248)
-==229002== 
-==229002== 96 bytes in 1 blocks are still reachable in loss record 12 of 17
-==229002==    at 0x4838B65: calloc (vg_replace_malloc.c:762)
-==229002==    by 0x1093C5: huffman_table_build (huffman.c:55)
-==229002==    by 0x109ED5: main (ppm2jpeg.c:248)
-==229002== 
-==229002== 128 bytes in 8 blocks are still reachable in loss record 13 of 17
-==229002==    at 0x4838B65: calloc (vg_replace_malloc.c:762)
-==229002==    by 0x10A0B4: main (ppm2jpeg.c:302)
-==229002== 
-==229002== 488 bytes in 1 blocks are still reachable in loss record 14 of 17
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x48DE62A: __fopen_internal (iofopen.c:65)
-==229002==    by 0x109FA5: main (ppm2jpeg.c:281)
-==229002== 
-==229002== 1,152 bytes in 1 blocks are still reachable in loss record 15 of 17
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10D356: bitstream_create (bitstream.c:14)
-==229002==    by 0x10C7F7: jpeg_write_header (jpeg_writer.c:266)
-==229002==    by 0x10A03A: main (ppm2jpeg.c:294)
-==229002== 
-==229002== 1,296 bytes in 1 blocks are still reachable in loss record 16 of 17
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x1092FA: huffman_table_build (huffman.c:36)
-==229002==    by 0x109F42: main (ppm2jpeg.c:255)
-==229002== 
-==229002== 1,296 bytes in 1 blocks are still reachable in loss record 17 of 17
-==229002==    at 0x4838B65: calloc (vg_replace_malloc.c:762)
-==229002==    by 0x1093C5: huffman_table_build (huffman.c:55)
-==229002==    by 0x109F42: main (ppm2jpeg.c:255)
-==229002== 
-==229002== LEAK SUMMARY:
-==229002==    definitely lost: 0 bytes in 0 blocks
-==229002==    indirectly lost: 0 bytes in 0 blocks
-==229002==      possibly lost: 0 bytes in 0 blocks
-==229002==    still reachable: 5,087 bytes in 31 blocks
-==229002==         suppressed: 0 bytes in 0 blocks
-==229002== 
-==229002== ERROR SUMMARY: 9367296 errors from 10 contexts (suppressed: 0 from 0)
-==229002== 
-==229002== 6208 errors in context 1 of 10:
-==229002== Invalid write of size 2
-==229002==    at 0x10B073: completer_grayscale (ppm.c:171)
-==229002==    by 0x10B92F: recuperer_MCUs (ppm.c:299)
-==229002==    by 0x10A1A7: main (ppm2jpeg.c:324)
-==229002==  Address 0x4a34be8 is 0 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== 
-==229002== 292728 errors in context 2 of 10:
-==229002== Invalid read of size 2
-==229002==    at 0x10CC37: dct (dct.c:66)
-==229002==    by 0x10A20E: main (ppm2jpeg.c:337)
-==229002==  Address 0x4a34bee is 6 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== 
-==229002== 292728 errors in context 3 of 10:
-==229002== Invalid read of size 2
-==229002==    at 0x10CC13: dct (dct.c:65)
-==229002==    by 0x10A20E: main (ppm2jpeg.c:337)
-==229002==  Address 0x4a34bec is 4 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== 
-==229002== 292728 errors in context 4 of 10:
-==229002== Invalid read of size 2
-==229002==    at 0x10CBEF: dct (dct.c:64)
-==229002==    by 0x10A20E: main (ppm2jpeg.c:337)
-==229002==  Address 0x4a34bea is 2 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== 
-==229002== 292728 errors in context 5 of 10:
-==229002== Invalid read of size 2
-==229002==    at 0x10CBCB: dct (dct.c:63)
-==229002==    by 0x10A20E: main (ppm2jpeg.c:337)
-==229002==  Address 0x4a34be8 is 0 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== 
-==229002== 1170912 errors in context 6 of 10:
-==229002== Invalid read of size 2
-==229002==    at 0x1098C0: afficher_traitement_dynamique (ppm2jpeg.c:128)
-==229002==    by 0x10A1F1: main (ppm2jpeg.c:336)
-==229002==  Address 0x4a34be8 is 0 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== 
-==229002== 1170912 errors in context 7 of 10:
-==229002== Invalid read of size 2
-==229002==    at 0x10CAB5: offset (dct.c:15)
-==229002==    by 0x10A1D7: main (ppm2jpeg.c:335)
-==229002==  Address 0x4a34be8 is 0 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== 
-==229002== 1170912 errors in context 8 of 10:
-==229002== Invalid read of size 2
-==229002==    at 0x10B9F7: afficher_MCU_grayscale (ppm.c:318)
-==229002==    by 0x10BAFA: afficher_MCUs (ppm.c:337)
-==229002==    by 0x10A1C4: main (ppm2jpeg.c:325)
-==229002==  Address 0x4a34be8 is 0 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== 
-==229002== 2335616 errors in context 9 of 10:
-==229002== Invalid write of size 2
-==229002==    at 0x10B405: parse_grayscale (ppm.c:229)
-==229002==    by 0x10B91B: recuperer_MCUs (ppm.c:297)
-==229002==    by 0x10A1A7: main (ppm2jpeg.c:324)
-==229002==  Address 0x4a34be8 is 0 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== 
-==229002== 2341824 errors in context 10 of 10:
-==229002== Invalid write of size 2
-==229002==    at 0x10CADD: offset (dct.c:15)
-==229002==    by 0x10A1D7: main (ppm2jpeg.c:335)
-==229002==  Address 0x4a34be8 is 0 bytes after a block of size 8 alloc'd
-==229002==    at 0x483677F: malloc (vg_replace_malloc.c:309)
-==229002==    by 0x10AC91: allocate_MCUs_grayscale (ppm.c:69)
-==229002==    by 0x10AECC: initialiser_MCUs (ppm.c:138)
-==229002==    by 0x10A053: main (ppm2jpeg.c:296)
-==229002== 
-==229002== ERROR SUMMARY: 9367296 errors from 10 contexts (suppressed: 0 from 0)
+==259495== Memcheck, a memory error detector
+==259495== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==259495== Using Valgrind-3.15.0-608cb11914-20190413 and LibVEX; rerun with -h for copyright info
+==259495== Command: ./ppm2jpeg images/toto13.ppm --sample=3x1,1x1,1x1
+==259495== Parent PID: 2166
+==259495== 
+--259495-- 
+--259495-- Valgrind options:
+--259495--    --leak-check=full
+--259495--    --show-leak-kinds=all
+--259495--    --track-origins=yes
+--259495--    --verbose
+--259495--    --log-file=valgrind-out.txt
+--259495-- Contents of /proc/version:
+--259495--   Linux version 5.5.0-1parrot1-amd64 (team@parrotsec.org) (gcc version 9.3.0 (Debian 9.3.0-10)) #1 SMP Parrot 5.5.17-1parrot1 (2020-04-25)
+--259495-- 
+--259495-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-rdtscp-sse3-ssse3-avx
+--259495-- Page sizes: currently 4096, max supported 4096
+--259495-- Valgrind library directory: /usr/lib/x86_64-linux-gnu/valgrind
+--259495-- Reading syms from /home/n0way/Documents/Projets/encodeur-jpeg/ppm2jpeg
+--259495-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-2.30.so
+--259495--   Considering /usr/lib/debug/.build-id/8a/980b57d17a1e050e7646f9604e8a96824d3691.debug ..
+--259495--   .. build-id is valid
+--259495-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/memcheck-amd64-linux
+--259495--   Considering /usr/lib/debug/.build-id/80/5d052772dc3c48dbe4654094fcd7ddddfdb87a.debug ..
+--259495--   .. build-id is valid
+--259495--    object doesn't have a dynamic symbol table
+--259495-- Scheduler: using generic scheduler lock implementation.
+--259495-- Reading suppressions file: /usr/lib/x86_64-linux-gnu/valgrind/default.supp
+==259495== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-259495-by-n0way-on-???
+==259495== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-259495-by-n0way-on-???
+==259495== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-259495-by-n0way-on-???
+==259495== 
+==259495== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==259495== don't want to do, unless you know exactly what you're doing,
+==259495== or are doing some strange experiment):
+==259495==   /usr/lib/x86_64-linux-gnu/valgrind/../../bin/vgdb --pid=259495 ...command...
+==259495== 
+==259495== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==259495==   /path/to/gdb ./ppm2jpeg
+==259495== and then give GDB the following command
+==259495==   target remote | /usr/lib/x86_64-linux-gnu/valgrind/../../bin/vgdb --pid=259495
+==259495== --pid is optional if only one valgrind process is running
+==259495== 
+--259495-- REDIR: 0x401e5b0 (ld-linux-x86-64.so.2:strlen) redirected to 0x580c9a82 (vgPlain_amd64_linux_REDIR_FOR_strlen)
+--259495-- REDIR: 0x401e390 (ld-linux-x86-64.so.2:index) redirected to 0x580c9a9c (vgPlain_amd64_linux_REDIR_FOR_index)
+--259495-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_core-amd64-linux.so
+--259495--   Considering /usr/lib/debug/.build-id/1f/dbd27e1b18006ce47917636dcc0d35bd6729c5.debug ..
+--259495--   .. build-id is valid
+--259495-- Reading syms from /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so
+--259495--   Considering /usr/lib/debug/.build-id/0c/9a6e9d3907392310d89e285e3d6edaa3802ec5.debug ..
+--259495--   .. build-id is valid
+==259495== WARNING: new redirection conflicts with existing -- ignoring it
+--259495--     old: 0x0401e5b0 (strlen              ) R-> (0000.0) 0x580c9a82 vgPlain_amd64_linux_REDIR_FOR_strlen
+--259495--     new: 0x0401e5b0 (strlen              ) R-> (2007.0) 0x04839d80 strlen
+--259495-- REDIR: 0x401add0 (ld-linux-x86-64.so.2:strcmp) redirected to 0x483ae40 (strcmp)
+--259495-- REDIR: 0x401eaf0 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x483e860 (mempcpy)
+--259495-- Reading syms from /usr/lib/x86_64-linux-gnu/libc-2.30.so
+--259495--   Considering /usr/lib/debug/.build-id/40/f80fd23b36ba3a7e20f63d615dc1aca83f4262.debug ..
+--259495--   .. build-id is valid
+--259495-- REDIR: 0x48f8710 (libc.so.6:memmove) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f7ad0 (libc.so.6:strncpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f8a30 (libc.so.6:strcasecmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f7420 (libc.so.6:strcat) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f7b30 (libc.so.6:rindex) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f9db0 (libc.so.6:rawmemchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x4911fe0 (libc.so.6:wmemchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x4911ba0 (libc.so.6:wcscmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f8870 (libc.so.6:mempcpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f86a0 (libc.so.6:bcmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f7a70 (libc.so.6:strncmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f74d0 (libc.so.6:strcmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f87d0 (libc.so.6:memset) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x4911b60 (libc.so.6:wcschr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f79d0 (libc.so.6:strnlen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f75a0 (libc.so.6:strcspn) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f8a80 (libc.so.6:strncasecmp) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f7540 (libc.so.6:strcpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f8bd0 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x49131c0 (libc.so.6:wcsnlen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x4911be0 (libc.so.6:wcscpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f7b70 (libc.so.6:strpbrk) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f7480 (libc.so.6:index) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f7990 (libc.so.6:strlen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48fe160 (libc.so.6:memrchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f8ad0 (libc.so.6:strcasecmp_l) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f8660 (libc.so.6:memchr) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x4911c80 (libc.so.6:wcslen) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f7e10 (libc.so.6:strspn) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f89d0 (libc.so.6:stpncpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f8970 (libc.so.6:stpcpy) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f9df0 (libc.so.6:strchrnul) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x48f8b20 (libc.so.6:strncasecmp_l) redirected to 0x482c1b0 (_vgnU_ifunc_wrapper)
+--259495-- REDIR: 0x4906de0 (libc.so.6:__strrchr_sse2) redirected to 0x48397d0 (__strrchr_sse2)
+--259495-- REDIR: 0x48f3a10 (libc.so.6:malloc) redirected to 0x4836710 (malloc)
+--259495-- REDIR: 0x4911320 (libc.so.6:__memset_sse2_unaligned) redirected to 0x483d790 (memset)
+--259495-- REDIR: 0x48ff920 (libc.so.6:__strcmp_sse2_unaligned) redirected to 0x483ad00 (strcmp)
+--259495-- REDIR: 0x49070d0 (libc.so.6:__strlen_sse2) redirected to 0x4839cc0 (__strlen_sse2)
+--259495-- REDIR: 0x49bed20 (libc.so.6:__strncmp_sse42) redirected to 0x483a560 (__strncmp_sse42)
+--259495-- REDIR: 0x48f4050 (libc.so.6:free) redirected to 0x4837940 (free)
+--259495-- REDIR: 0x490bff0 (libc.so.6:__strcpy_sse2_unaligned) redirected to 0x4839db0 (strcpy)
+--259495-- REDIR: 0x4910f10 (libc.so.6:memcpy@GLIBC_2.2.5) redirected to 0x483afa0 (memcpy@GLIBC_2.2.5)
+--259495-- REDIR: 0x49c3ae0 (libc.so.6:__strspn_sse42) redirected to 0x483ecc0 (strspn)
+--259495-- REDIR: 0x49c3880 (libc.so.6:__strcspn_sse42) redirected to 0x483ec00 (strcspn)
+--259495-- REDIR: 0x4906bd0 (libc.so.6:__strchrnul_sse2) redirected to 0x483e390 (strchrnul)
+--259495-- REDIR: 0x4910ef0 (libc.so.6:__mempcpy_sse2_unaligned) redirected to 0x483e4a0 (mempcpy)
+--259495-- REDIR: 0x48f82b0 (libc.so.6:__GI_strstr) redirected to 0x483eac0 (__strstr_sse2)
+--259495-- REDIR: 0x48f4790 (libc.so.6:calloc) redirected to 0x4838ab0 (calloc)
+==259495== 
+==259495== HEAP SUMMARY:
+==259495==     in use at exit: 0 bytes in 0 blocks
+==259495==   total heap usage: 53 allocs, 53 frees, 24,635 bytes allocated
+==259495== 
+==259495== All heap blocks were freed -- no leaks are possible
+==259495== 
+==259495== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

@@ -15,6 +15,27 @@ static bool is_grayscale_format(const char format[2]) {
     return !strcmp(format, "P5");
 }
 
+void free_mcu(MCUs **mcu) {
+    for (size_t i = 0; i < (*mcu)->hauteur; i++) {
+        free((*mcu)->Y[i]);
+    }
+    free((*mcu)->Y);
+    (*mcu)->Y = NULL;
+    for (size_t i = 0; i < (*mcu)->hauteur; i++) {
+        free((*mcu)->Cb[i]);
+    }
+    free((*mcu)->Cb);
+    (*mcu)->Cb = NULL;
+    for (size_t i = 0; i < (*mcu)->hauteur; i++) {
+        free((*mcu)->Cr[i]);
+    }
+    free((*mcu)->Cr);
+    (*mcu)->Cr = NULL;
+
+    free(*mcu);
+    *mcu = NULL;
+}
+
 /*
  * type: FILE*
  * rtype: image_ppm*
@@ -61,13 +82,13 @@ static void allocate_MCUs_grayscale(MCUs* bloc) {
     bloc->Cr = NULL;
 
     /*Allocation Y*/
-    bloc->Y = malloc(bloc->hauteur * sizeof(uint8_t*));
+    bloc->Y = malloc(bloc->hauteur * sizeof(int16_t*));
     if (bloc->Y == NULL) {
         free(bloc);
         exit(EXIT_FAILURE);
     }
     for (size_t i = 0; i < bloc->hauteur; i++) {
-        bloc->Y[i] = malloc(bloc->largeur * sizeof(uint8_t));
+        bloc->Y[i] = malloc(bloc->largeur * sizeof(int16_t));
     }
 }
 
@@ -81,13 +102,13 @@ static void allocate_MCUs_RGB(MCUs* bloc, uint8_t sampling_factors[NB_COLOR_COMP
     bloc->hauteur = (uint32_t)sampling_factors[Y][V] * TAILLE_DATA_UNIT;
 
     /*Allocations Y, Cb, Cr*/
-    bloc->Y = malloc(bloc->hauteur * sizeof(uint8_t*));
-    bloc->Cb = malloc(bloc->hauteur * sizeof(uint8_t*));
-    bloc->Cr = malloc(bloc->hauteur * sizeof(uint8_t*));
+    bloc->Y = malloc(bloc->hauteur * sizeof(int16_t*));
+    bloc->Cb = malloc(bloc->hauteur * sizeof(int16_t*));
+    bloc->Cr = malloc(bloc->hauteur * sizeof(int16_t*));
     for (size_t i = 0; i < bloc->hauteur; i++) {
-        bloc->Y[i] = malloc(bloc->largeur * sizeof(uint8_t));
-        bloc->Cb[i] = malloc(bloc->largeur * sizeof(uint8_t));
-        bloc->Cr[i] = malloc(bloc->largeur * sizeof(uint8_t));
+        bloc->Y[i] = malloc(bloc->largeur * sizeof(int16_t));
+        bloc->Cb[i] = malloc(bloc->largeur * sizeof(int16_t));
+        bloc->Cr[i] = malloc(bloc->largeur * sizeof(int16_t));
     }
 }
 
@@ -227,7 +248,7 @@ static void parse_grayscale(FILE* fichier, image_ppm* image, MCUs* mcu, uint32_t
                 printf("ERREUR\n");
                 exit(EXIT_FAILURE);
             }
-            mcu->Y[i][j] = octet;
+            mcu->Y[i][j] = (int16_t)octet;
         }
         /*Saut prochaine ligne du mcu*/
         fseek(fichier, (long)image->largeur - largeur, SEEK_CUR);
@@ -261,9 +282,9 @@ static void parse_RGB(FILE* fichier, image_ppm* image, MCUs* mcu, uint32_t large
             if (erreur != 1) exit(EXIT_FAILURE);
 
             /* Conversion RGB -> YCbCr */
-            mcu->Y[i][j] = (uint8_t)(0.299 * r + 0.587 * g + 0.114 * b);
-            mcu->Cb[i][j] = (uint8_t)(-0.1687 * r - 0.3313 * g + 0.5000 * b + 128);
-            mcu->Cr[i][j] = (uint8_t)(0.5000 * r - 0.4187 * g - 0.0813 * b + 128);
+            mcu->Y[i][j] = (int16_t)(0.299 * r + 0.587 * g + 0.114 * b);
+            mcu->Cb[i][j] = (int16_t)(-0.1687 * r - 0.3313 * g + 0.5000 * b + 128);
+            mcu->Cr[i][j] = (int16_t)(0.5000 * r - 0.4187 * g - 0.0813 * b + 128);
         }
         /*Saut prochaine ligne du mcu*/
         fseek(fichier, (long)(image->largeur - largeur) * 3, SEEK_CUR);

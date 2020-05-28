@@ -48,8 +48,9 @@ int main(int argc, char** argv) {
                     data_unit[k][j] = 0;
                 }
             }
-            process_chroma(mcu->Cb, sampling_factors[Y][H], sampling_factors[Y][V], sampling_factors[Cb][H], sampling_factors[Cb][V], data_unit);
             printf("Passage à Cb\n");
+            process_chroma(mcu->Cb, sampling_factors[Y][H], sampling_factors[Y][V], sampling_factors[Cb][H], sampling_factors[Cb][V], data_unit);
+            printf("Passage à Cr\n");
             process_chroma(mcu->Cr, sampling_factors[Y][H], sampling_factors[Y][V], sampling_factors[Cr][H], sampling_factors[Cr][V], data_unit);
         }
     }

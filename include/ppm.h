@@ -34,6 +34,8 @@ typedef struct MCUs {
     int16_t** Cr;
 } MCUs;
 
+extern void free_mcu(MCUs **mcu);
+
 /* type: FILE*
  * rtype: image_ppm*
  * Parse l'en-tête  du fichier PPM/PGM
