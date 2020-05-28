@@ -7,7 +7,7 @@ ppm2jpeg.c:88:6:verifier_facteurs	16	static
 ppm2jpeg.c:102:6:verifier_syntaxe	16	static
 ppm2jpeg.c:125:6:afficher_traitement_dynamique	48	static
 ppm2jpeg.c:135:6:afficher_traitement_statique	48	static
-ppm2jpeg.c:145:13:encode_data_unit	32	static
+ppm2jpeg.c:145:13:encode_data_unit	48	static
 ppm2jpeg.c:157:13:afficher_options	64	static
 ppm2jpeg.c:167:13:jpeg_set_tables_Y	48	static
 ppm2jpeg.c:187:13:jpeg_set_tables_CbCr	48	static

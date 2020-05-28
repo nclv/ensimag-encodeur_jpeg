@@ -142,7 +142,7 @@ void afficher_traitement_statique(int16_t input[8][8], const char *chaine) {  //
     }
 }
 
-static void encode_data_unit(int16_t **data_unit, int16_t data_unit_freq[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT]) {
+static void encode_data_unit(int16_t **data_unit, int16_t data_unit_freq[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT], uint8_t qtable[64]) {
     offset(data_unit);
     dct(data_unit, data_unit_freq);
     afficher_dct(data_unit_freq);
@@ -150,7 +150,7 @@ static void encode_data_unit(int16_t **data_unit, int16_t data_unit_freq[TAILLE_
     zigzag_inplace(data_unit_freq);
     afficher_zigzag(data_unit_freq);
 
-    quantifier(data_unit_freq, quantification_table_Y);
+    quantifier(data_unit_freq, qtable);
     afficher_matrice_quantifiee(data_unit_freq);
 }
 
@@ -353,7 +353,9 @@ int main(int argc, char *argv[]) {
         CbCr_ac_table = jpeg_get_huffman_table(jpg, AC, Cb);
     }
 
-    int16_t difference_DC = 0;
+    int16_t difference_DC_Y = 0;
+    int16_t difference_DC_Cb = 0;
+    int16_t difference_DC_Cr = 0;
 
     /*
         Il faut distinguer ici:
@@ -386,8 +388,9 @@ int main(int argc, char *argv[]) {
 
         // quantifier(data_unit_freq, quantification_table_Y);
         // afficher_matrice_quantifiee(data_unit_freq);
-        encode_data_unit(mcu->Y, data_unit_freq);
-        ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC);
+        encode_data_unit(mcu->Y, data_unit_freq, quantification_table_Y);
+        ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC_Y);
+        difference_DC_Y = data_unit_freq[0][0];
 
         /* Image RGB sans facteurs (1x1 1x1 1x1) */
         // on encode directement mcu->Y, mcu->Cb et mcu->Cr
@@ -400,15 +403,17 @@ int main(int argc, char *argv[]) {
                     data_unit_freq[k][j] = 0;
                 }
             }
-            encode_data_unit(mcu->Cb, data_unit_freq);
-            ecrire_coeffs(stream, data_unit_freq, CbCr_dc_table, CbCr_ac_table, difference_DC);
+            encode_data_unit(mcu->Cb, data_unit_freq, quantification_table_CbCr);
+            ecrire_coeffs(stream, data_unit_freq, CbCr_dc_table, CbCr_ac_table, difference_DC_Cb);
+            difference_DC_Cb = data_unit_freq[0][0];
             for (size_t k = 0; k < 8; k++) {
                 for (size_t j = 0; j < 8; j++) {
                     data_unit_freq[k][j] = 0;
                 }
             }
-            encode_data_unit(mcu->Cr, data_unit_freq);
-            ecrire_coeffs(stream, data_unit_freq, CbCr_dc_table, CbCr_ac_table, difference_DC);
+            encode_data_unit(mcu->Cr, data_unit_freq, quantification_table_CbCr);
+            ecrire_coeffs(stream, data_unit_freq, CbCr_dc_table, CbCr_ac_table, difference_DC_Cr);
+            difference_DC_Cr = data_unit_freq[0][0];
             for (size_t k = 0; k < 8; k++) {
                 for (size_t j = 0; j < 8; j++) {
                     data_unit_freq[k][j] = 0;
@@ -417,7 +422,6 @@ int main(int argc, char *argv[]) {
         }
 
         printf("\nEnd of %ld Data Unit\n", i);
-        difference_DC = data_unit_freq[0][0];
     }
 
     // printf("Ecriture du footer\n");
