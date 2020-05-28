@@ -17,7 +17,8 @@ void afficher_data_unit(int16_t** data_unit) {
     }
 }
 
-void process_Y(int16_t** Y_mcu, uint8_t hy, uint8_t vy, int16_t** data_unit) {
+void process_Y(int16_t** Y_mcu, uint8_t hy, uint8_t vy,
+               int16_t** data_unit) {
     /* Traitement des blocs Y */
     // printf("%d %d\n", vy, hy);
     for (size_t v = 0; v < vy; v++) {
@@ -29,11 +30,16 @@ void process_Y(int16_t** Y_mcu, uint8_t hy, uint8_t vy, int16_t** data_unit) {
             }
             /* Encodage de data_unit */
             afficher_data_unit(data_unit);
+            // encode_data_unit(data_unit, data_unit_freq, quantification_table_Y);
+            // ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC_Y);
+            // difference_DC_Y = data_unit_freq[0][0];
         }
     }
 }
 
-void process_chroma(int16_t** chroma_mcu, uint8_t hy, uint8_t vy, uint8_t h_chroma, uint8_t v_chroma, int16_t** data_unit) {
+void process_chroma(int16_t** chroma_mcu, uint8_t hy, uint8_t vy,
+                    uint8_t h_chroma, uint8_t v_chroma,
+                    int16_t** data_unit) {
     /* Traitement des blocs Cb / Cr avec échantillonnage horizontal */
     // printf("vy: %d \n", vy);
     // printf("h_chroma, v_chroma: %d %d\n", h_chroma, v_chroma);
@@ -65,14 +71,16 @@ void process_chroma(int16_t** chroma_mcu, uint8_t hy, uint8_t vy, uint8_t h_chro
                 }
             }
             /* Traitement des DUs */
-            // afficher_data_unit(data_unit);
-            // à faire pdt l'écriture dans le bitstream.
-            /* Mise à zéro de data_unit */
-            for (size_t i = 0; i < 8; i++) {
-                for (size_t j = 0; j < 8; j++) {
-                    data_unit[i][j] = 0;
-                }
-            }
+            afficher_data_unit(data_unit);
+            // encode_data_unit(data_unit, data_unit_freq, quantification_table_CbCr);
+            // ecrire_coeffs(stream, data_unit_freq, CbCr_dc_table, CbCr_ac_table, difference_DC_chroma);
+            // difference_DC_chroma = data_unit_freq[0][0];
+            // /* Mise à zéro de data_unit */
+            // for (size_t i = 0; i < 8; i++) {
+            //     for (size_t j = 0; j < 8; j++) {
+            //         data_unit[i][j] = 0;
+            //     }
+            // }
         }
     }
 }
