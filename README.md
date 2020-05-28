@@ -4,6 +4,7 @@ Les consignes du projet sont [ici](https://formationc.pages.ensimag.fr/projet/jp
 
 Pour gérer le projet voir [ici](https://gitlab.ensimag.fr/vincentn/encodeur-jpeg/-/boards).
 
+Quelques commandes utiles...
 ```bash
 alias valgrind-o="valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt"
 
@@ -11,5 +12,7 @@ compare -verbose -metric RMSE images/gris.jpg images/my-gris.jpg difference.jpg
 compare -verbose -metric MAE images/gris.jpg images/my-gris.jpg difference.jpg
 
 compare -verbose -fuzz 5% images/gris.jpg images/my-gris.jpg difference.jpg
+
+time ./bin/ppm2jpeg images/complexite.pgm > /dev/null
 ```
 

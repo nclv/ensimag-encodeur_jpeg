@@ -78,7 +78,7 @@ void zigzag(int16_t matrice[8][8], int16_t tableau[64]) {
     tableau[28] = matrice[0][7];
     tableau[29] = matrice[1][6];
     tableau[30] = matrice[2][5];
-    tableau[32] = matrice[3][4];
+    tableau[31] = matrice[3][4];
     tableau[32] = matrice[4][3];
     tableau[33] = matrice[5][2];
     tableau[34] = matrice[6][1];

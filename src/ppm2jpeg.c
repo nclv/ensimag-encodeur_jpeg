@@ -53,21 +53,6 @@ static void afficher_options(const arguments *args, const char *outfile, const u
     printf("\n");
 }
 
-/*Vérifie que le nom du fichier IO est correct
- *C'est à dire un seul point et une extension donné
- *Renvoie true si le nombre de points est == 1*/
-bool check_one_dot(const char *name) {
-    uint32_t cmp = 0;
-    size_t i = 0;
-
-    while (cmp < 2 && name[i] != '\0') {
-        if (name[i] == '.') cmp += 1;
-        i++;
-    }
-
-    return (cmp == 1);
-}
-
 /* Vérifie l'extension de filename */
 bool check_extension(const char *filename, const char *extension) {
     return !strcmp(filename, extension);
@@ -180,7 +165,7 @@ static int16_t process_chroma(int16_t **chroma_mcu, uint8_t hy, uint8_t vy,
         exit(EXIT_FAILURE);
     }
     float remainder = 0;
-    uint8_t chroma_value = 0;
+    uint8_t chroma_value;
     uint8_t h_div = (hy / h_chroma);
     uint8_t v_div = (vy / v_chroma);
     // printf("%d %d\n", h_div, v_div);
@@ -410,7 +395,7 @@ int main(int argc, char *argv[]) {
             ou RGB avec des facteurs d'échantillonnages donnant des mcus de taille 8x8
     */
     for (size_t m = 0; m < image->nb_MCUs; m++) {
-        printf("\nTraitement du mcu %ld\n", m);
+        printf("\nTraitement du mcu %zu\n", m);
         recuperer_MCUs(fichier, image, mcu);
         afficher_MCUs(nb_components, mcu);
 
@@ -438,12 +423,10 @@ int main(int argc, char *argv[]) {
         } else {
             /* Image RGB avec facteurs */
             /* Traitement des blocs Y */
-
             difference_DC_Y = process_Y(mcu->Y, sampling_factors[Y][H], sampling_factors[Y][V],
                                         data_unit, data_unit_freq,
                                         Y_dc_table, Y_ac_table,
                                         stream, difference_DC_Y);
-
             /* Mise à zéro de data_unit */
             for (size_t i = 0; i < 8; i++) {
                 for (size_t j = 0; j < 8; j++) {
@@ -464,7 +447,7 @@ int main(int argc, char *argv[]) {
                                               stream, difference_DC_Cr);
         }
 
-        printf("\nEnd of %ld MCU\n", m);
+        printf("\nEnd of %zu MCU\n", m);
     }
 
     /*Fermeture du fichier d'entrée */

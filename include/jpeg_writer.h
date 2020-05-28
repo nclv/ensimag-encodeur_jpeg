@@ -121,7 +121,7 @@ extern void jpeg_set_ppm_filename(jpeg *jpg,
  * rtype char*
  * Retourne le nom de fichier PPM/PGM lu dans la structure jpeg.
  */
-extern char *jpeg_get_ppm_filename(jpeg *jpg);
+// extern char *jpeg_get_ppm_filename(jpeg *jpg);
 
 /* type : jpeg*
  * type : const char*
@@ -134,7 +134,7 @@ extern void jpeg_set_jpeg_filename(jpeg *jpg,
  * rtype char*
  * Retourne le nom du fichier de sortie lu depuis la structure jpeg.
  */
-extern char *jpeg_get_jpeg_filename(jpeg *jpg);
+// extern char *jpeg_get_jpeg_filename(jpeg *jpg);
 
 /* type : jpeg*
  * type : uint32_t
@@ -149,7 +149,7 @@ extern void jpeg_set_image_height(jpeg *jpg,
  * Retourne la hauteur de l'image traitée, en nombre de pixels,
  * lue dans la structure jpeg.
  */
-extern uint32_t jpeg_get_image_height(jpeg *jpg);
+// extern uint32_t jpeg_get_image_height(jpeg *jpg);
 
 /* type : jpeg*
  * type : uint32_t
@@ -165,7 +165,7 @@ extern void jpeg_set_image_width(jpeg *jpg,
  * Retourne la largeur de l'image traitée, en nombre de pixels,
  * lue dans la structure jpeg.
  */
-extern uint32_t jpeg_get_image_width(jpeg *jpg);
+// extern uint32_t jpeg_get_image_width(jpeg *jpg);
 
 /* type : jpeg*
  * type : uint8_t

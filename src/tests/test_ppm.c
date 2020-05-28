@@ -27,12 +27,12 @@ int main(int argc, char** argv) {
 
     MCUs* mcu = initialiser_MCUs(image, sampling_factors);
 
-    printf("Largeur_mcu = %d\n", mcu->largeur);
-    printf("Hauteur_mcu = %d\n", mcu->hauteur);
+    printf("Largeur_mcu = %u\n", mcu->largeur);
+    printf("Hauteur_mcu = %u\n", mcu->hauteur);
 
     /* Traitement des MCUs */
     for (size_t i = 0; i < image->nb_MCUs; i++) {
-        printf("\nTraitement du mcu %ld\n", i);
+        printf("\nTraitement du mcu %zu\n", i);
         recuperer_MCUs(fichier, image, mcu);
         afficher_MCUs(image->nb_components, mcu);
     }

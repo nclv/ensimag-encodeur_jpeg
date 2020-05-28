@@ -7,13 +7,9 @@ jpeg_writer.c:156:13:jpeg_write_header_RGB	80	static
 jpeg_writer.c:254:6:jpeg_write_header	48	static
 jpeg_writer.c:259:6:jpeg_write_footer	48	static
 jpeg_writer.c:266:6:jpeg_set_ppm_filename	48	static
-jpeg_writer.c:270:7:jpeg_get_ppm_filename	48	static
 jpeg_writer.c:274:6:jpeg_set_jpeg_filename	48	static
-jpeg_writer.c:278:7:jpeg_get_jpeg_filename	48	static
 jpeg_writer.c:282:6:jpeg_set_image_height	48	static
-jpeg_writer.c:286:10:jpeg_get_image_height	48	static
 jpeg_writer.c:290:6:jpeg_set_image_width	48	static
-jpeg_writer.c:294:10:jpeg_get_image_width	48	static
 jpeg_writer.c:298:6:jpeg_set_nb_components	48	static
 jpeg_writer.c:302:9:jpeg_get_nb_components	48	static
 jpeg_writer.c:306:6:jpeg_set_quantization_table	64	static

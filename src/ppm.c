@@ -52,17 +52,17 @@ image_ppm* parse_entete(FILE* fichier) {
     if (image == NULL) exit(EXIT_FAILURE);
 
     /*Parsing en-tête*/
-    char format_image_ppm[2];
+    char format_image_ppm[3];
 
     int erreur_entete;
     erreur_entete = fscanf(fichier, "%2s", format_image_ppm);
     image->nb_components = is_grayscale_format(format_image_ppm) ? 1 : 3;
     if (erreur_entete != 1) exit(EXIT_FAILURE);
-    erreur_entete = fscanf(fichier, "%d", &image->largeur);
+    erreur_entete = fscanf(fichier, "%u", &image->largeur);
     if (erreur_entete != 1) exit(EXIT_FAILURE);
-    erreur_entete = fscanf(fichier, "%d", &image->hauteur);
+    erreur_entete = fscanf(fichier, "%u", &image->hauteur);
     if (erreur_entete != 1) exit(EXIT_FAILURE);
-    erreur_entete = fscanf(fichier, "%d", &image->plage_couleurs);
+    erreur_entete = fscanf(fichier, "%u", &image->plage_couleurs);
     if (erreur_entete != 1) exit(EXIT_FAILURE);
 
     /*Parsing \n (de valeur 10)*/
@@ -78,21 +78,21 @@ image_ppm* parse_entete(FILE* fichier) {
  * Alloue l'espace nécessaire pour une image en
  * niveaux de gris seulement
  */
-static void allocate_MCUs_grayscale(MCUs* bloc) {
-    bloc->largeur = TAILLE_DATA_UNIT;
-    bloc->hauteur = TAILLE_DATA_UNIT;
+static void allocate_MCUs_grayscale(MCUs* mcu) {
+    mcu->largeur = TAILLE_DATA_UNIT;
+    mcu->hauteur = TAILLE_DATA_UNIT;
 
-    bloc->Cb = NULL;
-    bloc->Cr = NULL;
+    mcu->Cb = NULL;
+    mcu->Cr = NULL;
 
     /*Allocation Y*/
-    bloc->Y = malloc(bloc->hauteur * sizeof(int16_t*));
-    if (bloc->Y == NULL) {
-        free(bloc);
+    mcu->Y = malloc(64);  // mcu->hauteur * sizeof(int16_t*)
+    if (mcu->Y == NULL) {
+        free(mcu);
         exit(EXIT_FAILURE);
     }
-    for (size_t i = 0; i < bloc->hauteur; i++) {
-        bloc->Y[i] = malloc(bloc->largeur * sizeof(int16_t));
+    for (size_t i = 0; i < mcu->hauteur; i++) {
+        mcu->Y[i] = malloc(64);  // mcu->largeur * sizeof(int16_t)
     }
 }
 
@@ -101,18 +101,18 @@ static void allocate_MCUs_grayscale(MCUs* bloc) {
  * Alloue l'espace nécessaire pour une image en
  * couleurs RGB
  */
-static void allocate_MCUs_RGB(MCUs* bloc, uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS]) {
-    bloc->largeur = (uint32_t)sampling_factors[Y][H] * TAILLE_DATA_UNIT;
-    bloc->hauteur = (uint32_t)sampling_factors[Y][V] * TAILLE_DATA_UNIT;
+static void allocate_MCUs_RGB(MCUs* mcu, uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS]) {
+    mcu->largeur = (uint32_t)sampling_factors[Y][H] * TAILLE_DATA_UNIT;
+    mcu->hauteur = (uint32_t)sampling_factors[Y][V] * TAILLE_DATA_UNIT;
 
     /*Allocations Y, Cb, Cr*/
-    bloc->Y = malloc(bloc->hauteur * sizeof(int16_t*));
-    bloc->Cb = malloc(bloc->hauteur * sizeof(int16_t*));
-    bloc->Cr = malloc(bloc->hauteur * sizeof(int16_t*));
-    for (size_t i = 0; i < bloc->hauteur; i++) {
-        bloc->Y[i] = malloc(bloc->largeur * sizeof(int16_t));
-        bloc->Cb[i] = malloc(bloc->largeur * sizeof(int16_t));
-        bloc->Cr[i] = malloc(bloc->largeur * sizeof(int16_t));
+    mcu->Y = malloc(mcu->hauteur * sizeof(int16_t*));
+    mcu->Cb = malloc(mcu->hauteur * sizeof(int16_t*));
+    mcu->Cr = malloc(mcu->hauteur * sizeof(int16_t*));
+    for (size_t i = 0; i < mcu->hauteur; i++) {
+        mcu->Y[i] = malloc(mcu->largeur * sizeof(int16_t));
+        mcu->Cb[i] = malloc(mcu->largeur * sizeof(int16_t));
+        mcu->Cr[i] = malloc(mcu->largeur * sizeof(int16_t));
     }
 }
 
@@ -368,11 +368,11 @@ void afficher_MCUs(uint8_t nb_components, const MCUs* mcu) {
 }
 
 void afficher_image(const image_ppm *image) {
-    printf("Largeur image : %d\n", image->largeur);
-    printf("Hauteur image : %d\n", image->hauteur);
-    printf("Largeur totale : %d\n", image->largeur_totale);
-    printf("Hauteur totale : %d\n", image->hauteur_totale);
-    printf("Plage de couleurs : %d\n", image->plage_couleurs);
-    printf("Nombre de MCUs : %d\n", image->nb_MCUs);
+    printf("Largeur image : %u\n", image->largeur);
+    printf("Hauteur image : %u\n", image->hauteur);
+    printf("Largeur totale : %u\n", image->largeur_totale);
+    printf("Hauteur totale : %u\n", image->hauteur_totale);
+    printf("Plage de couleurs : %u\n", image->plage_couleurs);
+    printf("Nombre de MCUs : %u\n", image->nb_MCUs);
     printf("Nombre de composantes : %d\n", image->nb_components);
 }
