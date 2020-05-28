@@ -23,7 +23,7 @@ bitstream *bitstream_create(const char *filename) {
 
     stream->file = fopen(filename, "ab");
     if (stream->file == NULL) {
-        perror("Error opening file: ");
+        perror("Error opening file ");
         free(stream);
         return NULL;
     }

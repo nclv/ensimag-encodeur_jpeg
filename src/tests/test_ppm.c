@@ -19,7 +19,10 @@ int main(int argc, char** argv) {
 
     /* Ouverture du fichier */
     FILE* fichier = fopen(argv[1], "r");
-    if (fichier == NULL) exit(EXIT_FAILURE);
+    if (fichier == NULL) {
+        perror("Error opening file ");
+        return EXIT_FAILURE;
+    }
 
     /*Parsing en-tête*/
     image_ppm* image = parse_entete(fichier);

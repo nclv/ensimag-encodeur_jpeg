@@ -10,7 +10,7 @@
  * rtype: bool
  * Choisit le mode de remplissage P5 ou P6
  */
-static bool is_grayscale_format(const char format[2]) {
+static bool is_grayscale_format(const char format[3]) {
     /*Booléen sur le format*/
     return !strcmp(format, "P5");
 }

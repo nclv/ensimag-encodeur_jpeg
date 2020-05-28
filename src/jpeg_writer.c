@@ -71,6 +71,11 @@ static void jpeg_write_dht_section(FILE *file, huff_table *ht, const char *HT_TY
  */
 static void jpeg_write_header_grayscale(jpeg *jpg) {
     FILE *file = fopen(jpg->jpeg_filename, "wb");
+    if (file == NULL) {
+        perror("Error opening file ");
+        jpeg_destroy(jpg);
+        exit(EXIT_FAILURE);
+    }
 
     const unsigned char SOI[2] = {0xff, 0xd8};
     const unsigned char APP0[2] = {0xff, 0xe0};
@@ -79,6 +84,7 @@ static void jpeg_write_header_grayscale(jpeg *jpg) {
     const unsigned char SOS[2] = {0xff, 0xda};
 
     /* On doit inverser les octets pour l'écriture */
+    // Initial value of HEIGTH[0] is type uint32_t, expects unsigned char
     const unsigned char HEIGTH[2] = {(jpg->image_height >> 8) & 0xff,
                                      jpg->image_height & 0xff};
     const unsigned char WIDTH[2] = {(jpg->image_width >> 8) & 0xff,
@@ -173,7 +179,6 @@ static void jpeg_write_header_RGB(jpeg *jpg) {
     uint8_t y_sampling_factor = (uint8_t)((jpg->sampling_factors[Y][H] << 4) | jpg->sampling_factors[Y][V]);
     uint8_t cb_sampling_factor = (uint8_t)((jpg->sampling_factors[Cb][H] << 4) | jpg->sampling_factors[Cb][V]);
     uint8_t cr_sampling_factor = (uint8_t)((jpg->sampling_factors[Cr][H] << 4) | jpg->sampling_factors[Cr][V]);
-
 
     fwrite(SOI, sizeof SOI, 1, file);
 

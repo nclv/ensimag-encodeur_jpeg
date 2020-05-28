@@ -11,4 +11,4 @@ ppm2jpeg.c:155:16:process_chroma	176	static
 ppm2jpeg.c:206:13:jpeg_set_tables_Y	64	static
 ppm2jpeg.c:226:13:jpeg_set_tables_CbCr	64	static
 ppm2jpeg.c:246:13:jpeg_set_sampling_factors	48	static
-ppm2jpeg.c:256:5:main	688	dynamic,bounded
+ppm2jpeg.c:256:5:main	704	dynamic,bounded

@@ -75,7 +75,7 @@ void process_chroma(int16_t** chroma_mcu, uint8_t hy, uint8_t vy,
             // encode_data_unit(data_unit, data_unit_freq, quantification_table_CbCr);
             // ecrire_coeffs(stream, data_unit_freq, CbCr_dc_table, CbCr_ac_table, difference_DC_chroma);
             // difference_DC_chroma = data_unit_freq[0][0];
-            // /* Mise à zéro de data_unit */
+            /* Mise à zéro de data_unit */
             for (size_t i = 0; i < 8; i++) {
                 for (size_t j = 0; j < 8; j++) {
                     data_unit[i][j] = 0;

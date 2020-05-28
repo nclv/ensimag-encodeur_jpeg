@@ -41,7 +41,7 @@ static error_t parse_option(int key, char *arg, struct argp_state *state) {
     return 0;
 }
 
-static void afficher_options(const arguments *args, const char *outfile, const uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS], bool no_downsampling) {
+static void afficher_options(const arguments *args, const char *outfile, const uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS], const bool no_downsampling) {
     printf("input file: %s\noutput file: %s\n", args->inputfile, outfile);
     printf("No downsampling: ");
     printf(no_downsampling ? "true\n" : "false\n");
@@ -262,7 +262,7 @@ int main(int argc, char *argv[]) {
 
     /* Documentation */
     char doc[] =
-        "Application qui convertit une image PPM en une image au format JPEG.\n\n \
+        "Application qui convertit une image PPM / PGM en une image au format JPEG.\n\n \
                 ./ppm2jpeg --outfile=sortie.jpeg --sample=hvx1,hvx2,hvx3 input.pgm";
 
     /* Structure des options */
@@ -287,14 +287,16 @@ int main(int argc, char *argv[]) {
     /* Ecriture du nom de fichier de sortie */
     char *outfile;
     if (strlen(args.outfile) == 0) {
-        outfile = malloc(strlen(args.inputfile) + 1 + 5);
+        size_t len = strlen(args.inputfile) + 1 + 5;
+        outfile = malloc(len);
         if (outfile == NULL) exit(EXIT_FAILURE);
-        strcpy(outfile, args.inputfile);
+        strncpy(outfile, args.inputfile, len);
         strip_ext(outfile);
         strcat(outfile, ".jpg");
     } else {
-        outfile = malloc(strlen(args.outfile) + 1);
-        strcpy(outfile, args.outfile);
+        size_t len = strlen(args.outfile) + 1;
+        outfile = malloc(len);
+        strncpy(outfile, args.outfile, len);
     }
 
     /* Default sampling-factors */
@@ -340,7 +342,10 @@ int main(int argc, char *argv[]) {
 
     /* Ouverture du fichier d'entrée */
     FILE *fichier = fopen(args.inputfile, "r");
-    if (fichier == NULL) exit(EXIT_FAILURE);
+    if (fichier == NULL) {
+        perror("Error opening file ");
+        exit(EXIT_FAILURE);
+    }
 
     /*Parsing en-tête*/
     image_ppm *image = parse_entete(fichier);

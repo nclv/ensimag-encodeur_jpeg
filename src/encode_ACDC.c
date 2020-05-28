@@ -36,7 +36,7 @@ static void encode_DC_freq(bitstream *stream, huff_table *dc_table, int16_t diff
     if (difference_DC < 0) {
         indice = (uint16_t)((1 << classe_magnitude) - indice - 1);
     }
-    printf("Magnitude: %d, index: %d\n", classe_magnitude, indice);
+    printf("Magnitude: %u, index: %u\n", classe_magnitude, indice);
 
     uint8_t nb_bits_magnitude = 0;
     uint32_t code_magnitude = huffman_table_get_path(dc_table, classe_magnitude, &nb_bits_magnitude);
@@ -58,16 +58,16 @@ static void encoder_AC_freq(bitstream *stream, huff_table *ac_table, int16_t fre
     if (freq_AC < 0) {
         indice = (uint16_t)((1 << classe_magnitude) - indice - 1);
     }
-    printf("Magnitude: %d, index: %d\n", classe_magnitude, indice);
+    printf("Magnitude: %u, index: %u\n", classe_magnitude, indice);
     /*
         On doit coder le nombre de coefficients nuls puis la classe de magnitude
         On écrit un octet.
         Bitshifts the input 4 bits to the left, then masks by the lower 4 bits.
         Le deuxième masquage est sécuritaire.
     */
-    printf("%d ", zeros_count);
+    printf("%u ", zeros_count);
     uint8_t value = (uint8_t)(((zeros_count << 4) & 0xf0) | (classe_magnitude & 0x0f));
-    printf("RLE %d \n", value);
+    printf("RLE %u \n", value);
     uint8_t nb_bits_zeros_magnitude = 0;
     uint32_t code_RLE = huffman_table_get_path(ac_table, value, &nb_bits_zeros_magnitude);
     bitstream_write_bits(stream, code_RLE, nb_bits_zeros_magnitude, false);
