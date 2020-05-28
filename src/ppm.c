@@ -325,8 +325,8 @@ static void afficher_MCU_grayscale(const MCUs* mcu) {
 static void afficher_MCU_RGB(const MCUs* mcu) {
     for (size_t i = 0; i < mcu->hauteur; i++) {
         for (size_t j = 0; j < mcu->largeur; j++) {
-            printf("%02" PRIx16 " ", (uint16_t)mcu->Y[i][j]);
-            printf("%02" PRIx16 " ", (uint16_t)mcu->Cb[i][j]);
+            printf("%02" PRIx16 "", (uint16_t)mcu->Y[i][j]);
+            printf("%02" PRIx16 "", (uint16_t)mcu->Cb[i][j]);
             printf("%02" PRIx16 " ", (uint16_t)mcu->Cr[i][j]);
         }
         printf("\n");

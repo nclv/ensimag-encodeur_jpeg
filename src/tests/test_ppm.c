@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
     sampling_factors[Cr][H] = (uint8_t)atoi(argv[4]);
     sampling_factors[Y][V] = (uint8_t)atoi(argv[5]);
     sampling_factors[Cb][V] = (uint8_t)atoi(argv[6]);
-    sampling_factors[Cb][V] = (uint8_t)atoi(argv[7]);
+    sampling_factors[Cr][V] = (uint8_t)atoi(argv[7]);
 
     /* Ouverture du fichier */
     FILE* fichier = fopen(argv[1], "r");
@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 
     /* Traitement des MCUs */
     for (size_t i = 0; i < image->nb_MCUs; i++) {
-        printf("Traitement du mcu %ld\n", i + 1);
+        printf("\nTraitement du mcu %ld\n", i);
         recuperer_MCUs(fichier, image, mcu);
         afficher_MCUs(image->nb_components, mcu);
     }

@@ -1,16 +1,17 @@
-#include <stdlib.h>
+#include <inttypes.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 /* type: int16_t**
  * rtype: void
  * Affiche une data unit de taille 8x8 en hexa
  */
-static void afficher_data_unit(int16_t** data_unit) {
+void afficher_data_unit(int16_t** data_unit) {
     printf("Data Unit\n");
     for (size_t i = 0; i < 8; i++) {
         for (size_t j = 0; j < 8; j++) {
-            printf("%02hhX ", data_unit[i][j]);
+            printf("%02" PRIx16 " ", (uint16_t)data_unit[i][j]);
         }
         printf("\n");
     }
@@ -18,7 +19,7 @@ static void afficher_data_unit(int16_t** data_unit) {
 
 void process_Y(int16_t** Y_mcu, uint8_t hy, uint8_t vy, int16_t** data_unit) {
     /* Traitement des blocs Y */
-    printf("%d %d\n", vy, hy);
+    // printf("%d %d\n", vy, hy);
     for (size_t v = 0; v < vy; v++) {
         for (size_t h = 0; h < hy; h++) {
             for (size_t i = 0; i < 8; i++) {
@@ -34,8 +35,12 @@ void process_Y(int16_t** Y_mcu, uint8_t hy, uint8_t vy, int16_t** data_unit) {
 
 void process_chroma(int16_t** chroma_mcu, uint8_t hy, uint8_t vy, uint8_t h_chroma, uint8_t v_chroma, int16_t** data_unit) {
     /* Traitement des blocs Cb / Cr avec échantillonnage horizontal */
-    // printf("%d \n", vy);
-    // printf("%d %d\n", h_chroma, v_chroma);
+    // printf("vy: %d \n", vy);
+    // printf("h_chroma, v_chroma: %d %d\n", h_chroma, v_chroma);
+    if (h_chroma == 0 || v_chroma == 0) {
+        fprintf(stderr, "Exception en point flottant: Un des arguments h_chroma / v_chroma est nul.");
+        exit(EXIT_FAILURE);
+    }
     float remainder = 0;
     uint8_t chroma_value = 0;
     uint8_t h_div = (hy / h_chroma);
@@ -44,7 +49,7 @@ void process_chroma(int16_t** chroma_mcu, uint8_t hy, uint8_t vy, uint8_t h_chro
     /* On boucle dans l'ordre des DU à traiter */
     for (size_t v = 0; v < v_chroma; v++) {
         for (size_t h = 0; h < h_chroma; h++) {
-            printf("%ld, %ld\n", v, h);
+            // printf("%ld, %ld\n", v, h);
             /* Echantillonnage de la chrominance */
             for (size_t i = 0; i < 8; i++) {
                 for (size_t j = 0; j < 8; j++) {
@@ -60,7 +65,7 @@ void process_chroma(int16_t** chroma_mcu, uint8_t hy, uint8_t vy, uint8_t h_chro
                 }
             }
             /* Traitement des DUs */
-            afficher_data_unit(data_unit);
+            // afficher_data_unit(data_unit);
             // à faire pdt l'écriture dans le bitstream.
             /* Mise à zéro de data_unit */
             for (size_t i = 0; i < 8; i++) {

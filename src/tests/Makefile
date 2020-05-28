@@ -22,7 +22,7 @@ LDFLAGS = -Wl,--gc-sections -Wl,--print-gc-sections
 # typing 'make' will invoke the first target entry in the file 
 
 TARGET = test_ppm test_bitstream test_dct test_zigzag test_quantification\
-	test_jpeg_writer test_huffman
+	test_jpeg_writer test_huffman test_downsampling
 OBJS = $(SRC)ppm.o test_ppm.o\
 	$(SRC)bitstream.o test_bitstream.o\
 	$(SRC)dct.o test_dct.o\
@@ -30,15 +30,20 @@ OBJS = $(SRC)ppm.o test_ppm.o\
 	$(SRC)quantification.o test_quantification.o\
 	$(SRC)jpeg_writer.o test_jpeg_writer.o\
 	$(SRC)huffman.o test_huffman.o \
-	$(SRC)downsampling.o
+	$(SRC)downsampling.o test_downsampling.o
 
 OBJS_PROF = ../../obj_prof/htables_prof.o
 
 all: $(TARGET)
 
-test_ppm: $(SRC)ppm.o $(SRC)downsampling.o test_ppm.o
+test_ppm: $(SRC)ppm.o test_ppm.o
 	$(info )
 	$(info Compilation de test_ppm)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
+
+test_downsampling: $(SRC)downsampling.o $(SRC)ppm.o test_downsampling.o
+	$(info )
+	$(info Compilation de test_downsampling)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
 test_bitstream: $(SRC)bitstream.o test_bitstream.o

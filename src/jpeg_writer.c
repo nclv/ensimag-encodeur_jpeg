@@ -213,11 +213,11 @@ static void jpeg_write_header_RGB(jpeg *jpg) {
     fwrite(&y_sampling_factor, 1, 1, file);
     fwrite("\x00", 1, 1, file);  // quantization table index
 
-    fwrite("\x01", 1, 1, file);  // id
+    fwrite("\x02", 1, 1, file);  // id
     fwrite(&cb_sampling_factor, 1, 1, file);
     fwrite("\x01", 1, 1, file);
 
-    fwrite("\x01", 1, 1, file);  // id
+    fwrite("\x03", 1, 1, file);  // id
     fwrite(&cr_sampling_factor, 1, 1, file);
     fwrite("\x01", 1, 1, file);
 

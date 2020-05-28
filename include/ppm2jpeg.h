@@ -10,4 +10,11 @@ typedef struct arguments {
 
 typedef struct argp argp;
 
+enum processing {
+    GRAYSCALE,
+    RGB_WITH_SAMPLING,
+    RGB_WITHOUT_SAMPLING,
+    NB_PROCESSING
+};
+
 #endif

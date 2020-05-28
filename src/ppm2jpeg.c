@@ -3,7 +3,6 @@
 #include <argp.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdlib.h>
 #include <string.h>
 #include <strings.h>
 
@@ -17,6 +16,8 @@
 #include "quantification.h"
 #include "utils.h"
 #include "zigzag.h"
+
+#include <stdlib.h>
 
 /*Parsing des options*/
 static error_t parse_option(int key, char *arg, struct argp_state *state) {
@@ -141,10 +142,17 @@ void afficher_traitement_statique(int16_t input[8][8], const char *chaine) {  //
     }
 }
 
-// static void encode_data_unit(int16_t **input, bool choix_YCbCr) {
-//     int16_t output[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT];
-    
-// }
+static void encode_data_unit(int16_t **data_unit, int16_t data_unit_freq[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT]) {
+    offset(data_unit);
+    dct(data_unit, data_unit_freq);
+    afficher_dct(data_unit_freq);
+
+    zigzag_inplace(data_unit_freq);
+    afficher_zigzag(data_unit_freq);
+
+    quantifier(data_unit_freq, quantification_table_Y);
+    afficher_matrice_quantifiee(data_unit_freq);
+}
 
 static void afficher_options(const arguments *args, const char *outfile, const uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS]) {
     printf("input file: %s\noutput file: %s\n", args->inputfile, outfile);
@@ -156,7 +164,7 @@ static void afficher_options(const arguments *args, const char *outfile, const u
     printf("\n");
 }
 
-static void jpeg_set_tables_Y(jpeg *jpg){
+static void jpeg_set_tables_Y(jpeg *jpg) {
     printf("\nEcriture de la table de quantification de la composante Y\n");
     jpeg_set_quantization_table(jpg, Y, quantification_table_Y);
 
@@ -176,7 +184,7 @@ static void jpeg_set_tables_Y(jpeg *jpg){
     jpeg_set_huffman_table(jpg, AC, Y, htable_Y_AC);
 }
 
-static void jpeg_set_tables_CbCr(jpeg *jpg){
+static void jpeg_set_tables_CbCr(jpeg *jpg) {
     printf("\nEcriture de la table de quantification des composantes CbCr Y\n");
     jpeg_set_quantization_table(jpg, Cb, quantification_table_CbCr);
 
@@ -204,6 +212,25 @@ static void jpeg_set_sampling_factors(jpeg *jpg, const uint8_t sampling_factors[
         }
     }
 }
+
+// static void choose_processing(enum processing proc) {
+//     switch (proc) {
+//         case GRAYSCALE:
+//             /* code */
+//             break;
+
+//         case RGB_WITHOUT_SAMPLING:
+//             /* code */
+//             break;
+
+//         case RGB_WITH_SAMPLING:
+//             /* code */
+//             break;
+
+//         default:
+//             break;
+//     }
+// }
 
 /*Programme principal*/
 int main(int argc, char *argv[]) {
@@ -292,14 +319,14 @@ int main(int argc, char *argv[]) {
     /*Parsing en-tête*/
     image_ppm *image = parse_entete(fichier);
 
-    jpeg_set_nb_components(jpg, 1);
-    // jpeg_set_nb_components(jpg, 3);
+    jpeg_set_nb_components(jpg, image->nb_components);
+    uint8_t nb_components = jpeg_get_nb_components(jpg);
 
     jpeg_set_image_width(jpg, image->largeur);
     jpeg_set_image_height(jpg, image->hauteur);
 
     jpeg_set_tables_Y(jpg);
-    if (jpg->nb_components == 3) jpeg_set_tables_CbCr(jpg);
+    if (nb_components == 3) jpeg_set_tables_CbCr(jpg);
 
     printf("Ecriture du header\n");
     jpeg_write_header(jpg);  // et création du bitstream
@@ -319,6 +346,12 @@ int main(int argc, char *argv[]) {
     bitstream *stream = jpeg_get_bitstream(jpg);
     huff_table *Y_dc_table = jpeg_get_huffman_table(jpg, DC, Y);
     huff_table *Y_ac_table = jpeg_get_huffman_table(jpg, AC, Y);
+    huff_table *CbCr_dc_table = NULL;
+    huff_table *CbCr_ac_table = NULL;
+    if (nb_components == 3) {
+        CbCr_dc_table = jpeg_get_huffman_table(jpg, DC, Cb);
+        CbCr_ac_table = jpeg_get_huffman_table(jpg, AC, Cb);
+    }
 
     int16_t difference_DC = 0;
 
@@ -334,7 +367,7 @@ int main(int argc, char *argv[]) {
         printf("\nTraitement du mcu %ld\n", i);
 
         recuperer_MCUs(fichier, image, mcu);
-        afficher_MCUs(image->nb_components, mcu);
+        afficher_MCUs(nb_components, mcu);
 
         /* Image RGB avec facteurs */
         // process_Y(mcu->Y, sampling_factors[Y][H], sampling_factors[Y][V], data_unit);
@@ -344,23 +377,46 @@ int main(int argc, char *argv[]) {
 
         /* Image Grayscale */
         // on encode directement mcu->Y
-        offset(mcu->Y);
-        dct(mcu->Y, data_unit_freq);
-        afficher_dct(data_unit_freq);
+        // offset(mcu->Y);
+        // dct(mcu->Y, data_unit_freq);
+        // afficher_dct(data_unit_freq);
 
-        zigzag_inplace(data_unit_freq);
-        afficher_zigzag(data_unit_freq);
+        // zigzag_inplace(data_unit_freq);
+        // afficher_zigzag(data_unit_freq);
 
-        quantifier(data_unit_freq, quantification_table_Y);
-        afficher_matrice_quantifiee(data_unit_freq);
-
+        // quantifier(data_unit_freq, quantification_table_Y);
+        // afficher_matrice_quantifiee(data_unit_freq);
+        encode_data_unit(mcu->Y, data_unit_freq);
         ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC);
-
-        printf("\nEnd of %ld Data Unit\n", i);
 
         /* Image RGB sans facteurs (1x1 1x1 1x1) */
         // on encode directement mcu->Y, mcu->Cb et mcu->Cr
+        if (nb_components == 3) {
+            // encode_data_unit(mcu->Y, data_unit_freq);
+            // ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC);
+            /* Mise à zéro de data_unit */
+            for (size_t k = 0; k < 8; k++) {
+                for (size_t j = 0; j < 8; j++) {
+                    data_unit_freq[k][j] = 0;
+                }
+            }
+            encode_data_unit(mcu->Cb, data_unit_freq);
+            ecrire_coeffs(stream, data_unit_freq, CbCr_dc_table, CbCr_ac_table, difference_DC);
+            for (size_t k = 0; k < 8; k++) {
+                for (size_t j = 0; j < 8; j++) {
+                    data_unit_freq[k][j] = 0;
+                }
+            }
+            encode_data_unit(mcu->Cr, data_unit_freq);
+            ecrire_coeffs(stream, data_unit_freq, CbCr_dc_table, CbCr_ac_table, difference_DC);
+            for (size_t k = 0; k < 8; k++) {
+                for (size_t j = 0; j < 8; j++) {
+                    data_unit_freq[k][j] = 0;
+                }
+            }
+        }
 
+        printf("\nEnd of %ld Data Unit\n", i);
         difference_DC = data_unit_freq[0][0];
     }
 
