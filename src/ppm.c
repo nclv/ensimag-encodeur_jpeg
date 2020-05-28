@@ -21,16 +21,20 @@ void free_mcu(MCUs **mcu) {
     }
     free((*mcu)->Y);
     (*mcu)->Y = NULL;
-    for (size_t i = 0; i < (*mcu)->hauteur; i++) {
-        free((*mcu)->Cb[i]);
+    if ((*mcu)->Cb) {
+        for (size_t i = 0; i < (*mcu)->hauteur; i++) {
+            free((*mcu)->Cb[i]);
+        }
+        free((*mcu)->Cb);
+        (*mcu)->Cb = NULL;
     }
-    free((*mcu)->Cb);
-    (*mcu)->Cb = NULL;
-    for (size_t i = 0; i < (*mcu)->hauteur; i++) {
-        free((*mcu)->Cr[i]);
+    if ((*mcu)->Cr) {
+        for (size_t i = 0; i < (*mcu)->hauteur; i++) {
+            free((*mcu)->Cr[i]);
+        }
+        free((*mcu)->Cr);
+        (*mcu)->Cr = NULL;
     }
-    free((*mcu)->Cr);
-    (*mcu)->Cr = NULL;
 
     free(*mcu);
     *mcu = NULL;
