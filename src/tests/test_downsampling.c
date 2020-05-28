@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
     MCUs* mcu = initialiser_MCUs(image, sampling_factors);
     afficher_image(image);
 
-     /* Allocation d'un bloc 8x8 */
+    /* Allocation d'un bloc 8x8 */
     int16_t** data_unit = calloc(8, sizeof *data_unit);
     if (data_unit == NULL) exit(EXIT_FAILURE);
     for (size_t i = 0; i < 8; i++) {

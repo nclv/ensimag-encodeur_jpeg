@@ -136,6 +136,7 @@ void verifier_syntaxe(arguments args) {
 }
 
 static void encode_data_unit(int16_t **data_unit, int16_t data_unit_freq[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT], uint8_t qtable[64]) {
+    printf("\nENCODAGE \n");
     offset(data_unit);
     dct(data_unit, data_unit_freq);
     afficher_dct(data_unit_freq);
@@ -157,6 +158,7 @@ static int16_t process_Y(int16_t **Y_mcu, uint8_t hy, uint8_t vy,
         for (size_t h = 0; h < hy; h++) {
             for (size_t i = 0; i < 8; i++) {
                 for (size_t j = 0; j < 8; j++) {
+                    printf("Ohooh, \n");
                     data_unit[i][j] = Y_mcu[i + 8 * v][j + 8 * h];
                 }
             }
@@ -371,7 +373,7 @@ int main(int argc, char *argv[]) {
     jpeg_write_header(jpg);  // et création du bitstream
 
     MCUs *mcu = initialiser_MCUs(image, sampling_factors);
-
+    afficher_image(image);
     /* Traitement des MCUs */
 
     bitstream *stream = jpeg_get_bitstream(jpg);
@@ -389,11 +391,11 @@ int main(int argc, char *argv[]) {
     int16_t difference_DC_Cr = 0;
 
     /* Allocation d'une Data Unit 8x8 */
-    int16_t **data_unit = calloc(8, sizeof *data_unit);
-    if (data_unit == NULL) exit(EXIT_FAILURE);
+    int16_t **data_unit = malloc(8 * sizeof(*data_unit));
+    // if (data_unit == NULL) exit(EXIT_FAILURE);
     for (size_t i = 0; i < 8; i++) {
-        data_unit[i] = calloc(8, sizeof *data_unit[i]);
-        if (data_unit[i] == NULL) exit(EXIT_FAILURE);
+        data_unit[i] = malloc(8 * sizeof(data_unit[i]));
+        // if (data_unit[i] == NULL) exit(EXIT_FAILURE);
     }
     int16_t data_unit_freq[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT] = {0};
 
@@ -405,49 +407,73 @@ int main(int argc, char *argv[]) {
     */
     for (size_t i = 0; i < image->nb_MCUs; i++) {
         printf("\nTraitement du mcu %ld\n", i);
-
-        recuperer_MCUs(fichier, image, mcu);
-        afficher_MCUs(nb_components, mcu);
-
-        if (no_downsampling) {
-            /* Image Grayscale (sans facteurs ie. 1x1 1x1 1x1) */
-            // on encode directement mcu->Y
-            encode_data_unit(mcu->Y, data_unit_freq, quantification_table_Y);
-            ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC_Y);
-            difference_DC_Y = data_unit_freq[0][0];
-
-            /* Image RGB sans facteurs */
-            // on encode directement mcu->Cb et mcu->Cr
-            if (nb_components == 3) {
-                // encode_data_unit(mcu->Y, data_unit_freq);
-                // ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC);
-                encode_data_unit(mcu->Cb, data_unit_freq, quantification_table_CbCr);
-                ecrire_coeffs(stream, data_unit_freq, CbCr_dc_table, CbCr_ac_table, difference_DC_Cb);
-                difference_DC_Cb = data_unit_freq[0][0];
-
-                encode_data_unit(mcu->Cr, data_unit_freq, quantification_table_CbCr);
-                ecrire_coeffs(stream, data_unit_freq, CbCr_dc_table, CbCr_ac_table, difference_DC_Cr);
-                difference_DC_Cr = data_unit_freq[0][0];
+        for (size_t k = 0; k < 8; k++) {
+            for (size_t j = 0; j < 8; j++) {
+                printf("%d, ", data_unit[k][j]);
+                data_unit[k][j] = 0;
             }
-        } else {  /* Image RGB avec facteurs */
-            printf("Image RGB avec facteurs\n");
-            difference_DC_Y = process_Y(mcu->Y, sampling_factors[Y][H], sampling_factors[Y][V],
-                                        data_unit, data_unit_freq,
-                                        Y_dc_table, Y_ac_table,
-                                        stream, difference_DC_Y);
-
-            difference_DC_Cb = process_chroma(mcu->Cb, sampling_factors[Y][H], sampling_factors[Y][V],
-                                              sampling_factors[Cb][H], sampling_factors[Cb][V],
-                                              data_unit, data_unit_freq,
-                                              CbCr_dc_table, CbCr_ac_table,
-                                              stream, difference_DC_Cb);
-
-            difference_DC_Cr = process_chroma(mcu->Cr, sampling_factors[Y][H], sampling_factors[Y][V],
-                                              sampling_factors[Cr][H], sampling_factors[Cr][V],
-                                              data_unit, data_unit_freq,
-                                              CbCr_dc_table, CbCr_ac_table,
-                                              stream, difference_DC_Cr);
+            printf("\n");
         }
+        recuperer_MCUs(fichier, image, mcu);
+        for (size_t k = 0; k < 8; k++) {
+            for (size_t j = 0; j < 8; j++) {
+                printf("%d, ", data_unit[k][j]);
+                data_unit[k][j] = 0;
+            }
+            printf("\n");
+        }
+        // afficher_MCUs(nb_components, mcu);
+
+        // if (no_downsampling) {
+        //     printf("No Downsampling");
+        //     /* Image Grayscale (sans facteurs ie. 1x1 1x1 1x1) */
+        //     // on encode directement mcu->Y
+        //     encode_data_unit(mcu->Y, data_unit_freq, quantification_table_Y);
+        //     ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC_Y);
+        //     difference_DC_Y = data_unit_freq[0][0];
+
+        //     /* Image RGB sans facteurs */
+        //     // on encode directement mcu->Cb et mcu->Cr
+        //     if (nb_components == 3) {
+        //         // encode_data_unit(mcu->Y, data_unit_freq);
+        //         // ecrire_coeffs(stream, data_unit_freq, Y_dc_table, Y_ac_table, difference_DC);
+        //         encode_data_unit(mcu->Cb, data_unit_freq, quantification_table_CbCr);
+        //         ecrire_coeffs(stream, data_unit_freq, CbCr_dc_table, CbCr_ac_table, difference_DC_Cb);
+        //         difference_DC_Cb = data_unit_freq[0][0];
+
+        //         encode_data_unit(mcu->Cr, data_unit_freq, quantification_table_CbCr);
+        //         ecrire_coeffs(stream, data_unit_freq, CbCr_dc_table, CbCr_ac_table, difference_DC_Cr);
+        //         difference_DC_Cr = data_unit_freq[0][0];
+        //     }
+        // } else {
+        /* Image RGB avec facteurs */
+        printf("Image RGB avec facteurs\n");
+        for (size_t k = 0; k < 8; k++) {
+            for (size_t j = 0; j < 8; j++) {
+                data_unit[k][j] = 0;
+            }
+        }
+        difference_DC_Y = process_Y(mcu->Y, sampling_factors[Y][H], sampling_factors[Y][V],
+                                    data_unit, data_unit_freq,
+                                    Y_dc_table, Y_ac_table,
+                                    stream, difference_DC_Y);
+        for (size_t k = 0; k < 8; k++) {
+            for (size_t j = 0; j < 8; j++) {
+                data_unit[k][j] = 0;
+            }
+        }
+        difference_DC_Cb = process_chroma(mcu->Cb, sampling_factors[Y][H], sampling_factors[Y][V],
+                                          sampling_factors[Cb][H], sampling_factors[Cb][V],
+                                          data_unit, data_unit_freq,
+                                          CbCr_dc_table, CbCr_ac_table,
+                                          stream, difference_DC_Cb);
+
+        difference_DC_Cr = process_chroma(mcu->Cr, sampling_factors[Y][H], sampling_factors[Y][V],
+                                          sampling_factors[Cr][H], sampling_factors[Cr][V],
+                                          data_unit, data_unit_freq,
+                                          CbCr_dc_table, CbCr_ac_table,
+                                          stream, difference_DC_Cr);
+        // }
 
         printf("\nEnd of %ld MCU\n", i);
     }
