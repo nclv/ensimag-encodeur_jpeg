@@ -19,7 +19,7 @@ SRC = ../
 CFLAGS = -std=c99 -Wall -Wextra -g3 -O0 -Werror -Wshadow -Wconversion -Wdouble-promotion -Wformat=2 -Wformat-truncation=2 -Wundef -fno-common -fstack-usage -Wfloat-equal -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wstrict-overflow=5 -Wwrite-strings -Waggregate-return -ffunction-sections -fdata-sections
 LDFLAGS = -Wl,--gc-sections -Wl,--print-gc-sections
 
-# typing 'make' will invoke the first target entry in the file 
+# typing 'make' will invoke the first target entry in the file
 
 TARGET = test_ppm test_bitstream test_dct test_zigzag test_quantification\
 	test_jpeg_writer test_huffman test_downsampling
@@ -84,7 +84,7 @@ test_huffman: $(SRC)huffman.o test_huffman.o
 $(OBJS): %.o: %.c
 	$(info )
 	$(info Compilation des fichiers .o)
-	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@ 
+	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
 
 .PHONY: clean clean_executable clean_all
 
