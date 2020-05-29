@@ -68,7 +68,6 @@ image_ppm* parse_entete(FILE* fichier) {
     /* Initialisation */
     image->hauteur_totale = 0;
     image->largeur_totale = 0;
-    image->nb_components = 0;
     image->nb_MCUs = 0;
 
     /*Parsing \n (de valeur 10)*/

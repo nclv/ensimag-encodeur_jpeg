@@ -18,7 +18,7 @@ void afficher_huff_table(huff_table *ht) {
     printf("\n");
 
     for (size_t i = 0; i < ht->nb_symbols; i++) {
-        uint8_t nb_bits;
+        uint8_t nb_bits = 0;
         uint32_t code = huffman_table_get_path(ht, ht->symbols[i], &nb_bits);
         printf("Code: %u, Length: %u\n", code, nb_bits);
     }

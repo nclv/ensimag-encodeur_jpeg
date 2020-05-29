@@ -257,8 +257,8 @@ static void jpeg_write_header_RGB(jpeg *jpg) {
 }
 
 void jpeg_write_header(jpeg *jpg) {
-    jpg->stream = bitstream_create(jpg->jpeg_filename);
     (jpg->nb_components == 1) ? jpeg_write_header_grayscale(jpg) : jpeg_write_header_RGB(jpg);
+    jpg->stream = bitstream_create(jpg->jpeg_filename);
 }
 
 void jpeg_write_footer(jpeg *jpg) {
