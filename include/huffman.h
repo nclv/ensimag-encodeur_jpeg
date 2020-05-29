@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 /* Type opaque représentant un arbre de Huffman. */
-#pragma pack(1)
+// #pragma pack(1)
 typedef struct huff_table {
     uint8_t *symbols;
     uint8_t *nb_symb_per_lengths;
