@@ -286,16 +286,14 @@ int main(int argc, char *argv[]) {
     /* Ecriture du nom de fichier de sortie */
     char *outfile;
     if (strlen(args.outfile) == 0) {
-        size_t len = strlen(args.inputfile) + 1 + 5;
-        outfile = malloc(len);
+        outfile = malloc(strlen(args.inputfile) + 1 + 5);
         if (outfile == NULL) exit(EXIT_FAILURE);
-        strncpy(outfile, args.inputfile, len);
+        strcpy(outfile, args.inputfile);
         strip_ext(outfile);
         strcat(outfile, ".jpg");
     } else {
-        size_t len = strlen(args.outfile) + 1;
-        outfile = malloc(len);
-        strncpy(outfile, args.outfile, len);
+        outfile = malloc(strlen(args.outfile) + 1);
+        strcpy(outfile, args.outfile);
     }
 
     /* Default sampling-factors */
