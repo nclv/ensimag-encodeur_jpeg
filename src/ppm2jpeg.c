@@ -118,7 +118,7 @@ void verifier_syntaxe(arguments args) {
     }
 }
 
-static void encode_data_unit(int16_t **data_unit, int16_t data_unit_freq[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT], uint8_t qtable[64]) {
+static inline void encode_data_unit(int16_t **data_unit, int16_t data_unit_freq[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT], uint8_t qtable[64]) {
     if (verbose) printf("\nENCODAGE \n");
     offset(data_unit);
     dct(data_unit, data_unit_freq);
@@ -131,7 +131,7 @@ static void encode_data_unit(int16_t **data_unit, int16_t data_unit_freq[TAILLE_
     if (verbose) afficher_matrice_quantifiee(data_unit_freq);
 }
 
-static int16_t process_Y(int16_t **Y_mcu, uint8_t hy, uint8_t vy,
+static inline int16_t process_Y(int16_t **Y_mcu, uint8_t hy, uint8_t vy,
                          int16_t **data_unit, int16_t data_unit_freq[8][8],
                          huff_table *Y_dc_table, huff_table *Y_ac_table,
                          bitstream *stream, int16_t difference_DC_Y) {
@@ -153,7 +153,7 @@ static int16_t process_Y(int16_t **Y_mcu, uint8_t hy, uint8_t vy,
     return difference_DC_Y;
 }
 
-static int16_t process_chroma(int16_t **chroma_mcu, uint8_t hy, uint8_t vy,
+static inline int16_t process_chroma(int16_t **chroma_mcu, uint8_t hy, uint8_t vy,
                               uint8_t h_chroma, uint8_t v_chroma,
                               int16_t **data_unit, int16_t data_unit_freq[8][8],
                               huff_table *CbCr_dc_table, huff_table *CbCr_ac_table,
@@ -204,7 +204,7 @@ static int16_t process_chroma(int16_t **chroma_mcu, uint8_t hy, uint8_t vy,
     return difference_DC_chroma;
 }
 
-static void jpeg_set_tables_Y(jpeg *jpg) {
+static inline void jpeg_set_tables_Y(jpeg *jpg) {
     if (verbose) printf("\nEcriture de la table de quantification de la composante Y\n");
     jpeg_set_quantization_table(jpg, Y, quantification_table_Y);
 
@@ -224,7 +224,7 @@ static void jpeg_set_tables_Y(jpeg *jpg) {
     jpeg_set_huffman_table(jpg, AC, Y, htable_Y_AC);
 }
 
-static void jpeg_set_tables_CbCr(jpeg *jpg) {
+static inline void jpeg_set_tables_CbCr(jpeg *jpg) {
     if (verbose) printf("\nEcriture de la table de quantification des composantes CbCr Y\n");
     jpeg_set_quantization_table(jpg, Cb, quantification_table_CbCr);
 
@@ -244,7 +244,7 @@ static void jpeg_set_tables_CbCr(jpeg *jpg) {
     jpeg_set_huffman_table(jpg, AC, Cb, htable_CbCr_AC);
 }
 
-static void jpeg_set_sampling_factors(jpeg *jpg, const uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS]) {
+static inline void jpeg_set_sampling_factors(jpeg *jpg, const uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS]) {
     if (verbose) printf("\nEcriture des sampling-factors\n");
     for (enum color_component cc = Y; cc < NB_COLOR_COMPONENTS; cc++) {
         for (enum direction dir = H; dir < NB_DIRECTIONS; dir++) {
