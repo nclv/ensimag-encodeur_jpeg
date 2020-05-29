@@ -43,5 +43,8 @@ int main(int argc, char** argv) {
     /*Fermeture du fichier*/
     fclose(fichier);
 
+    free_mcu(&mcu);
+    free(image);
+
     return EXIT_SUCCESS;
 }

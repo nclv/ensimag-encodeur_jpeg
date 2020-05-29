@@ -65,6 +65,12 @@ image_ppm* parse_entete(FILE* fichier) {
     erreur_entete = fscanf(fichier, "%u", &image->plage_couleurs);
     if (erreur_entete != 1) exit(EXIT_FAILURE);
 
+    /* Initialisation */
+    image->hauteur_totale = 0;
+    image->largeur_totale = 0;
+    image->nb_components = 0;
+    image->nb_MCUs = 0;
+
     /*Parsing \n (de valeur 10)*/
     uint8_t octet;
     size_t erreur_backslash = fread(&octet, sizeof(uint8_t), 1, fichier);

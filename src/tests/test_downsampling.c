@@ -55,14 +55,17 @@ int main(int argc, char** argv) {
         }
     }
 
+    /*Fermeture du fichier*/
+    fclose(fichier);
+
+    free_mcu(&mcu);
+    free(image);
+
     /* Libération d'un bloc 8x8 */
     for (size_t i = 0; i < 8; i++) {
         free(data_unit[i]);
     }
     free(data_unit);
-
-    /*Fermeture du fichier*/
-    fclose(fichier);
 
     return EXIT_SUCCESS;
 }

@@ -16,6 +16,7 @@ int main(void) {
     bitstream_write_bits(stream, 42, 6, false);
     bitstream_display(stream);
 
+    // Ecriture d'un marqueur, on flush le bitstream
     bitstream_write_bits(stream, 0xffd9, 16, true);
     bitstream_display(stream);
 

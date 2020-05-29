@@ -66,7 +66,7 @@ test_quantification: $(SRC)quantification.o test_quantification.o
 	$(info Compilation de test_quantification)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
 
-test_jpeg_writer: $(SRC)huffman.o $(SRC)jpeg_writer.o test_jpeg_writer.o
+test_jpeg_writer: $(SRC)huffman.o $(SRC)bitstream.o $(SRC)jpeg_writer.o test_jpeg_writer.o
 	$(info )
 	$(info Compilation de test_jpeg_writer)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $(OBJS_PROF) $^ $(LDFLAGS)

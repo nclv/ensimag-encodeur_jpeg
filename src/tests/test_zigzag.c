@@ -21,7 +21,7 @@ int main(void) {
     int16_t tableau[64] = {0};
     zigzag(matrice, tableau);
 
-    printf("Affichage zigzag de la matrice\n");
+    printf("\nAffichage zigzag de la matrice\n");
     size_t inc = 8;
     for (size_t i = 0; i < 64; i += inc) {
         for (size_t j = 0; j < 8; j++) {
@@ -32,6 +32,6 @@ int main(void) {
 
     zigzag_inplace(matrice);
 
-    printf("Affichage zigzag_inplace de la matrice\n");
+    printf("\nAffichage zigzag_inplace de la matrice: ");
     afficher_zigzag(matrice);
 }
