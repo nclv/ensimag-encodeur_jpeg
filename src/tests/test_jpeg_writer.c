@@ -4,6 +4,9 @@
 #include "htables.h"
 #include "jpeg_writer.h"
 #include "qtables.h"
+#include "verbose.h"
+
+bool verbose = true;
 
 static void afficher_quantization_table(uint8_t *qtable) {
     for (size_t i = 0; i < 64; i += 8) {

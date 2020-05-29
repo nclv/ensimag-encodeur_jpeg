@@ -1,6 +1,11 @@
 #include "bitstream.h"
+#include "verbose.h"
+
+bool verbose = true;
 
 int main(void) {
+    printf(verbose ? "true\n" : "false\n");
+
     bitstream* stream = bitstream_create("test.jpg");
 
     /*
