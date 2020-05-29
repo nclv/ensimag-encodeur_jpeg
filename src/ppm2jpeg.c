@@ -14,7 +14,10 @@
 #include "qtables.h"
 #include "quantification.h"
 #include "utils.h"
+#include "verbose.h"
 #include "zigzag.h"
+
+bool verbose;
 
 /*Parsing des options*/
 static error_t parse_option(int key, char *arg, struct argp_state *state) {
@@ -30,6 +33,9 @@ static error_t parse_option(int key, char *arg, struct argp_state *state) {
         case 's':
             args->sample = arg;
             break;
+        case 'v':
+            args->verbose = true;
+            break;
         case ARGP_KEY_END:
             if (args->inputfile == NULL) argp_usage(state);
             break;
@@ -40,10 +46,14 @@ static error_t parse_option(int key, char *arg, struct argp_state *state) {
     return 0;
 }
 
-static void afficher_options(const arguments *args, const char *outfile, const uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS], const bool no_downsampling) {
+static void afficher_options(const arguments *args, const char *outfile,
+                             const uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS],
+                             const bool no_downsampling) {
     printf("input file: %s\noutput file: %s\n", args->inputfile, outfile);
     printf("No downsampling: ");
     printf(no_downsampling ? "true\n" : "false\n");
+    printf("Verbose mode: ");
+    printf(verbose ? "true\n" : "false\n");
     for (size_t cc = Y; cc < NB_COLOR_COMPONENTS; cc++) {
         for (size_t dir = H; dir < NB_DIRECTIONS; dir++) {
             printf("%d ", sampling_factors[cc][dir]);
@@ -94,10 +104,6 @@ bool verifier_facteurs(uint8_t facteurs[NB_COLOR_COMPONENTS][NB_DIRECTIONS]) {
 }
 
 void verifier_syntaxe(arguments args) {
-    // if (!(check_one_dot(args.inputfile)) || (strlen(args.outfile) != 0 && !(check_one_dot(args.outfile)))) {
-    //     printf("ERREUR: Trop ou pas assez de points dans les noms de fichiers IO\n");
-    //     exit(EXIT_FAILURE);
-    // }
     if (!(check_extension(strrchr(args.inputfile, '.'), ".ppm") || check_extension(strrchr(args.inputfile, '.'), ".pgm"))) {
         printf("ERREUR: Les fichiers d'entrée ne sont pas reconnus\n");
         exit(EXIT_FAILURE);
@@ -106,10 +112,6 @@ void verifier_syntaxe(arguments args) {
         printf("ERREUR: Le fichier de sortie n'est pas reconnu\n");
         exit(EXIT_FAILURE);
     }
-    // if (check_extension(strchr(args.inputfile, '.'), ".ppm") && !strcmp(args.sample, "")) {
-    //     printf("ERREUR: Les facteurs d'échantillonage ne sont pas spécifiés.\n");
-    //     exit(EXIT_FAILURE);
-    // }
     if (strlen(args.sample) != 0 && !verifier_sample(args.sample)) {
         printf("ERREUR: Le format des facteurs d'échantillonage est incorrect\n");
         exit(EXIT_FAILURE);
@@ -117,23 +119,23 @@ void verifier_syntaxe(arguments args) {
 }
 
 static void encode_data_unit(int16_t **data_unit, int16_t data_unit_freq[TAILLE_DATA_UNIT][TAILLE_DATA_UNIT], uint8_t qtable[64]) {
-    printf("\nENCODAGE \n");
+    if (verbose) printf("\nENCODAGE \n");
     offset(data_unit);
     dct(data_unit, data_unit_freq);
-    afficher_dct(data_unit_freq);
+    if (verbose) afficher_dct(data_unit_freq);
 
     zigzag_inplace(data_unit_freq);
-    afficher_zigzag(data_unit_freq);
+    if (verbose) afficher_zigzag(data_unit_freq);
 
     quantifier(data_unit_freq, qtable);
-    afficher_matrice_quantifiee(data_unit_freq);
+    if (verbose) afficher_matrice_quantifiee(data_unit_freq);
 }
 
 static int16_t process_Y(int16_t **Y_mcu, uint8_t hy, uint8_t vy,
                          int16_t **data_unit, int16_t data_unit_freq[8][8],
                          huff_table *Y_dc_table, huff_table *Y_ac_table,
                          bitstream *stream, int16_t difference_DC_Y) {
-    printf("Traitement des blocs Y\n");
+    if (verbose) printf("Traitement des blocs Y\n");
     // printf("%d %d\n", hy, vy);
     for (size_t v = 0; v < vy; v++) {
         for (size_t h = 0; h < hy; h++) {
@@ -156,7 +158,7 @@ static int16_t process_chroma(int16_t **chroma_mcu, uint8_t hy, uint8_t vy,
                               int16_t **data_unit, int16_t data_unit_freq[8][8],
                               huff_table *CbCr_dc_table, huff_table *CbCr_ac_table,
                               bitstream *stream, int16_t difference_DC_chroma) {
-    printf("Traitement des blocs Cb / Cr avec échantillonnage horizontal");
+    if (verbose) printf("Traitement des blocs Cb / Cr avec échantillonnage horizontal");
     // printf("vy: %d \n", vy);
     // printf("h_chroma, v_chroma: %d %d\n", h_chroma, v_chroma);
     if (h_chroma == 0 || v_chroma == 0) {
@@ -203,10 +205,10 @@ static int16_t process_chroma(int16_t **chroma_mcu, uint8_t hy, uint8_t vy,
 }
 
 static void jpeg_set_tables_Y(jpeg *jpg) {
-    printf("\nEcriture de la table de quantification de la composante Y\n");
+    if (verbose) printf("\nEcriture de la table de quantification de la composante Y\n");
     jpeg_set_quantization_table(jpg, Y, quantification_table_Y);
 
-    printf("\nConstruction des tables de Huffman de la composante Y\n");
+    if (verbose) printf("\nConstruction des tables de Huffman de la composante Y\n");
     huff_table *htable_Y_DC = huffman_table_build(htables_nb_symb_per_lengths[DC][Y], htables_symbols[DC][Y], htables_nb_symbols[DC][Y]);
     if (htable_Y_DC == NULL) {
         jpeg_destroy(jpg);
@@ -223,10 +225,10 @@ static void jpeg_set_tables_Y(jpeg *jpg) {
 }
 
 static void jpeg_set_tables_CbCr(jpeg *jpg) {
-    printf("\nEcriture de la table de quantification des composantes CbCr Y\n");
+    if (verbose) printf("\nEcriture de la table de quantification des composantes CbCr Y\n");
     jpeg_set_quantization_table(jpg, Cb, quantification_table_CbCr);
 
-    printf("\nConstruction des tables de Huffman de la composante CbCr\n");
+    if (verbose) printf("\nConstruction des tables de Huffman de la composante CbCr\n");
     huff_table *htable_CbCr_DC = huffman_table_build(htables_nb_symb_per_lengths[DC][Cb], htables_symbols[DC][Cb], htables_nb_symbols[DC][Cb]);
     if (htable_CbCr_DC == NULL) {
         jpeg_destroy(jpg);
@@ -243,7 +245,7 @@ static void jpeg_set_tables_CbCr(jpeg *jpg) {
 }
 
 static void jpeg_set_sampling_factors(jpeg *jpg, const uint8_t sampling_factors[NB_COLOR_COMPONENTS][NB_DIRECTIONS]) {
-    printf("\nEcriture des sampling-factors\n");
+    if (verbose) printf("\nEcriture des sampling-factors\n");
     for (enum color_component cc = Y; cc < NB_COLOR_COMPONENTS; cc++) {
         for (enum direction dir = H; dir < NB_DIRECTIONS; dir++) {
             jpeg_set_sampling_factor(jpg, cc, dir, sampling_factors[cc][dir]);
@@ -258,6 +260,7 @@ int main(int argc, char *argv[]) {
     // Nécessaire, on test que les strings sont vides
     args.sample = "";
     args.outfile = "";
+    args.verbose = false;
 
     /* Documentation */
     char doc[] =
@@ -268,6 +271,7 @@ int main(int argc, char *argv[]) {
     static struct argp_option options[] = {
         {"outfile", 'o', "sortie.jpg", 0, "Output to sortie.jpg instead of standard output.", 0},
         {"sample", 's', "hxv", 0, "Définie les facteurs d'échantillonnage hvx=h1xv1,h2xv2,h3xv3 des trois composantes de couleur.", 0},
+        {"verbose", 'v', 0, 0, "Produce verbose output", 0},
         {0}};
 
     /* Structure argp */
@@ -316,7 +320,9 @@ int main(int argc, char *argv[]) {
         free(sample_copy);
     }
 
-    afficher_options(&args, outfile, sampling_factors, no_downsampling);
+    verbose = args.verbose;
+
+    if (verbose) afficher_options(&args, outfile, sampling_factors, no_downsampling);
     if (!verifier_facteurs(sampling_factors)) {
         printf("les coefficients d'échantillonnage ne sont pas valides.\n");
         exit(EXIT_FAILURE);
@@ -356,11 +362,11 @@ int main(int argc, char *argv[]) {
     jpeg_set_tables_Y(jpg);
     if (nb_components == 3) jpeg_set_tables_CbCr(jpg);
 
-    printf("Ecriture du header\n");
+    if (verbose) printf("Ecriture du header\n");
     jpeg_write_header(jpg);  // et création du bitstream
 
     MCUs *mcu = initialiser_MCUs(image, sampling_factors);
-    afficher_image(image);
+    if (verbose) afficher_image(image);
     /* Traitement des MCUs */
 
     bitstream *stream = jpeg_get_bitstream(jpg);
@@ -397,12 +403,12 @@ int main(int argc, char *argv[]) {
             ou RGB avec des facteurs d'échantillonnages donnant des mcus de taille 8x8
     */
     for (size_t m = 0; m < image->nb_MCUs; m++) {
-        printf("\nTraitement du mcu %zu\n", m);
+        if (verbose) printf("\nTraitement du mcu %zu\n", m);
         recuperer_MCUs(fichier, image, mcu);
-        afficher_MCUs(nb_components, mcu);
+        if (verbose) afficher_MCUs(nb_components, mcu);
 
         if (no_downsampling) {
-            printf("No Downsampling");
+            if (verbose) printf("No Downsampling");
             /* Image Grayscale (sans facteurs ie. 1x1 1x1 1x1) */
             // on encode directement mcu->Y
             encode_data_unit(mcu->Y, data_unit_freq, quantification_table_Y);
@@ -449,7 +455,7 @@ int main(int argc, char *argv[]) {
                                               stream, difference_DC_Cr);
         }
 
-        printf("\nEnd of %zu MCU\n", m);
+        if (verbose) printf("\nEnd of %zu MCU\n", m);
     }
 
     /*Fermeture du fichier d'entrée */
@@ -461,7 +467,7 @@ int main(int argc, char *argv[]) {
     // printf("Ecriture du footer\n");
     jpeg_write_footer(jpg);
 
-    printf("Destruction de la structure jpeg\n");
+    if (verbose) printf("Destruction de la structure jpeg\n");
     jpeg_destroy(jpg);
 
     /* Libération d'un bloc 8x8 */

@@ -1,8 +1,11 @@
 #include "bitstream.h"
 
 #include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "verbose.h"
 
 bitstream *bitstream_create(const char *filename) {
     bitstream *stream = malloc(sizeof *stream);
@@ -60,7 +63,7 @@ static void bitstream_write_byte(bitstream *stream) {
     // printf("\nEcriture d'un byte\n");
     /* Dépassement de la capacité du buffer, pas d'erreur visible sauf sur valgrind */
     if (stream->last_written_byte_offset >= stream->bytes_buffer_size) {
-        printf("Dépassement de la capacité du buffer\n");
+        if (verbose) printf("Dépassement de la capacité du buffer\n");
         // bitstream_display(stream);
         bitstream_flush(stream);
     }
@@ -81,10 +84,10 @@ static void bitstream_write_bit(bitstream *stream, unsigned char bit) {
 void bitstream_write_bits(bitstream *stream, uint32_t value, uint8_t nb_bits, bool is_marker) {
     assert(nb_bits < 32);  // au plus 32 bits
 
-    printf("Marqueur: %i, writing %u over %i bits \n", is_marker, value, nb_bits);
+    if (verbose) printf("Marqueur de section: %i, writing %u over %i bits \n", is_marker, value, nb_bits);
     /* Un marqueur de section JPEG est toujours aligné dans le flux sur un multiple d'un octet */
     if (is_marker) {
-        printf("Ecriture d'un marqueur (EOI)\n");
+        if (verbose) printf("Ecriture d'un marqueur (EOI)\n");
         bitstream_flush(stream);
         // On complète bits_buffer et on écrit le byte
         size_t padding = (stream->bits_buffer_size - stream->last_written_bit_offset);
@@ -103,7 +106,7 @@ void bitstream_write_bits(bitstream *stream, uint32_t value, uint8_t nb_bits, bo
         if (stream->last_written_bit_offset == stream->bits_buffer_size) {
             bitstream_write_byte(stream);
             if (stream->bits_buffer == 0xff && !(is_marker)) {
-                printf("Ecriture du stuffing byte 0x00 dans bytes_buffer\n");
+                if (verbose) printf("Ecriture du stuffing byte 0x00 dans bytes_buffer\n");
                 stream->bits_buffer = 0;
                 bitstream_write_byte(stream);
             }

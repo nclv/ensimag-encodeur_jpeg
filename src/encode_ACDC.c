@@ -6,6 +6,7 @@
 
 #include "bitstream.h"
 #include "huffman.h"
+#include "verbose.h"
 
 /* type: int16_t
  * rtype: uint8_t
@@ -36,7 +37,7 @@ static void encode_DC_freq(bitstream *stream, huff_table *dc_table, int16_t diff
     if (difference_DC < 0) {
         indice = (uint16_t)((1 << classe_magnitude) - indice - 1);
     }
-    printf("Magnitude: %u, index: %u\n", classe_magnitude, indice);
+    if (verbose) printf("Magnitude: %u, index: %u\n", classe_magnitude, indice);
 
     uint8_t nb_bits_magnitude = 0;
     uint32_t code_magnitude = huffman_table_get_path(dc_table, classe_magnitude, &nb_bits_magnitude);
@@ -58,16 +59,16 @@ static void encoder_AC_freq(bitstream *stream, huff_table *ac_table, int16_t fre
     if (freq_AC < 0) {
         indice = (uint16_t)((1 << classe_magnitude) - indice - 1);
     }
-    printf("Magnitude: %u, index: %u\n", classe_magnitude, indice);
+    if (verbose) printf("Magnitude: %u, index: %u\n", classe_magnitude, indice);
     /*
         On doit coder le nombre de coefficients nuls puis la classe de magnitude
         On écrit un octet.
         Bitshifts the input 4 bits to the left, then masks by the lower 4 bits.
         Le deuxième masquage est sécuritaire.
     */
-    printf("%u ", zeros_count);
+    if (verbose) printf("Nombre de zéros %u ", zeros_count);
     uint8_t value = (uint8_t)(((zeros_count << 4) & 0xf0) | (classe_magnitude & 0x0f));
-    printf("RLE %u \n", value);
+    if (verbose) printf("RLE %u \n", value);
     uint8_t nb_bits_zeros_magnitude = 0;
     uint32_t code_RLE = huffman_table_get_path(ac_table, value, &nb_bits_zeros_magnitude);
     bitstream_write_bits(stream, code_RLE, nb_bits_zeros_magnitude, false);
@@ -78,7 +79,7 @@ void ecrire_coeffs(bitstream *stream, const int16_t data_unit[8][8], huff_table 
     uint8_t zeros_count = 0;
     difference_DC = (int16_t)(data_unit[0][0] - difference_DC);
 
-    printf("Recherche du dernier coefficient non nul\n");
+    if (verbose) printf("Recherche du dernier coefficient non nul\n");
     uint8_t last_non_zero_line = 0;
     uint8_t last_non_zero_col = 0;
     for (int8_t i = 7; i >= 0; i--) {
@@ -90,19 +91,19 @@ void ecrire_coeffs(bitstream *stream, const int16_t data_unit[8][8], huff_table 
             }
         }
     }
-    // We use goto to break of 2 loops
-    got_last_non_zero:
+// We use goto to break of 2 loops
+got_last_non_zero:
 
-    printf("Last non zero: (%d, %d)\n", last_non_zero_line, last_non_zero_col);
+    if (verbose) printf("Last non zero: (%d, %d)\n", last_non_zero_line, last_non_zero_col);
 
-    printf("Encodage\n");
+    if (verbose) printf("Encodage\n");
     for (size_t i = 0; i < 8; i++) {
         for (size_t j = 0; j < 8; j++) {
             if (i == 0 && j == 0) {
-                printf("Encodage DC\n");
-                printf("Valeur %d ", difference_DC);
+                if (verbose) printf("Encodage DC\n");
+                if (verbose) printf("Valeur %d ", difference_DC);
                 encode_DC_freq(stream, dc_table, difference_DC);
-                printf("Encodage AC\n");
+                if (verbose) printf("Encodage AC\n");
                 continue;
             }
             if (data_unit[i][j] == 0) {
@@ -112,12 +113,12 @@ void ecrire_coeffs(bitstream *stream, const int16_t data_unit[8][8], huff_table 
                     uint8_t nb_bits_ZRL = 0;
                     uint32_t code_ZRL = huffman_table_get_path(ac_table, 0xf0, &nb_bits_ZRL);
                     // ou 240 en décimal
-                    printf("Code ZRL: %u\n", code_ZRL);
+                    if (verbose) printf("Code ZRL: %u\n", code_ZRL);
                     bitstream_write_bits(stream, code_ZRL, nb_bits_ZRL, false);
                     zeros_count = 0;
                 }
             } else {
-                printf("Valeur %d ", data_unit[i][j]);
+                if (verbose) printf("Valeur %d ", data_unit[i][j]);
                 encoder_AC_freq(stream, ac_table, data_unit[i][j], zeros_count);
                 zeros_count = 0;
             }
@@ -126,31 +127,11 @@ void ecrire_coeffs(bitstream *stream, const int16_t data_unit[8][8], huff_table 
             }
         }
     }
-    // Write EOB only if we are not on the last coefficient
-    writeEOB: ;
+// Write EOB only if we are not on the last coefficient
+writeEOB:;
     if (!(last_non_zero_col == 7 && last_non_zero_line == 7)) {
         uint8_t nb_bits_EOB = 0;
         uint32_t code_EOB = huffman_table_get_path(ac_table, 0x00, &nb_bits_EOB);
         bitstream_write_bits(stream, code_EOB, nb_bits_EOB, false);
     }
 }
-
-/*
-int main()
-{
-    int8_t matrice[8][8]  = {{77, 45, 120, 16, -44, -16, 0, 4},
-                             {-64, 4, 112, 10, -9, 0, 0, 0},
-                             {1, 7, 3, -11, -16, 2, 0, 1},
-                             {7, 0, 0, 0, 0, 0, 0, 0},
-                             {6, -11, 0, 0, 0, 0, 0, 28},
-                             {0, 0, 0, 0, 0, 0, 1, 0},
-                             {0, 0, 0, 0, 0, 0, 0, 0},
-                             {0, 0, 0, 0, 0, 0, 0, 0}};
-    for (uint8_t k=0;k<8;k++) {
-      for (uint8_t l=0;l<8;l++) {
-        encoderAC(matrice[k][l]);
-      }
-    }
-    return 0;
-}
-*/
