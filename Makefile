@@ -1,5 +1,5 @@
-CC = gcc -pg
-LD = gcc -pg
+CC = gcc
+LD = gcc
 
 # -O0 désactive les optimisations à la compilation
 # C'est utile pour débugger, par contre en "production"

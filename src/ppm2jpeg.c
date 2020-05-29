@@ -98,7 +98,7 @@ bool verifier_facteurs(uint8_t facteurs[NB_COLOR_COMPONENTS][NB_DIRECTIONS]) {
     }
 
     est_correct = est_correct && (facteurs[Y][H] * facteurs[H][V] + facteurs[Cb][H] * facteurs[Cb][V] + facteurs[Cr][H] * facteurs[Cr][V] <= 10);
-    est_correct = est_correct && (facteurs[Y][H] % facteurs[Cb][H] == 0 && facteurs[Y][H] % facteurs[Cr][H] == 0 && facteurs[H][V] % facteurs[Cb][V] == 0 && facteurs[H][V] % facteurs[Cr][V] == 0);
+    est_correct = est_correct && ((facteurs[Y][H] % facteurs[Cb][H] | facteurs[Y][H] % facteurs[Cr][H] | facteurs[H][V] % facteurs[Cb][V] | facteurs[H][V] % facteurs[Cr][V]) == 0);
 
     return est_correct;
 }
@@ -355,6 +355,12 @@ int main(int argc, char *argv[]) {
 
     jpeg_set_nb_components(jpg, image->nb_components);
     uint8_t nb_components = jpeg_get_nb_components(jpg);
+    if (!(no_downsampling) && (nb_components == 1)) {
+        printf("Aucun échantillonnage ne peut être effectué sur les fichiers Grayscale.\n");
+        free(image);
+        fclose(fichier);
+        exit(EXIT_FAILURE);
+    }
 
     jpeg_set_image_width(jpg, image->largeur);
     jpeg_set_image_height(jpg, image->hauteur);
